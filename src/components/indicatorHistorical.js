@@ -75,7 +75,7 @@ export function indicatorHistorical(
 
   // X-axis (every year, no line)
   g.append("g")
-    .attr("transform", `translate(0, ${innerHeight})`)
+    .attr("transform", `translate(0, ${innerHeight + 10})`)
     .call(
       d3
         .axisBottom(xScale)
@@ -85,20 +85,15 @@ export function indicatorHistorical(
     )
     .call((g) => g.select(".domain").remove())
     .selectAll("text")
-    .attr("dy", "1.5em")
     .attr("class", "chart-axistext");
-  // .attr("font-size", 10)
-  // .attr("fill", "#666");
 
   // Y-axis (intervals of 25, no line)
   g.append("g")
     .call(d3.axisLeft(yScale).tickValues([0, 25, 50, 75, 100]).tickSize(0))
     .call((g) => g.select(".domain").remove())
     .selectAll("text")
-    .attr("dx", "-.5em")
+    .attr("dx", -5)
     .attr("class", "chart-axistext");
-  // .attr("font-size", 10)
-  // .attr("fill", "#666");
 
   // Grid lines
   g.append("g")
@@ -157,7 +152,7 @@ export function indicatorHistorical(
       .attr("cy", (d) => yScale(d.value))
       .attr("r", (d, i) => (i === sortedData.length - 1 ? 5 : 3))
       .attr("fill", (d, i) =>
-        i === sortedData.length - 1 ? pillarColor : "none",
+        i === sortedData.length - 1 ? pillarColor : "#fff",
       )
       .attr("stroke", pillarColor)
       .attr("stroke-width", 2)
