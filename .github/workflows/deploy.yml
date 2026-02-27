@@ -4,7 +4,7 @@ on:
   # Run this workflow whenever a new commit is pushed to main.
   push: { branches: [main] }
   # Run this workflow once per day, at 10:15 UTC
-  schedule: [{ cron: "15 10 * * *" }]
+  schedule: [{ cron: "15 10 * * 0" }]
   # Run this workflow when triggered manually in GitHub's UI.
   workflow_dispatch: {}
 
@@ -31,7 +31,7 @@ jobs:
       # Install R packages if your scripts need them
       - name: Install R dependencies
         run: |
-          Rscript -e "install.packages(c('readr', 'dplyr', 'tidyr', 'readr', 'readxl', 'stringr', 'here', 'jsonlite', 'purrr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
+          Rscript -e "install.packages(c('readr', 'dplyr', 'tidyr', 'readxl', 'stringr', 'here', 'jsonlite', 'purrr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
         # Add any other R packages your scripts use
       - run: npm ci
       - id: date
