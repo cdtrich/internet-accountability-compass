@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.13.3">
+<title>Data Folder | Internet Accountability Compass</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="../_import/style.8687f991.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="../_import/style.8687f991.css">
+<link rel="modulepreload" href="../_observablehq/client.d0526745.js">
+<link rel="modulepreload" href="../_observablehq/runtime.e080113b.js">
+<link rel="modulepreload" href="../_observablehq/stdlib.73a8ec5a.js">
+<script type="module">
+
+import "../_observablehq/client.d0526745.js";
+
+</script>
+</head>
+<body>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h1 id="data-folder" tabindex="-1"><a class="observablehq-header-anchor" href="#data-folder">Data Folder</a></h1>
+<h2 id="data-loaders-r-scripts" tabindex="-1"><a class="observablehq-header-anchor" href="#data-loaders-r-scripts">Data Loaders (R Scripts)</a></h2>
+<p>These scripts generate data files when Observable Framework runs:</p>
+<ul>
+<li><strong>dfiFull.csv.R</strong> → Generates <code>dfiFull.csv</code> (full dataset with all indicators)</li>
+<li><strong>dfiCardinal.csv.R</strong> → Generates <code>dfiCardinal.csv</code> (cardinal/pillar aggregated data)</li>
+<li><strong>worldMap.json.R</strong> → Generates <code>worldMap.json</code> (GeoJSON with country data)</li>
+<li><strong>sources_csv.R</strong> → Generates <code>sources.csv</code> (reference sources)</li>
+</ul>
+<h2 id="source-data-files" tabindex="-1"><a class="observablehq-header-anchor" href="#source-data-files">Source Data Files</a></h2>
+<h3 id="excel-files-main-data" tabindex="-1"><a class="observablehq-header-anchor" href="#excel-files-main-data">Excel Files (Main Data)</a></h3>
+<ul>
+<li><code>Internet_Accountability_IndexV6.xlsx</code> - Main data source (2025 data)</li>
+<li><code>Internet_Accountability_IndexV5.xlsx</code> - Previous version (keep for reference)</li>
+</ul>
+<h3 id="geo-json-files-map-boundaries" tabindex="-1"><a class="observablehq-header-anchor" href="#geo-json-files-map-boundaries">GeoJSON Files (Map Boundaries)</a></h3>
+<p>These files are needed for map visualizations:</p>
+<ul>
+<li><strong>CNTR_RG_60M_2024_4326.json</strong> - Country boundaries (2024, GISCO)</li>
+<li><strong>COAS_RG_60M_2016_4326.json</strong> - Coastlines (2016, GISCO)</li>
+<li><strong>CNTR_RG_60M_2020_4326.json</strong> - Country boundaries (2020, GISCO)</li>
+<li><strong>map.json</strong> - Additional map data</li>
+</ul>
+<p><strong>Source:</strong> <a href="https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units" target="_blank" rel="noopener noreferrer">GISCO - Eurostat's Geographic Information System</a></p>
+<h2 id="how-data-loaders-work" tabindex="-1"><a class="observablehq-header-anchor" href="#how-data-loaders-work">How Data Loaders Work</a></h2>
+<p>When you run <code>npm run dev</code> or <code>npm run build</code>, Observable Framework:</p>
+<ol>
+<li>Detects <code>.R</code> files with output extensions (e.g., <code>.csv.R</code>, <code>.json.R</code>)</li>
+<li>Executes them using R</li>
+<li>Caches the output in <code>.observablehq/cache/data/</code></li>
+<li>Makes the generated files available to your markdown pages</li>
+</ol>
+<h2 id="adding-new-data-sources" tabindex="-1"><a class="observablehq-header-anchor" href="#adding-new-data-sources">Adding New Data Sources</a></h2>
+<p>To add a new data loader:</p>
+<ol>
+<li>Create a file named <code>outputname.extension.R</code> (e.g., <code>mydata.csv.R</code>)</li>
+<li>Make sure it outputs to stdout using <code>cat()</code></li>
+<li>Reference it in markdown with <code>FileAttachment("./data/outputname.extension")</code></li>
+</ol>
+<h2 id="notes" tabindex="-1"><a class="observablehq-header-anchor" href="#notes">Notes</a></h2>
+<ul>
+<li>Data loaders run automatically when you start the dev server</li>
+<li>To force a reload, run <code>npm run clean</code> then <code>npm run dev</code></li>
+<li>R must be installed with required packages (dplyr, tidyr, readr, readxl, sf, giscoR, etc.)</li>
+</ul>
+</main>
+</div>
+</body>
+</html>
