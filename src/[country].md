@@ -6,6 +6,13 @@ footer: false
 theme: air
 ---
 
+```js
+export async function params() {
+  const countries = await FileAttachment("data/countries.json").json();
+  return countries.map((iso3) => ({ country: iso3 }));
+}
+```
+
 <head>
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./toggleSwitch.css">

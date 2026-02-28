@@ -1,5 +1,5 @@
-import * as d3 from "npm:d3";
-import colorScales from "./scales.js";
+import * as d3 from "../../_npm/d3@7.9.0/e324157d.js";
+import colorScales from "./scales.3650d4d9.js";
 
 /**
  * D3 Map for Total Score
@@ -138,10 +138,11 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   const fillScale = colorScales();
 
-  // console.log(
-  //   "🔍 check not enough data",
-  //   dataCardinal.filter((d) => d.NAME_ENGL === "Iraq"),
-  // );
+  console.log(
+    "🔍 check not enough data",
+    // data.filter((d) => d.ned === "not enough data"),
+    dataCardinal.filter((d) => d.NAME_ENGL === "Iraq"),
+  );
 
   // Simplify cardinal data to one object per country with all pillars (latest year only)
   const simplified = {};

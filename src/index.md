@@ -137,6 +137,7 @@ freedoms, Responsibility and sustainability, and Trust and resilienceâ€”the
 <!-- data -->
 
 ```js
+const countries = FileAttachment("data/countries.json").json();
 const dfiFullParse = FileAttachment("./data/dfiFull.csv").csv({ typed: true });
 const dfiCardinalParse = FileAttachment("./data/dfiCardinal.csv").csv({
   typed: true,
@@ -181,6 +182,7 @@ const lookup = {
 ```
 
 ```js
+// console.log("countries", countries);
 const dfiFull = dfiFullParse.map((item) => {
   const pillar = lookup[item.pillar_num];
   const commitment = pillar?.commitments[item.commitment_num];

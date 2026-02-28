@@ -54,6 +54,10 @@ jobs:
           ls -la dist/_file/data/ || echo "Directory doesn't exist"
           echo "All CSV files in dist:"
           find dist -name "*.csv" -type f || echo "No CSV files found"
+          echo "Country page directories:"
+          ls -d dist/[A-Z][A-Z][A-Z]/ 2>/dev/null || echo "No country directories found"
+          echo "All HTML files in dist root:"
+          ls -1 dist/*.html || echo "No HTML files in root"
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
