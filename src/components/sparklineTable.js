@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { wrapText } from "./wrapText.js";
+import { basePath } from "./basePath.js";
 
 /**
  * Sparkline - single inline trend line for one country + one metric
@@ -221,7 +222,7 @@ export function sparklineTable(data, isMobile, { width = 640 } = {}) {
     const nameCell = row.insertCell();
     nameCell.className = "sparkline-country-name";
     const link = document.createElement("a");
-    link.href = `/${country.iso}` || "#";
+    link.href = `${basePath}/${country.iso}` || "#";
     link.textContent = isMobile ? country.iso : country.name;
     nameCell.appendChild(link);
 

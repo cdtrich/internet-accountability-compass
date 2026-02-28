@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { wrapText } from "./wrapText.js";
+import { basePath } from "./basePath.js";
 
 /**
  * D3 Heatmap with Linked Brushing
@@ -145,7 +146,7 @@ export function heatmap(data, isMobile, options = {}) {
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       if (d.ISO3_CODE) {
-        window.location.href = `/${d.ISO3_CODE}`;
+        window.location.href = `${basePath}/${d.ISO3_CODE}`;
       }
     });
 

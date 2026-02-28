@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { wrapText } from "./wrapText.js";
+import { basePath } from "./basePath.js";
 
 /**
  * D3 Polar Chart - Small Multiples with Linked Brushing
@@ -419,7 +420,7 @@ export function polar(data, isMobile, options = {}) {
       .on("click", (event, d) => {
         const iso3 = countryData[0]?.ISO3_CODE;
         if (iso3) {
-          window.location.href = `/${iso3}`;
+          window.location.href = `${basePath}/${iso3}`;
         }
       });
 

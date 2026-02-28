@@ -1,5 +1,6 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
+import { basePath } from "./basePath.js";
 
 /**
  * Animated Commitment Beeswarm Plot
@@ -222,7 +223,7 @@ export function straightPlotD3(data, country, pillar, options = {}) {
       })
       .on("click", (event, d) => {
         if (d.ISO3_CODE) {
-          window.location.href = `/${d.ISO3_CODE}`;
+          window.location.href = `${basePath}/${d.ISO3_CODE}`;
         }
       });
 

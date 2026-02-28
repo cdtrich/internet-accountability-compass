@@ -1,5 +1,6 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
+import { basePath } from "./basePath.js";
 
 /**
  * D3 Map for Commitment-level data
@@ -200,7 +201,7 @@ export function mapCommitmentD3(
     .style("cursor", (d) => (d.properties.ISO3_CODE ? "pointer" : "default"))
     .on("click", (event, d) => {
       if (d.properties.ISO3_CODE) {
-        window.location.href = `/${d.properties.ISO3_CODE}`;
+        window.location.href = `${basePath}/${d.properties.ISO3_CODE}`;
       }
     });
 
