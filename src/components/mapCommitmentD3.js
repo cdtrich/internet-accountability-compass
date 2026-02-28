@@ -201,7 +201,7 @@ export function mapCommitmentD3(
     .style("cursor", (d) => (d.properties.ISO3_CODE ? "pointer" : "default"))
     .on("click", (event, d) => {
       if (d.properties.ISO3_CODE) {
-        window.location.href = `${basePath}/${d.properties.ISO3_CODE}`;
+        window.location.href = `${basePath}/${d.properties.ISO3_CODE}/`;
       }
     });
 
@@ -436,38 +436,35 @@ export function mapCommitmentD3(
     .attr("font-weight", "bold")
     .text("Score");
 
-  // Scroll hint overlay
+  // Scroll hint overlay - small box at bottom
   const overlayDiv = document.createElement("div");
   overlayDiv.className = "map-scroll-overlay";
   overlayDiv.innerHTML = `
-    <div class="map-scroll-message">
-      <span>Use ${navigator.platform.includes("Mac") ? "⌘" : "Ctrl"} + scroll to zoom</span>
-    </div>
-  `;
+  <div class="map-scroll-message">
+    <span>Use ${navigator.platform.includes("Mac") ? "⌘" : "Ctrl"} + scroll to zoom</span>
+  </div>
+`;
   overlayDiv.style.cssText = `
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.85);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 10;
-  `;
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: none;
+  pointer-events: none;
+  z-index: 10;
+`;
 
   const messageDiv = overlayDiv.querySelector(".map-scroll-message");
   messageDiv.style.cssText = `
-    background: white;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-  `;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  border: 1px solid #ddd;
+`;
 
   // Wrap SVG in container
   const container = document.createElement("div");

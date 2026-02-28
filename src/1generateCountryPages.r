@@ -3,7 +3,7 @@ library(readr)
 library(stringr)
 library(here)
 
-# Read the country data
+# Read the country data to get country list
 df <- read_csv(paste0(here(), "/src/.observablehq/cache/data/dfiFull.csv"))
 
 # Get unique countries
@@ -22,13 +22,14 @@ for (i in 1:nrow(countries)) {
   # Replace placeholder with actual country ISO code
   page_content <- str_replace_all(template, "COUNTRY_ISO_PLACEHOLDER", country_iso)
   
-  # Create directory if it doesn't exist
-  dir.create(paste0(here(), "/src/", country_iso), showWarnings = FALSE)
+  # Create directory FIRST
+  country_dir <- paste0(here(), "/src/", country_iso)
+  dir.create(country_dir, showWarnings = FALSE)
   
   # Write the page
   write_file(
     page_content,
-    paste0(here(), "/src/", country_iso, "/index.md")
+    paste0(country_dir, "/index.md")
   )
   
   cat("Generated page for", country_name, "(", country_iso, ")\n")

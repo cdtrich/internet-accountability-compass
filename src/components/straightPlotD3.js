@@ -223,7 +223,7 @@ export function straightPlotD3(data, country, pillar, options = {}) {
       })
       .on("click", (event, d) => {
         if (d.ISO3_CODE) {
-          window.location.href = `${basePath}/${d.ISO3_CODE}`;
+          window.location.href = `${basePath}/${d.ISO3_CODE}/`;
         }
       });
 

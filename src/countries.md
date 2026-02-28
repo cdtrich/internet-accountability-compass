@@ -30,7 +30,7 @@ import { polar } from "./components/polarD3.js";
 import { heatmap } from "./components/heatmapD3.js";
 import { sidebar } from "./components/sidebar.js";
 import { toggleSwitch } from "./components/toggleSwitch.js";
-import { sparklineTable } from "./components/sparklineTable.js";
+import { sparklineTableD3 } from "./components/sparklineTableD3.js";
 ```
 
 <!-- data -->
@@ -168,7 +168,7 @@ const chartView =
       : html`<div class="body-text">
           <div class="card">
             ${resize((width) =>
-              sparklineTable(dfiCardinal, isMobile, {
+              sparklineTableD3(dfiCardinal, isMobile, {
                 width,
               }),
             )}

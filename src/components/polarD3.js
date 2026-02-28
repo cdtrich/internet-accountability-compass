@@ -420,7 +420,7 @@ export function polar(data, isMobile, options = {}) {
       .on("click", (event, d) => {
         const iso3 = countryData[0]?.ISO3_CODE;
         if (iso3) {
-          window.location.href = `${basePath}/${iso3}`;
+          window.location.href = `${basePath}/${iso3}/`;
         }
       });
 

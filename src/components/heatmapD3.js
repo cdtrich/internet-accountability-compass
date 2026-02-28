@@ -146,7 +146,7 @@ export function heatmap(data, isMobile, options = {}) {
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       if (d.ISO3_CODE) {
-        window.location.href = `${basePath}/${d.ISO3_CODE}`;
+        window.location.href = `${basePath}/${d.ISO3_CODE}/`;
       }
     });
 

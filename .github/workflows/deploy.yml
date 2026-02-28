@@ -4,7 +4,7 @@ on:
   # Run this workflow whenever a new commit is pushed to main.
   push: { branches: [main] }
   # Run this workflow once per day, at 10:15 UTC
-  schedule: [{ cron: "15 10 * * 0" }]
+  # schedule: [{ cron: "15 10 * * 0" }]
   # Run this workflow when triggered manually in GitHub's UI.
   workflow_dispatch: {}
 
@@ -28,7 +28,17 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: "4.3.2"
-      # Install R packages if your scripts need them
+          use-public-rspm: true # Use pre-compiled binaries (much faster!)
+
+      # Add caching BEFORE installing packages
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ hashFiles('deploy.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-r-
+
       - name: Install R dependencies
         run: |
           Rscript -e "install.packages(c('readr', 'dplyr', 'tidyr', 'readxl', 'stringr', 'here', 'jsonlite', 'purrr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
@@ -47,17 +57,6 @@ jobs:
           which Rscript
           Rscript --version
       - run: npm run build
-      # Debug step to check what was built
-      - name: Debug dist contents
-        run: |
-          echo "Contents of dist/_file/data/:"
-          ls -la dist/_file/data/ || echo "Directory doesn't exist"
-          echo "All CSV files in dist:"
-          find dist -name "*.csv" -type f || echo "No CSV files found"
-          echo "Country page directories:"
-          ls -d dist/[A-Z][A-Z][A-Z]/ 2>/dev/null || echo "No country directories found"
-          echo "All HTML files in dist root:"
-          ls -1 dist/*.html || echo "No HTML files in root"
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:

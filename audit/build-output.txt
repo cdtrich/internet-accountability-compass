@@ -1,0 +1,30 @@
+[90m├── [39mTON/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mTTO/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mTUN/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mTUR/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mTUV/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mTZA/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mUGA/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mUKR/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mURY/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mUSA/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mUZB/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mVCT/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mVEN/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mVNM/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mVUT/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mWSM/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mXKX/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mYEM/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mZAF/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mZMB/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mZWE/index             [32m       27 kB[39m [32m      625 kB[39m [33m    2.111 MB[39m
+[90m├── [39mdata/data-README      [32m        5 kB[39m [32m       51 kB[39m [32m       30 kB[39m
+[90m├── [39m1countryPageTemplate  [32m       24 kB[39m [32m      371 kB[39m [32m       24 kB[39m
+[90m├── [39mcountries             [32m       14 kB[39m [32m      416 kB[39m [33m    1.948 MB[39m
+[90m├── [39mdirections            [32m       18 kB[39m [32m      455 kB[39m [33m    2.370 MB[39m
+[90m├── [39mindex                 [32m       18 kB[39m [32m      399 kB[39m [33m    2.377 MB[39m
+[90m├── [39mmethodology           [32m       11 kB[39m [32m       54 kB[39m [32m       75 kB[39m
+[90m└── [39mperspectives          [32m       15 kB[39m [32m      429 kB[39m [32m      671 kB[39m
+
+[32m3[39m links validated

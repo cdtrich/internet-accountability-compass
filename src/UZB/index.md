@@ -41,13 +41,15 @@ const countryISO = "UZB";
 <!-- load data -->
 
 ```js
-const dfiFull = FileAttachment("../data/dfiFull.csv").csv({
-  typed: true,
-});
 const dfiCardinal = FileAttachment("../data/dfiCardinal.csv").csv({
   typed: true,
 });
+
 const sourcesParse = FileAttachment("../data/sources.csv").csv({
+  typed: true,
+});
+
+const dfiFull = FileAttachment("../data/dfiFull.csv").csv({
   typed: true,
 });
 ```
@@ -85,7 +87,6 @@ const dfiCardinalCountry = dfiCardinal.filter(
 ```
 
 ```js
-console.log("dfiLatest", dfiLatest);
 const total = dfiCountry ? Math.round(dfiCountry.total) : 0;
 const group = dfiCountry ? dfiCountry.group : "";
 ```
