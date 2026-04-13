@@ -231,10 +231,13 @@ export function heatmap(data, isMobile, options = {}) {
           : Math.floor(d.value);
       const partialNote = d.note === " (partial data)" ? " (partial data)" : "";
 
+      let scoreColor = fillScale.getOrdinalCategoryScale(d.pillar_txt)(
+        d.group_value,
+      );
+
       tooltip.style("visibility", "visible").html(`
-        <strong>${d.NAME_ENGL}</strong><br>
+        <strong style="font-size: 28px; font-weight: bold; color: ${scoreColor}; margin-bottom: 8px;"><strong>${valueText}</strong> ${partialNote}</strong><strong>${d.NAME_ENGL}</strong><br>
         ${d.pillar_txt}<br>
-        <strong>${valueText}</strong>${partialNote}<br>
         <em>${d.group_value || "N/A"}</em>
       `);
     })

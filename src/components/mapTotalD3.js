@@ -4,30 +4,30 @@ import { basePath } from "./basePath.js";
 
 /**
  * D3 Map for Total Score
- * Shows total score categories (Off track → Leading)
+ * Shows total score categories (Off track → Leading) or year-over-year change
  *
  * @param {Array} world - GeoJSON features
  * @param {Array} coast - Coast features (optional, can be null)
  * @param {Array} dataCardinal - Cardinal pillar data (ALL YEARS for sparklines)
- * @param {Object} options - width, height
+ * @param {Object} options - width, height, mode ("latest" or "historical")
  */
 export function mapTotalD3(world, coast, dataCardinal, options = {}) {
-  const { width = 975, height = 610 } = options;
+  const { width = 975, height = 610, mode = "latest" } = options;
 
-  // Helper: Create inline sparkline for tooltip
+  // Helper: Create inline sparkline for tooltip with color-coded dots
   function createTooltipSparkline(
     data,
     isoCode,
     pillarTxt,
-    categoryColor,
+    categoryColors,
     globalYearDomain,
   ) {
     const sparkW = 150;
-    const sparkH = 60; // Increased for labels
+    const sparkH = 60;
     const marginLeft = 20;
     const marginRight = 20;
-    const marginTop = 20; // Space for labels above points
-    const marginBottom = 20; // Space for year labels below
+    const marginTop = 20;
+    const marginBottom = 20;
 
     const countryData = data
       .filter((d) => d.ISO3_CODE === isoCode && d.pillar_txt === pillarTxt)
@@ -36,7 +36,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
     if (countryData.length === 0) return "";
 
-    // Use global year domain for consistent x-axis
     const xScale = d3
       .scaleLinear()
       .domain(globalYearDomain)
@@ -46,12 +45,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       .domain([0, 100])
       .range([sparkH - marginBottom, marginTop]);
 
-    const line = d3
-      .line()
-      .x((d) => xScale(d.year))
-      .y((d) => yScale(d.value))
-      .curve(d3.curveCatmullRom);
-
     const svg = d3
       .create("svg")
       .attr("width", sparkW)
@@ -60,28 +53,47 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       .style("display", "block")
       .style("margin", "4px 0");
 
-    // Line
-    svg
-      .append("path")
-      .datum(countryData)
-      .attr("d", line)
-      .attr("fill", "none")
-      .attr("stroke", categoryColor)
-      .attr("stroke-width", 2);
+    // Draw line segments, each colored by its starting year's category
+    for (let i = 0; i < countryData.length - 1; i++) {
+      const current = countryData[i];
+      const next = countryData[i + 1];
 
-    // Dots with labels
+      const segmentColor =
+        current.group_value === "NA"
+          ? "#ccc"
+          : categoryColors[current.group_value] || "#ccc";
+
+      svg
+        .append("line")
+        .attr("x1", xScale(current.year))
+        .attr("y1", yScale(current.value))
+        .attr("x2", xScale(next.year))
+        .attr("y2", yScale(next.value))
+        // .attr("stroke", segmentColor)
+        .attr("stroke", "#000")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-linecap", "round");
+    }
+
+    // Dots with labels - colored by their year's category
     countryData.forEach((d, i) => {
       const isFirst = i === 0;
       const isLast = i === countryData.length - 1;
+
+      // Get color for this year's category
+      const dotColor =
+        d.group_value === "NA"
+          ? "#ccc"
+          : categoryColors[d.group_value] || "#ccc";
 
       svg
         .append("circle")
         .attr("cx", xScale(d.year))
         .attr("cy", yScale(d.value))
         .attr("r", 3)
-        .attr("fill", categoryColor);
+        .attr("fill", dotColor);
 
-      // Value label above (all points)
+      // Value label above (all points) - colored by category
       svg
         .append("text")
         .attr("class", "sparkline-text")
@@ -89,7 +101,8 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .attr("y", yScale(d.value) - 8)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
-        .attr("fill", categoryColor)
+        // .attr("fill", dotColor)
+        .attr("fill", "#000")
         .text(`${Math.round(d.value)}`);
 
       // Year label below (only first and last)
@@ -114,41 +127,102 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
   const allYears = dataCardinal.map((d) => d.year).filter((y) => y != null);
   const globalYearDomain = d3.extent(allYears);
 
-  // Get Total score rows for map coloring (filter to latest year)
+  // Get latest and previous year
   const latestYear = d3.max(dataCardinal, (d) => d.year);
-  const totalScoreData = dataCardinal.filter(
-    (d) => d.pillar_txt === "Total score" && d.year === latestYear,
-  );
+  const previousYear = latestYear - 1;
 
-  // Merge with world
-  const dataMap = new Map(totalScoreData.map((item) => [item.ISO3_CODE, item]));
-  const worldWithData = world.map((feature) => {
-    const matchingData = dataMap.get(feature.properties.ISO3_CODE);
-    return matchingData
-      ? { ...feature, properties: { ...feature.properties, ...matchingData } }
-      : feature;
-  });
+  // Category colors
+  const categoryColors = {
+    "Off track": "#FDE74C",
+    "Catching up": "#afb6b5ff",
+    "On track": "#4ed0bfff",
+    Leading: "#007162ff",
+  };
 
-  console.log(
-    "🗺️ worldWithData sample (first 3):",
-    worldWithData.slice(0, 3).map((f) => ({
-      name: f.properties.NAME_ENGL,
-      group_value: f.properties.group_value,
-    })),
-  );
+  // Historical mode: Simple colors + opacity for magnitude
+  const changeColors = {
+    positive: "#007162ff", // Green for improvements
+    negative: "#FDE74C", // Yellow for declines
+    zero: "#fff", // Gray for no change
+  };
 
-  const fillScale = colorScales();
+  // Opacity scale based on absolute change magnitude
+  // 0 change → 0 opacity, 20+ change → 1 opacity
+  const opacityScale = d3
+    .scaleLinear()
+    .domain([0, 20])
+    .range([0, 1])
+    .clamp(true);
 
-  // console.log(
-  //   "🔍 check not enough data",
-  //   dataCardinal.filter((d) => d.NAME_ENGL === "Iraq"),
-  // );
+  let worldWithData, legendData;
 
-  // Simplify cardinal data to one object per country with all pillars (latest year only)
+  if (mode === "historical") {
+    // Historical mode: show year-over-year change
+    const latestData = dataCardinal.filter(
+      (d) => d.pillar_txt === "Total score" && d.year === latestYear,
+    );
+    const previousData = dataCardinal.filter(
+      (d) => d.pillar_txt === "Total score" && d.year === previousYear,
+    );
+
+    const previousMap = new Map(
+      previousData.map((item) => [item.ISO3_CODE, item.value]),
+    );
+
+    // Calculate changes
+    const changesData = latestData.map((current) => {
+      const prevValue = previousMap.get(current.ISO3_CODE);
+      const change =
+        prevValue && current.value !== "NA" && prevValue !== "NA"
+          ? current.value - prevValue
+          : null;
+
+      return {
+        ...current,
+        change,
+        previousValue: prevValue,
+      };
+    });
+
+    const dataMap = new Map(changesData.map((item) => [item.ISO3_CODE, item]));
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+
+    legendData = [
+      { label: "Decrease", color: changeColors.negative },
+      // { label: "No change", color: changeColors.zero },
+      { label: "Increase", color: changeColors.positive },
+    ];
+  } else {
+    // Latest mode: show current categories
+    const totalScoreData = dataCardinal.filter(
+      (d) => d.pillar_txt === "Total score" && d.year === latestYear,
+    );
+
+    const dataMap = new Map(
+      totalScoreData.map((item) => [item.ISO3_CODE, item]),
+    );
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+
+    legendData = [
+      { label: "Off track", color: categoryColors["Off track"] },
+      { label: "Catching up", color: categoryColors["Catching up"] },
+      { label: "On track", color: categoryColors["On track"] },
+      { label: "Leading", color: categoryColors["Leading"] },
+    ];
+  }
+
+  // Simplify cardinal data for tooltips
   const simplified = {};
-
-  // console.log("🔍 First 3 dataCardinal entries:", dataCardinal.slice(0, 3));
-
   const latestYearData = dataCardinal.filter((d) => d.year === latestYear);
 
   latestYearData.forEach((entry) => {
@@ -169,23 +243,19 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         ISO3_CODE,
         NAME_ENGL,
         group,
-        group_value: null, // Will be set from Total score row
+        group_value: null,
         total,
       };
     }
 
-    // Store pillar values - including "Total score"
     simplified[ISO3_CODE][pillar_txt] = value;
     simplified[ISO3_CODE][`${pillar_txt}_note`] = note;
     simplified[ISO3_CODE][`${pillar_txt}_ned`] = ned;
 
-    // Use group_value from "Total score" row specifically
     if (pillar_txt === "Total score") {
       simplified[ISO3_CODE].group_value = group_value;
     }
   });
-
-  // console.log("📦 Simplified Australia:", simplified["AUS"]);
 
   const dataCardinalSimplified = Object.values(simplified);
 
@@ -205,7 +275,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       : feature;
   });
 
-  // Calculate centroids of largest polygon for tooltip positioning
+  // Calculate centroids
   function largestPolygonCentroid(feature) {
     const { type, coordinates } = feature.geometry;
 
@@ -245,7 +315,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
-  // Projection with top margin for legend
+  // Projection
   const marginTop = 80;
   const projection = d3
     .geoEqualEarth()
@@ -253,19 +323,11 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       type: "FeatureCollection",
       features: world,
     })
-    .translate([width / 2, (height - marginTop) / 2 + marginTop]); // Shift down
+    .translate([width / 2, (height - marginTop) / 2 + marginTop]);
 
   const path = d3.geoPath(projection);
 
-  // Category colors
-  const categoryColors = {
-    "Off track": "#FDE74C",
-    "Catching up": "#afb6b5ff",
-    "On track": "#4ed0bfff",
-    Leading: "#007162ff",
-  };
-
-  // Zoom behavior - only zoom with Ctrl/Cmd + scroll
+  // Zoom behavior
   const zoom = d3
     .zoom()
     .scaleExtent([1, 8])
@@ -281,83 +343,104 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   svg.call(zoom);
 
-  // Map group
   const mapGroup = svg.append("g").attr("class", "map-group");
 
   // Draw all countries (base layer)
   mapGroup
     .selectAll(".country-base")
-    .data(world)
+    .data(worldWithData)
     .join("path")
     .attr("class", "country-base")
     .attr("d", path)
     .attr("fill", "#fff")
-    .attr("stroke", "#ccc")
+    .attr("stroke", "#ddd")
     .attr("stroke-width", 0.5);
 
-  // Draw colored countries
-  const countries = mapGroup
-    .selectAll(".country")
-    .data(worldWithData)
+  // Draw countries with data (colored layer)
+  mapGroup
+    .selectAll(".country-data")
+    .data(
+      worldWithData.filter((d) => {
+        if (mode === "historical") {
+          return d.properties.change !== null;
+        }
+        return d.properties.group_value && d.properties.group_value !== "NA";
+      }),
+    )
     .join("path")
-    .attr("class", "country")
+    .attr("class", "country-data")
     .attr("d", path)
     .attr("fill", (d) => {
-      // Use group_value from the data
-      const category = d.properties.group_value;
-      if (!category || category === "NA") return "#fff";
-      return categoryColors[category] || "#fff";
+      if (mode === "historical") {
+        const change = d.properties.change;
+        if (change > 0) return changeColors.positive;
+        if (change < 0) return changeColors.negative;
+        return changeColors.zero;
+      }
+      return categoryColors[d.properties.group_value] || "#fff";
+    })
+    .attr("fill-opacity", (d) => {
+      if (mode === "historical") {
+        return opacityScale(Math.abs(d.properties.change));
+      }
+      return 1;
     })
     .attr("stroke", "#fff")
-    .attr("stroke-width", 0.5)
-    .style("cursor", (d) => (d.properties.ISO3_CODE ? "pointer" : "default"))
-    .on("click", (event, d) => {
-      if (d.properties.ISO3_CODE) {
-        window.location.href = `${basePath}/${d.properties.ISO3_CODE}/`;
-      }
-    });
+    .attr("stroke-width", 0.5);
+
+  // Draw coast if provided
+  if (coast) {
+    mapGroup
+      .append("path")
+      .datum(coast)
+      .attr("class", "coast")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.3);
+  }
 
   // Tooltip
   const tooltip = d3
     .select("body")
-    .selectAll(".chart-tooltip")
-    .data([null])
-    .join("div")
-    .attr("class", "chart-tooltip");
+    .append("div")
+    .attr("class", "map-tooltip")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .style("background", "white")
+    .style("padding", "12px")
+    .style("border-radius", "8px")
+    .style("box-shadow", "0 4px 12px rgba(0,0,0,0.15)")
+    .style("pointer-events", "none")
+    .style("font-family", "sans-serif")
+    .style("font-size", "14px")
+    .style("line-height", "1.6")
+    .style("max-width", "300px")
+    .style("z-index", "1000");
 
-  // Add hover directly to the visible countries layer
-  countries
+  // Hover interactions
+  mapGroup
+    .selectAll(".country-data")
+    .on("click", function (event, d) {
+      const iso3 = d.properties.ISO3_CODE;
+      if (iso3) window.location.href = `${basePath}/${iso3}/`;
+    })
+    .style("cursor", "pointer")
     .on("mouseenter", function (event, d) {
-      // console.log("🐭 Mouseenter on:", d.properties.NAME_ENGL);
-
-      // Highlight this country
       d3.select(this)
-        .raise()
         .transition()
         .duration(150)
         .attr("stroke-width", 2)
         .attr("stroke", "#333");
 
-      // Find full data from worldWithCentroids
       const fullData = worldWithCentroids.find(
-        (c) => c.properties.ISO3_CODE === d.properties.ISO3_CODE,
+        (f) => f.properties.ISO3_CODE === d.properties.ISO3_CODE,
       );
 
-      // console.log("📊 Full data found:", fullData ? "YES" : "NO");
-      // console.log("📊 Has Total score:", fullData?.properties["Total score"]);
-
-      if (!fullData || !fullData.properties["Total score"]) {
-        // console.log("❌ No data, hiding tooltip");
-        tooltip.style("visibility", "hidden");
-        return;
-      }
+      if (!fullData) return;
 
       const centroid = fullData.properties.centroid;
-      // console.log("📍 Centroid:", centroid);
-      if (!centroid) {
-        // console.log("❌ No centroid");
-        return;
-      }
+      if (!centroid) return;
 
       const transform = d3.zoomTransform(svg.node());
       const projectedCentroid = projection(centroid);
@@ -366,7 +449,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         projectedCentroid[1] * transform.k + transform.y,
       ];
 
-      // Format pillar scores with exact structure
       const pillars = [
         "Connectivity and infrastructure",
         "Rights and freedoms",
@@ -380,15 +462,12 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           const ned = fullData.properties[`${pillar}_ned`];
           const note = fullData.properties[`${pillar}_note`];
 
-          // Check for "not enough data" first
           if (ned === "not enough data") {
             return `${pillar}: Not enough data`;
           }
 
-          // If value is "NA" string, skip it
           if (value === "NA") return null;
 
-          // Value is a number - round it and add note
           const scoreText =
             note === "NA" ? Math.round(value) : Math.round(value) + note;
           return `${pillar}: ${scoreText}`;
@@ -396,42 +475,58 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .filter(Boolean)
         .join("<br>");
 
-      // console.log("📝 Pillar scores:", pillarScores);
-
-      const categoryDisplay =
-        fullData.properties.group_value === "NA"
-          ? "Not enough data"
-          : fullData.properties.group_value;
-
-      // Get color for sparkline based on category
-      const categoryColor =
-        fullData.properties.group_value === "NA"
-          ? "#ccc"
-          : categoryColors[fullData.properties.group_value] || "#ccc";
-
-      // Generate sparkline for Total score
+      // Generate sparkline
       const sparklineHTML = createTooltipSparkline(
         dataCardinal,
         fullData.properties.ISO3_CODE,
         "Total score",
-        categoryColor,
+        categoryColors,
         globalYearDomain,
       );
 
-      const tooltipHTML = `
-          <strong>${fullData.properties.NAME_ENGL}</strong> - ${categoryDisplay}<br>
+      let tooltipHTML;
+      if (mode === "historical") {
+        const change = d.properties.change;
+        const changeSign = change > 0 ? "+" : "";
+        let changeColor;
+        if (change > 0) changeColor = changeColors.positive;
+        else if (change < 0) changeColor = changeColors.negative;
+        else changeColor = changeColors.zero;
+
+        tooltipHTML = `
+          <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
+            ${changeSign}${Math.round(change)}
+          </strong>
+          <strong>${fullData.properties.NAME_ENGL}</strong><br>
           ${sparklineHTML}
           ${pillarScores}
         `;
+      } else {
+        const categoryDisplay =
+          fullData.properties.group_value === "NA"
+            ? "Not enough data"
+            : fullData.properties.group_value;
 
-      // console.log("🎨 Tooltip HTML:", tooltipHTML);
+        const categoryColor =
+          fullData.properties.group_value === "NA"
+            ? "#ccc"
+            : categoryColors[fullData.properties.group_value] || "#ccc";
+
+        const totalScore =
+          fullData.properties["Total score"] || fullData.properties.total || 0;
+
+        tooltipHTML = `
+          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-bottom: 8px;">
+            ${Math.round(totalScore)}
+          </strong>
+          <strong>${fullData.properties.NAME_ENGL}</strong> (${categoryDisplay})<br>
+          ${sparklineHTML}
+          ${pillarScores}
+        `;
+      }
 
       tooltip.style("visibility", "visible").html(tooltipHTML);
 
-      // console.log("👁️ Tooltip visibility:", tooltip.style("visibility"));
-      // console.log("🎯 Tooltip element:", tooltip.node());
-
-      // Position at centroid
       const svgRect = svg.node().getBoundingClientRect();
       tooltip
         .style(
@@ -442,18 +537,8 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           "left",
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
-
-      // console.log(
-      //   // "📍 Tooltip position - top:",
-      //   tooltip.style("top"),
-      //   "left:",
-      //   tooltip.style("left"),
-      // );
-      // console.log("📍 SVG rect:", svgRect);
-      // console.log("📍 Zoomed centroid:", zoomedCentroid);
     })
     .on("mouseleave", function () {
-      // Reset stroke
       d3.select(this)
         .transition()
         .duration(150)
@@ -469,7 +554,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("class", "zoom-controls")
     .attr("transform", `translate(${width - 50}, ${height - 200})`);
 
-  // Zoom in button
   const zoomInButton = controlsGroup
     .append("g")
     .attr("class", "zoom-button")
@@ -494,7 +578,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("font-weight", "bold")
     .text("+");
 
-  // Zoom out button
   const zoomOutButton = controlsGroup
     .append("g")
     .attr("class", "zoom-button")
@@ -520,7 +603,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("font-weight", "bold")
     .text("−");
 
-  // Reset zoom button
   const resetButton = controlsGroup
     .append("g")
     .attr("class", "zoom-button")
@@ -545,21 +627,13 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("fill", "#007162")
     .text("⌂");
 
-  // Legend - centered at top
-  const legendData = [
-    { label: "Off track", color: categoryColors["Off track"] },
-    { label: "Catching up", color: categoryColors["Catching up"] },
-    { label: "On track", color: categoryColors["On track"] },
-    { label: "Leading", color: categoryColors["Leading"] },
-  ];
-
+  // Legend
   const legendWidth = legendData.length * 120;
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
     .attr("transform", `translate(${(width - legendWidth) / 2}, 20)`);
 
-  // White background box
   legend
     .append("rect")
     .attr("class", "legend-background")
@@ -568,8 +642,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("width", legendWidth + 40)
     .attr("height", 60)
     .attr("fill", "#ffffff00")
-    // .attr("stroke", "#ddd")
-    // .attr("stroke-width", 1)
     .attr("rx", 4);
 
   const legendItems = legend
@@ -593,36 +665,36 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("font-size", 12)
     .text((d) => d.label);
 
-  // Scroll hint overlay - small box at bottom
+  // Scroll hint overlay
   const overlayDiv = document.createElement("div");
   overlayDiv.className = "map-scroll-overlay";
   overlayDiv.innerHTML = `
-  <div class="map-scroll-message">
-    <span>Use ${navigator.platform.includes("Mac") ? "⌘" : "Ctrl"} + scroll to zoom</span>
-  </div>
-`;
+    <div class="map-scroll-message">
+      <span>Use ${navigator.platform.includes("Mac") ? "⌘" : "Ctrl"} + scroll to zoom</span>
+    </div>
+  `;
   overlayDiv.style.cssText = `
-  position: absolute;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  display: none;
-  pointer-events: none;
-  z-index: 10;
-`;
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: none;
+    pointer-events: none;
+    z-index: 10;
+  `;
 
   const messageDiv = overlayDiv.querySelector(".map-scroll-message");
   messageDiv.style.cssText = `
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px 16px;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  border: 1px solid #ddd;
-`;
-  // Wrap SVG in container
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+    border: 1px solid #ddd;
+  `;
+
   const container = document.createElement("div");
   container.style.position = "relative";
   container.appendChild(svg.node());
@@ -630,7 +702,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   let overlayTimeout;
 
-  // Show overlay on scroll without Ctrl/Cmd
   svg.on(
     "wheel",
     function (event) {

@@ -820,7 +820,14 @@ a[href].observablehq-header-anchor {
 }
 :root {
   --font-big: 900 32px/1 var(--sans-serif);
+  --font-very-big: 900 48px/1 var(--sans-serif);
   --font-small: 14px var(--sans-serif);
+}
+.big {
+  font: var(--font-big);
+}
+.very-big {
+  font: var(--font-very-big);
 }
 .big {
   font: var(--font-big);

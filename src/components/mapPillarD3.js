@@ -4,15 +4,15 @@ import { basePath } from "./basePath.js";
 
 /**
  * D3 Map with Zoom/Pan
- * Choropleth map showing pillar scores by category
+ * Choropleth map showing pillar scores by category or year-over-year change
  *
  * @param {Array} world - GeoJSON features
  * @param {Array} data - Data with pillar_txt, value, group_value, ISO3_CODE (ALL YEARS)
  * @param {string} selectedPillar - Selected pillar to display
- * @param {Object} options - width, height
+ * @param {Object} options - width, height, mode ("latest" or "historical")
  */
 export function mapPillarD3(world, data, selectedPillar, options = {}) {
-  const { width = 975, height = 610 } = options;
+  const { width = 975, height = 610, mode = "latest" } = options;
 
   const fillScale = colorScales();
 
@@ -116,23 +116,104 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
   const allYears = data.map((d) => d.year).filter((y) => y != null);
   const globalYearDomain = d3.extent(allYears);
 
-  // Filter data by selected pillar AND exclude Total score (latest year only for map)
+  // Get latest and previous year
   const latestYear = d3.max(data, (d) => d.year);
-  const filteredData = data.filter(
-    (d) =>
-      d.pillar_txt === selectedPillar &&
-      d.pillar_txt !== "Total score" &&
-      d.year === latestYear,
-  );
+  const previousYear = latestYear - 1;
 
-  // Merge world data with filtered data
-  const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
-  const worldWithData = world.map((feature) => {
-    const matchingData = dataMap.get(feature.properties.ISO3_CODE);
-    return matchingData
-      ? { ...feature, properties: { ...feature.properties, ...matchingData } }
-      : feature;
-  });
+  // Opacity scale for historical mode
+  const opacityScale = d3
+    .scaleLinear()
+    .domain([0, 20])
+    .range([0, 1])
+    .clamp(true);
+
+  // Change colors for historical mode
+  const pillarColor = fillScale.getColor(selectedPillar);
+  const changeColors = {
+    positive: pillarColor, // Pillar color for improvements
+    negative: "#FDE74C", // Yellow for declines
+    zero: "#afb6b5ff", // Gray for no change
+  };
+
+  let worldWithData, legendData;
+
+  if (mode === "historical") {
+    // Historical mode: show year-over-year change
+    const latestData = data.filter(
+      (d) => d.pillar_txt === selectedPillar && d.year === latestYear,
+    );
+    const previousData = data.filter(
+      (d) => d.pillar_txt === selectedPillar && d.year === previousYear,
+    );
+
+    const previousMap = new Map(
+      previousData.map((item) => [item.ISO3_CODE, item.value]),
+    );
+
+    // Calculate changes
+    const changesData = latestData.map((current) => {
+      const prevValue = previousMap.get(current.ISO3_CODE);
+      const change =
+        prevValue && current.value !== "NA" && prevValue !== "NA"
+          ? current.value - prevValue
+          : null;
+
+      return {
+        ...current,
+        change,
+        previousValue: prevValue,
+      };
+    });
+
+    const dataMap = new Map(changesData.map((item) => [item.ISO3_CODE, item]));
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+
+    legendData = [
+      { label: "Decrease", color: changeColors.negative },
+      { label: "No change", color: changeColors.zero },
+      { label: "Increase", color: changeColors.positive },
+    ];
+  } else {
+    // Latest mode: show current categories
+    const filteredData = data.filter(
+      (d) =>
+        d.pillar_txt === selectedPillar &&
+        d.pillar_txt !== "Total score" &&
+        d.year === latestYear,
+    );
+
+    const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+
+    legendData = [
+      {
+        label: "Off track",
+        color: fillScale.getOrdinalCategoryScale(selectedPillar)("Off track"),
+      },
+      {
+        label: "Catching up",
+        color: fillScale.getOrdinalCategoryScale(selectedPillar)("Catching up"),
+      },
+      {
+        label: "On track",
+        color: fillScale.getOrdinalCategoryScale(selectedPillar)("On track"),
+      },
+      {
+        label: "Leading",
+        color: fillScale.getOrdinalCategoryScale(selectedPillar)("Leading"),
+      },
+    ];
+  }
 
   // Create SVG
   const svg = d3
@@ -198,10 +279,29 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .append("path")
     .attr("d", path)
     .attr("fill", (d) => {
-      if (isNaN(d.properties.value)) return "#fff";
-      return fillScale.getOrdinalCategoryScale(d.properties.pillar_txt)(
-        d.properties.group_value,
-      );
+      if (mode === "historical") {
+        if (d.properties.change === null || d.properties.change === undefined)
+          return "#fff";
+        const change = d.properties.change;
+        if (change > 0) return changeColors.positive;
+        if (change < 0) return changeColors.negative;
+        return changeColors.zero;
+      } else {
+        if (isNaN(d.properties.value)) return "#fff";
+        return fillScale.getOrdinalCategoryScale(d.properties.pillar_txt)(
+          d.properties.group_value,
+        );
+      }
+    })
+    .attr("fill-opacity", (d) => {
+      if (
+        mode === "historical" &&
+        d.properties.change !== null &&
+        d.properties.change !== undefined
+      ) {
+        return opacityScale(Math.abs(d.properties.change));
+      }
+      return 1;
     })
     .attr("stroke", (d) => (isNaN(d.properties.value) ? "#aaa" : "#fff"))
     .attr("stroke-width", 0.5)
@@ -212,9 +312,16 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
       }
     });
 
+  console.log(
+    "Countries drawn with data:",
+    // worldWithData.filter((d) => d.properties.note === " (partial data)"),
+    worldWithData.filter((d) => d.properties.ned === "not enough data"),
+  );
+
   // Partial data overlay
   countries
-    .filter((d) => d.properties.note === " (partial data)")
+    // .filter((d) => d.properties.note === " (partial data)")
+    .filter((d) => d.properties.ned === "not enough data")
     .append("path")
     .attr("d", path)
     .attr("fill", "url(#white-diagonal-lines-map)")
@@ -251,34 +358,62 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
       ];
 
       // Check if data is available
-      const hasData = !isNaN(d.properties.value);
+      const hasData =
+        mode === "historical"
+          ? d.properties.change !== null && d.properties.change !== undefined
+          : !isNaN(d.properties.value);
+
       const partialNote =
-        d.properties.note === " (partial data)" ? " (partial data)" : "";
+        // d.properties.note === " (partial data)" ? " (partial data)" : "";
+        d.properties.ned === "not enough data" ? " (partial data)" : "";
 
-      // Get color for sparkline based on category
-      const categoryColor = hasData
-        ? fillScale.getOrdinalCategoryScale(selectedPillar)(
-            d.properties.group_value,
-          )
-        : "#ccc";
+      // Get color for sparkline based on mode
+      let categoryColor;
+      if (mode === "historical" && hasData) {
+        const change = d.properties.change;
+        if (change > 0) categoryColor = changeColors.positive;
+        else if (change < 0) categoryColor = changeColors.negative;
+        else categoryColor = changeColors.zero;
+      } else {
+        categoryColor = hasData
+          ? fillScale.getOrdinalCategoryScale(selectedPillar)(
+              d.properties.group_value,
+            )
+          : "#ccc";
+      }
 
-      // Generate sparkline
-      const sparklineHTML = hasData
-        ? createTooltipSparkline(
-            data,
-            d.properties.ISO3_CODE,
-            selectedPillar,
-            categoryColor,
-            globalYearDomain,
-          )
-        : "";
+      // Generate sparkline (only for latest mode)
+      const sparklineHTML =
+        mode === "latest" && hasData
+          ? createTooltipSparkline(
+              data,
+              d.properties.ISO3_CODE,
+              selectedPillar,
+              categoryColor,
+              globalYearDomain,
+            )
+          : "";
 
-      const tooltipContent = hasData
-        ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
-        Score: ${Math.round(d.properties.value)}${partialNote}
-        ${sparklineHTML}`
-        : `<strong>${d.properties.NAME_ENGL}</strong><br>
-           Not enough data`;
+      let tooltipContent;
+      if (mode === "historical") {
+        if (hasData) {
+          const change = d.properties.change;
+          const changeSign = change > 0 ? "+" : "";
+          tooltipContent = `<strong style="font-size: 20px; color: ${categoryColor};">
+            ${changeSign}${Math.round(change)}
+          </strong><br>
+          <strong>${d.properties.NAME_ENGL}</strong><br>
+          <span style="font-size: 11px; color: #666;">${previousYear} → ${latestYear}</span>`;
+        } else {
+          tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
+        }
+      } else {
+        tooltipContent = hasData
+          ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
+          Score: ${Math.round(d.properties.value)}${partialNote}
+          ${sparklineHTML}`
+          : `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
+      }
 
       tooltip.style("visibility", "visible").html(tooltipContent);
 
@@ -389,25 +524,6 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .text("⌂");
 
   // Legend
-  const legendData = [
-    {
-      label: "Off track",
-      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Off track"),
-    },
-    {
-      label: "Catching up",
-      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Catching up"),
-    },
-    {
-      label: "On track",
-      color: fillScale.getOrdinalCategoryScale(selectedPillar)("On track"),
-    },
-    {
-      label: "Leading",
-      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Leading"),
-    },
-  ];
-
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
@@ -419,18 +535,23 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .attr("class", "legend-background")
     .attr("x", -20)
     .attr("y", -20)
-    .attr("width", 300) // Adjust based on text width
-    .attr("height", legendData.length * 25 + 10 + 25 + 40) // Items + gap + partial + padding
+    .attr("width", 300)
+    .attr(
+      "height",
+      mode === "latest"
+        ? legendData.length * 25 + 10 + 25 + 40 // Items + gap + partial + padding
+        : legendData.length * 25 + 40,
+    ) // Items + padding (no partial)
     .attr("fill", "#ffffff80")
-    // .attr("stroke", "#ddd")
-    // .attr("stroke-width", 1)
-    .attr("rx", 4); // Rounded corners
+    .attr("rx", 4);
 
   const legendItems = legend
     .selectAll(".legend-item")
     .data(legendData)
     .join("g")
     .attr("class", "legend-item")
+    .style("pointer-events", "none") // Let clicks pass through
+    .style("user-select", "none") // Let clicks pass through
     .attr("transform", (d, i) => `translate(0, ${i * 25})`);
 
   legendItems
@@ -447,31 +568,33 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .attr("font-size", 12)
     .text((d) => d.label);
 
-  // Partial data legend item
-  const partialLegend = legend
-    .append("g")
-    .attr("class", "partial-legend")
-    .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
+  // Partial data legend item (only in latest mode)
+  if (mode === "latest") {
+    const partialLegend = legend
+      .append("g")
+      .attr("class", "partial-legend")
+      .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
 
-  partialLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "#aaa");
+    partialLegend
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "#aaa");
 
-  partialLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "url(#white-diagonal-lines-map)");
+    partialLegend
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "url(#white-diagonal-lines-map)");
 
-  partialLegend
-    .append("text")
-    .attr("x", 24)
-    .attr("y", 9)
-    .attr("dominant-baseline", "middle")
-    .attr("font-size", 12)
-    .text("Partial data (≥1 indicator missing)");
+    partialLegend
+      .append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dominant-baseline", "middle")
+      .attr("font-size", 12)
+      .text("Partial data (≥1 indicator missing)");
+  }
 
   // Scroll hint overlay - small box at bottom
   const overlayDiv = document.createElement("div");

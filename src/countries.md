@@ -8,6 +8,7 @@ title: "Coutry overview"
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> -->
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="./modeToggle.css">
 <!-- sidebar -->
 <link
   rel="stylesheet"
@@ -29,8 +30,9 @@ import { colorScales } from "./components/scales.js";
 import { polar } from "./components/polarD3.js";
 import { heatmap } from "./components/heatmapD3.js";
 import { sidebar } from "./components/sidebar.js";
-import { toggleSwitch } from "./components/toggleSwitch.js";
 import { sparklineTableD3 } from "./components/sparklineTableD3.js";
+// import { toggleSwitch } from "./components/toggleSwitch.js";
+import { modeToggle } from "./components/modeToggle.js";
 ```
 
 <!-- data -->
@@ -73,28 +75,26 @@ const sampleCommitments = dfiFull.filter((d) => d.NAME_ENGL === "Afghanistan");
 </ol>
 
 ```js
-// Create BOTH switches always
-const viewSwitch = toggleSwitch({
+// Create the toggle elements
+const viewModeToggle = modeToggle({
   label1: "Latest",
   label2: "Historical",
   value1: "latest",
   value2: "historical",
+  initial: "latest",
 });
 
-const chartSwitch = toggleSwitch({
+const chartTypeToggle = modeToggle({
   label1: "⎈ Compass",
   label2: "⊞ Heatmap",
   value1: "compass",
   value2: "heatmap",
+  initial: "compass",
 });
 
-// Wire up reactivity for BOTH
-const viewMode = view(viewSwitch);
-const chartType = view(chartSwitch);
-
-// Reset viewMode when chartType changes
-chartType;
-viewSwitch.reset();
+// Make them reactive
+const viewMode = view(viewModeToggle);
+const chartType = view(chartTypeToggle);
 ```
 
 </div>
@@ -134,9 +134,9 @@ Object.values(grouped).forEach((entries) => {
 ```
 
 <!-- Render both switches -->
-<div class="controls body-text">
-  ${viewSwitch}
-  ${viewMode === "latest" ? chartSwitch : ""}
+<div class="controls">
+  ${viewModeToggle}
+  ${viewMode === "latest" ? chartTypeToggle : ""}
 </div>
 
 ```js

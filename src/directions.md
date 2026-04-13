@@ -2,8 +2,9 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> -->
 <link rel="stylesheet" href="style.css">
+<!-- <link rel="stylesheet" href="./toggleSwitch.css"> -->
+<link rel="stylesheet" href="./modeToggle.css">
 <!-- sidebar -->
 <link
   rel="stylesheet"
@@ -22,21 +23,16 @@
 <!-- import components -->
 
 ```js
-import { colorScales } from "./components/scales.js";
+import colorScales from "./components/scales.js";
 import { onlyUnique } from "./components/onlyUnique.js";
-// import { polarPlotMultiple } from "./components/polarPlotMultiple.js";
-// import { mapPillar } from "./components/mapPillar.js";
-// import { mapTotal } from "./components/mapTotal.js";
-// import { mapTotalScorecard } from "./components/mapTotalScorecard.js";
-// import { mapTotalCatGIFIquant5 } from "./components/mapTotalCatGIFIquant5.js";
-// import { mapPillarCommitment } from "./components/mapPillarCommitment.js";
 import { customLegend, viewofCustomLegend } from "./components/customLegend.js";
-// import { renderMapWithLegend } from "./components/renderMapWithLegend.js";
 import { sidebar } from "./components/sidebar.js";
 import { renderPillarContent } from "./components/pillarRenderer.js";
 import { sources } from "./components/sources.js";
 import { mapPillarD3 } from "./components/mapPillarD3.js";
 import { mapCommitmentD3 } from "./components/mapCommitmentD3.js";
+// import { toggleSwitch } from "./components/toggleSwitch.js";
+import { modeToggle } from "./components/modeToggle.js";
 ```
 
 <!-- hero -->
@@ -135,6 +131,20 @@ const filterLegend = (domain, range) => {
 };
 ```
 
+<!-- Map toggle -->
+
+```js
+const mapMode = view(
+  modeToggle({
+    label1: "Latest",
+    label2: "Historical",
+    value1: "latest",
+    value2: "historical",
+    initial: "latest",
+  }),
+);
+```
+
 ```js
 // console.log("uniquePillars", uniquePillars);
 const selectedPillar = view(
@@ -144,6 +154,82 @@ const selectedPillar = view(
     "pillar",
   ),
 );
+```
+
+<!-- key stats -->
+
+```js
+const latestYear = d3.max(dfiCardinalParse, (d) => d.year);
+const previousYear = latestYear - 1;
+
+// Create fillScale instance for color calculations
+const fillScale = colorScales();
+
+// Filter for current pillar and latest year
+const currentData = dfiCardinalParse.filter(
+  (d) => d.pillar_txt === selectedPillar && d.year === latestYear,
+);
+
+// Calculate stats based on mode
+let statsData;
+if (mapMode === "latest") {
+  // Count by category
+  const counts = d3.rollup(
+    currentData,
+    (v) => v.length,
+    (d) => d.group_value,
+  );
+
+  statsData = [
+    {
+      label: "Off track",
+      count: counts.get("Off track") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Off track"),
+    },
+    {
+      label: "Catching up",
+      count: counts.get("Catching up") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Catching up"),
+    },
+    {
+      label: "On track",
+      count: counts.get("On track") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("On track"),
+    },
+    {
+      label: "Leading",
+      count: counts.get("Leading") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Leading"),
+    },
+  ];
+} else {
+  // Historical mode - calculate changes
+  const prevData = dfiCardinalParse.filter(
+    (d) => d.pillar_txt === selectedPillar && d.year === previousYear,
+  );
+
+  let increases = 0,
+    decreases = 0,
+    noChange = 0;
+
+  currentData.forEach((curr) => {
+    const prev = prevData.find((p) => p.ISO3_CODE === curr.ISO3_CODE);
+    if (prev) {
+      const change = curr.value - prev.value;
+      if (change > 0) increases++;
+      else if (change < 0) decreases++;
+      else noChange++;
+    }
+  });
+
+  const pillarColor = fillScale.getColor(selectedPillar, 100);
+
+  statsData = [
+    { label: "Increase", count: increases, color: pillarColor },
+    { label: "No change", count: noChange, color: "#afb6b5" },
+    { label: "Decrease", count: decreases, color: "#FDE74C" },
+  ];
+}
 ```
 
 ```js
@@ -158,7 +244,19 @@ const commitments = [
 ];
 ```
 
-<!-- partial data legend -->
+<!-- key stats -->
+
+```html
+<div class="grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+  ${statsData.map((stat) => html`
+  <div class="card key">
+    <span class="very-big" style="color: ${stat.color};">${stat.count}</span
+    ><span style="color: ${stat.color};">countries</span>
+    <h2>${stat.label}</h2>
+  </div>
+  `)}
+</div>
+```
 
 <!-- Pillar map (replace existing mapPillar) -->
 <div class="figure-w-full">
@@ -167,7 +265,7 @@ const commitments = [
       world,
       dfiCardinalParse,
       selectedPillar,
-      { width, enableScrollZoom: true }
+      { width, enableScrollZoom: true, mode: mapMode }
     )
   )}
 </div>
@@ -198,7 +296,7 @@ const commitmentLegend = view(
       dfiFullParse.filter(d => d.pillar_txt === selectedPillar),
       selectedPillar,
       commitmentLegend,
-      { width, enableScrollZoom: true }
+      { width, enableScrollZoom: true, mode: mapMode }
     )
   )}
 </div>

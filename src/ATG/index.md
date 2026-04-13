@@ -8,13 +8,14 @@ theme: air
 
 <head>
 <link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../toggleSwitch.css">
+<link rel="stylesheet" href="../modeToggle.css">
+<!-- <link rel="stylesheet" href="../toggleSwitch.css"> -->
 <!-- sidebar -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../sidebar.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+<link rel="stylesheet" href="../sidebar.css" />
 </head>
 
 <!-- import components -->
@@ -29,13 +30,15 @@ import { pillarTextShort } from "../components/pillarTextShort.js";
 import { sourcesLegend } from "../components/sourcesLegend.js";
 import { pillarSparklineD3 } from "../components/pillarSparklineD3.js";
 import { indicatorHistorical } from "../components/indicatorHistorical.js";
-import { toggleSwitch } from "../components/toggleSwitch.js";
+import { modeToggle } from "../components/modeToggle.js";
 ```
 
 <!-- Get country from ISO3 code -->
 
 ```js
 const countryISO = "ATG";
+// check if viewed on mobile
+const isMobile = window.innerWidth <= 768;
 ```
 
 <!-- load data -->
@@ -123,25 +126,25 @@ var commitmentUnique = commitments.filter(onlyUnique);
     ${dfiCardinalCountry[0].value === "NA" ? dfiCardinalCountry[0].ned : `${Math.round(dfiCardinalCountry[0].value)} (${dfiCardinalCountry[0].group_value})`} in <span class="pillar-connectivity" style="font-weight: 700;">${dfiCardinalCountry[0].pillar_txt}</span>
   </li>
   <li>
-    ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[0].pillar_txt)}
+    <!-- ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[0].pillar_txt)} -->
   </li>
   <li style="margin-bottom: 10px;">
     ${dfiCardinalCountry[1].value === "NA" ? dfiCardinalCountry[1].ned : `${Math.round(dfiCardinalCountry[1].value)} (${dfiCardinalCountry[1].group_value})`} in <span class="pillar-rights" style="font-weight: 700;">${dfiCardinalCountry[1].pillar_txt}</span>
   </li>
   <li>
-    ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[1].pillar_txt)}
+    <!-- ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[1].pillar_txt)} -->
   </li>
   <li style="margin-bottom: 10px;">
     ${dfiCardinalCountry[2].value === "NA" ? dfiCardinalCountry[2].ned : `${Math.round(dfiCardinalCountry[2].value)} (${dfiCardinalCountry[2].group_value})`} in <span class="pillar-responsibility" style="font-weight: 700;">${dfiCardinalCountry[2].pillar_txt}</span>
   </li>
   <li>
-    ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[2].pillar_txt)}
+    <!-- ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[2].pillar_txt)} -->
   </li>
   <li style="margin-bottom: 10px;">
     ${dfiCardinalCountry[3].value === "NA" ? dfiCardinalCountry[3].ned : `${Math.round(dfiCardinalCountry[3].value)} (${dfiCardinalCountry[3].group_value})`} in <span class="pillar-trust" style="font-weight: 700;">${dfiCardinalCountry[3].pillar_txt}</span>
   </li>
   <li>
-    ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[3].pillar_txt)}
+    <!-- ${pillarSparklineD3(dfiCardinal.filter(d => d.NAME_ENGL === country), dfiCardinalCountry[3].pillar_txt)} -->
   </li>
 </ul>
     </div>
@@ -157,7 +160,7 @@ var commitmentUnique = commitments.filter(onlyUnique);
 
 ```js
 const viewMode = view(
-  toggleSwitch({
+  modeToggle({
     label1: "Latest",
     label2: "Historical",
     value1: "latest",
@@ -167,8 +170,34 @@ const viewMode = view(
 );
 ```
 
-<p><span class="pillar-connectivity" style="font-weight: 700;">${dfiCardinalCountry[0].pillar_txt}</span></p>
-<p>${pillarTextShort.filter(d => d.title == dfiCardinalCountry[0].pillar_txt)[0].paragraphs}</p>
+```js
+const pillar0Header = html`<div
+  style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
+>
+  <div style="flex: 2;">
+    <p>
+      <span class="pillar-connectivity" style="font-weight: 700;"
+        >${dfiCardinalCountry[0].pillar_txt}</span
+      >
+    </p>
+    <p>
+      ${pillarTextShort.filter(
+        (d) => d.title == dfiCardinalCountry[0].pillar_txt,
+      )[0].paragraphs}
+    </p>
+  </div>
+  ${viewMode === "historical"
+    ? html`<div class="card" style="flex: 1;">
+        ${pillarSparklineD3(
+          dfiCardinal.filter((d) => d.NAME_ENGL === country),
+          dfiCardinalCountry[0].pillar_txt,
+        )}
+      </div>`
+    : html`<div style="flex: 1;"></div>`}
+</div>`;
+```
+
+<div>${pillar0Header}</div>
 
 ```js
 const pillar0Indicators = dfiFull
@@ -209,8 +238,34 @@ if (viewMode === "latest") {
 
 <div>${pillar0Content}</div>
 
-<p><span class="pillar-rights" style="font-weight: 700;">${dfiCardinalCountry[1].pillar_txt}</span></p>
-<p>${pillarTextShort.filter(d => d.title == dfiCardinalCountry[1].pillar_txt)[0].paragraphs}</p>
+```js
+const pillar1Header = html`<div
+  style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
+>
+  <div style="flex: 2;">
+    <p>
+      <span class="pillar-rights" style="font-weight: 700;"
+        >${dfiCardinalCountry[1].pillar_txt}</span
+      >
+    </p>
+    <p>
+      ${pillarTextShort.filter(
+        (d) => d.title == dfiCardinalCountry[1].pillar_txt,
+      )[0].paragraphs}
+    </p>
+  </div>
+  ${viewMode === "historical"
+    ? html`<div class="card" style="flex: 1;">
+        ${pillarSparklineD3(
+          dfiCardinal.filter((d) => d.NAME_ENGL === country),
+          dfiCardinalCountry[1].pillar_txt,
+        )}
+      </div>`
+    : html`<div style="flex: 1;"></div>`}
+</div>`;
+```
+
+<div>${pillar1Header}</div>
 
 ```js
 const pillar1Indicators = dfiFull
@@ -251,8 +306,34 @@ if (viewMode === "latest") {
 
 <div>${pillar1Content}</div>
 
-<p><span class="pillar-responsibility" style="font-weight: 700;">${dfiCardinalCountry[2].pillar_txt}</span></p>
-<p>${pillarTextShort.filter(d => d.title == dfiCardinalCountry[2].pillar_txt)[0].paragraphs}</p>
+```js
+const pillar2Header = html`<div
+  style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
+>
+  <div style="flex: 2;">
+    <p>
+      <span class="pillar-responsibility" style="font-weight: 700;"
+        >${dfiCardinalCountry[2].pillar_txt}</span
+      >
+    </p>
+    <p>
+      ${pillarTextShort.filter(
+        (d) => d.title == dfiCardinalCountry[2].pillar_txt,
+      )[0].paragraphs}
+    </p>
+  </div>
+  ${viewMode === "historical"
+    ? html`<div class="card" style="flex: 1;">
+        ${pillarSparklineD3(
+          dfiCardinal.filter((d) => d.NAME_ENGL === country),
+          dfiCardinalCountry[2].pillar_txt,
+        )}
+      </div>`
+    : html`<div style="flex: 1;"></div>`}
+</div>`;
+```
+
+<div>${pillar2Header}</div>
 
 ```js
 const pillar2Indicators = dfiFull
@@ -293,8 +374,34 @@ if (viewMode === "latest") {
 
 <div>${pillar2Content}</div>
 
-<p><span class="pillar-trust" style="font-weight: 700;">${dfiCardinalCountry[3].pillar_txt}</span></p>
-<p>${pillarTextShort.filter(d => d.title == dfiCardinalCountry[3].pillar_txt)[0].paragraphs}</p>
+```js
+const pillar3Header = html`<div
+  style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
+>
+  <div style="flex: 2;">
+    <p>
+      <span class="pillar-trust" style="font-weight: 700;"
+        >${dfiCardinalCountry[3].pillar_txt}</span
+      >
+    </p>
+    <p>
+      ${pillarTextShort.filter(
+        (d) => d.title == dfiCardinalCountry[3].pillar_txt,
+      )[0].paragraphs}
+    </p>
+  </div>
+  ${viewMode === "historical"
+    ? html`<div class="card" style="flex: 1;">
+        ${pillarSparklineD3(
+          dfiCardinal.filter((d) => d.NAME_ENGL === country),
+          dfiCardinalCountry[3].pillar_txt,
+        )}
+      </div>`
+    : html`<div style="flex: 1;"></div>`}
+</div>`;
+```
+
+<div>${pillar3Header}</div>
 
 ```js
 const pillar3Indicators = dfiFull

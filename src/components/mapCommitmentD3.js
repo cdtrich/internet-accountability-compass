@@ -4,13 +4,13 @@ import { basePath } from "./basePath.js";
 
 /**
  * D3 Map for Commitment-level data
- * Shows score gradient (0-100) for selected commitment
+ * Shows score gradient (0-100) for selected commitment or year-over-year change
  *
  * @param {Array} world - GeoJSON features
  * @param {Array} data - Data filtered to one pillar with commitment_txt_cardinal, value (ALL YEARS)
  * @param {string} selectedPillar - Selected pillar (for coloring)
  * @param {string} selectedCommitment - Selected commitment to display
- * @param {Object} options - width, height
+ * @param {Object} options - width, height, mode ("latest" or "historical")
  */
 export function mapCommitmentD3(
   world,
@@ -19,7 +19,7 @@ export function mapCommitmentD3(
   selectedCommitment,
   options = {},
 ) {
-  const { width = 975, height = 610 } = options;
+  const { width = 975, height = 610, mode = "latest" } = options;
 
   const fillScale = colorScales();
   const pillarColor = fillScale.getColor(selectedPillar);
@@ -127,23 +127,82 @@ export function mapCommitmentD3(
   const allYears = data.map((d) => d.year).filter((y) => y != null);
   const globalYearDomain = d3.extent(allYears);
 
-  // Filter data by selected commitment AND exclude Total score (latest year only for map)
+  // Get latest and previous year
   const latestYear = d3.max(data, (d) => d.year);
-  const filteredData = data.filter(
-    (d) =>
-      d.commitment_txt_cardinal === selectedCommitment &&
-      d.pillar_txt !== "Total score" &&
-      d.year === latestYear,
-  );
+  const previousYear = latestYear - 1;
 
-  // Merge world data with filtered data
-  const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
-  const worldWithData = world.map((feature) => {
-    const matchingData = dataMap.get(feature.properties.ISO3_CODE);
-    return matchingData
-      ? { ...feature, properties: { ...feature.properties, ...matchingData } }
-      : feature;
-  });
+  // Opacity scale for historical mode
+  const opacityScale = d3
+    .scaleLinear()
+    .domain([0, 20])
+    .range([0, 1])
+    .clamp(true);
+
+  // Change colors for historical mode
+  const changeColors = {
+    positive: pillarColor, // Pillar color for improvements
+    negative: "#FDE74C", // Yellow for declines
+    zero: "#afb6b5ff", // Gray for no change
+  };
+
+  let worldWithData;
+
+  if (mode === "historical") {
+    // Historical mode: show year-over-year change
+    const latestData = data.filter(
+      (d) =>
+        d.commitment_txt_cardinal === selectedCommitment &&
+        d.year === latestYear,
+    );
+    const previousData = data.filter(
+      (d) =>
+        d.commitment_txt_cardinal === selectedCommitment &&
+        d.year === previousYear,
+    );
+
+    const previousMap = new Map(
+      previousData.map((item) => [item.ISO3_CODE, item.value]),
+    );
+
+    // Calculate changes
+    const changesData = latestData.map((current) => {
+      const prevValue = previousMap.get(current.ISO3_CODE);
+      const change =
+        prevValue && current.value !== "NA" && prevValue !== "NA"
+          ? current.value - prevValue
+          : null;
+
+      return {
+        ...current,
+        change,
+        previousValue: prevValue,
+      };
+    });
+
+    const dataMap = new Map(changesData.map((item) => [item.ISO3_CODE, item]));
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+  } else {
+    // Latest mode: show current scores
+    const filteredData = data.filter(
+      (d) =>
+        d.commitment_txt_cardinal === selectedCommitment &&
+        d.pillar_txt !== "Total score" &&
+        d.year === latestYear,
+    );
+
+    const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
+    worldWithData = world.map((feature) => {
+      const matchingData = dataMap.get(feature.properties.ISO3_CODE);
+      return matchingData
+        ? { ...feature, properties: { ...feature.properties, ...matchingData } }
+        : feature;
+    });
+  }
 
   // Create SVG
   const svg = d3
@@ -193,8 +252,27 @@ export function mapCommitmentD3(
     .join("path")
     .attr("d", path)
     .attr("fill", (d) => {
-      if (isNaN(d.properties.value)) return "#fff";
-      return colorScale(d.properties.value);
+      if (mode === "historical") {
+        if (d.properties.change === null || d.properties.change === undefined)
+          return "#fff";
+        const change = d.properties.change;
+        if (change > 0) return changeColors.positive;
+        if (change < 0) return changeColors.negative;
+        return changeColors.zero;
+      } else {
+        if (isNaN(d.properties.value)) return "#fff";
+        return colorScale(d.properties.value);
+      }
+    })
+    .attr("fill-opacity", (d) => {
+      if (
+        mode === "historical" &&
+        d.properties.change !== null &&
+        d.properties.change !== undefined
+      ) {
+        return opacityScale(Math.abs(d.properties.change));
+      }
+      return 1;
     })
     .attr("stroke", (d) => (isNaN(d.properties.value) ? "#aaa" : "#fff"))
     .attr("stroke-width", 0.5)
@@ -235,27 +313,57 @@ export function mapCommitmentD3(
       ];
 
       // Check if data is available
-      const hasData = !isNaN(d.properties.value);
+      const hasData =
+        mode === "historical"
+          ? d.properties.change !== null && d.properties.change !== undefined
+          : !isNaN(d.properties.value);
+
       const partialNote =
         d.properties.note === " (partial data)" ? " (partial data)" : "";
 
-      // Generate sparkline using pillar color
-      const sparklineHTML = hasData
-        ? createTooltipSparkline(
-            data,
-            d.properties.ISO3_CODE,
-            selectedCommitment,
-            pillarColor,
-            globalYearDomain,
-          )
-        : "";
+      // Get color for sparkline based on mode
+      let sparklineColor;
+      if (mode === "historical" && hasData) {
+        const change = d.properties.change;
+        if (change > 0) sparklineColor = changeColors.positive;
+        else if (change < 0) sparklineColor = changeColors.negative;
+        else sparklineColor = changeColors.zero;
+      } else {
+        sparklineColor = pillarColor;
+      }
 
-      const tooltipContent = hasData
-        ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
-        Score: ${Math.round(d.properties.value)}${partialNote}
-        ${sparklineHTML}`
-        : `<strong>${d.properties.NAME_ENGL}</strong><br>
-           Not enough data`;
+      // Generate sparkline (only for latest mode)
+      const sparklineHTML =
+        mode === "latest" && hasData
+          ? createTooltipSparkline(
+              data,
+              d.properties.ISO3_CODE,
+              selectedCommitment,
+              sparklineColor,
+              globalYearDomain,
+            )
+          : "";
+
+      let tooltipContent;
+      if (mode === "historical") {
+        if (hasData) {
+          const change = d.properties.change;
+          const changeSign = change > 0 ? "+" : "";
+          tooltipContent = `<strong style="font-size: 20px; color: ${sparklineColor};">
+            ${changeSign}${Math.round(change)}
+          </strong><br>
+          <strong>${d.properties.NAME_ENGL}</strong><br>
+          <span style="font-size: 11px; color: #666;">${previousYear} → ${latestYear}</span>`;
+        } else {
+          tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
+        }
+      } else {
+        tooltipContent = hasData
+          ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
+          Score: ${Math.round(d.properties.value)}${partialNote}
+          ${sparklineHTML}`
+          : `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
+      }
 
       tooltip.style("visibility", "visible").html(tooltipContent);
 
@@ -364,7 +472,7 @@ export function mapCommitmentD3(
     .attr("fill", pillarColor)
     .text("⌂");
 
-  // Gradient legend (matching mapPillar position)
+  // Legend
   const legendWidth = 200;
   const legendHeight = 15;
 
@@ -373,68 +481,107 @@ export function mapCommitmentD3(
     .attr("class", "map-legend")
     .attr("transform", `translate(100, ${height / 2})`);
 
-  // Add white background box
-  const legendBg = legend
-    .append("rect")
-    .attr("class", "legend-background")
-    .attr("x", -20)
-    .attr("y", -25)
-    .attr("width", legendWidth + 40) // 200 + 40 = 240
-    .attr("height", 75) // Gradient + labels + title + padding
-    .attr("fill", "#ffffff80")
-    // .attr("stroke", "#ddd")
-    // .attr("stroke-width", 1)
-    .attr("rx", 4); // Rounded corners
+  if (mode === "historical") {
+    // Historical mode: 3-category legend
+    const legendData = [
+      { label: "Decrease", color: changeColors.negative },
+      { label: "No change", color: changeColors.zero },
+      { label: "Increase", color: changeColors.positive },
+    ];
 
-  // Create gradient
-  const gradientId = `gradient-${selectedPillar.replace(/\s+/g, "-")}`;
-  const gradient = svg
-    .append("defs")
-    .append("linearGradient")
-    .attr("id", gradientId)
-    .attr("x1", "0%")
-    .attr("x2", "100%");
+    const legendBg = legend
+      .append("rect")
+      .attr("class", "legend-background")
+      .attr("x", -20)
+      .attr("y", -20)
+      .attr("width", 240)
+      .attr("height", legendData.length * 25 + 40)
+      .attr("fill", "#ffffff80")
+      .attr("rx", 4);
 
-  gradient.append("stop").attr("offset", "0%").attr("stop-color", "#f0f0f0");
+    const legendItems = legend
+      .selectAll(".legend-item")
+      .data(legendData)
+      .join("g")
+      .attr("class", "legend-item")
+      .style("pointer-events", "none") // Let clicks pass through
+      .style("user-select", "none") // Let clicks pass through
+      .attr("transform", (d, i) => `translate(0, ${i * 25})`);
 
-  gradient
-    .append("stop")
-    .attr("offset", "100%")
-    .attr("stop-color", pillarColor);
+    legendItems
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", (d) => d.color);
 
-  // Gradient rect
-  legend
-    .append("rect")
-    .attr("width", legendWidth)
-    .attr("height", legendHeight)
-    .attr("fill", `url(#${gradientId})`)
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1);
+    legendItems
+      .append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dominant-baseline", "middle")
+      .attr("font-size", 12)
+      .text((d) => d.label);
+  } else {
+    // Latest mode: gradient legend
+    const legendBg = legend
+      .append("rect")
+      .attr("class", "legend-background")
+      .attr("x", -20)
+      .attr("y", -25)
+      .attr("width", legendWidth + 40)
+      .attr("height", 75)
+      .attr("fill", "#ffffff80")
+      .attr("rx", 4);
 
-  // Legend labels
-  legend
-    .append("text")
-    .attr("x", 0)
-    .attr("y", legendHeight + 15)
-    .attr("font-size", 12)
-    .text("0");
+    // Create gradient
+    const gradientId = `gradient-${selectedPillar.replace(/\s+/g, "-")}`;
+    const gradient = svg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", gradientId)
+      .attr("x1", "0%")
+      .attr("x2", "100%");
 
-  legend
-    .append("text")
-    .attr("x", legendWidth)
-    .attr("y", legendHeight + 15)
-    .attr("text-anchor", "end")
-    .attr("font-size", 12)
-    .text("100");
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#f0f0f0");
+    gradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", pillarColor);
 
-  legend
-    .append("text")
-    .attr("x", legendWidth / 2)
-    .attr("y", -5)
-    .attr("text-anchor", "middle")
-    .attr("font-size", 12)
-    .attr("font-weight", "bold")
-    .text("Score");
+    // Gradient rect
+    legend
+      .append("rect")
+      .attr("width", legendWidth)
+      .attr("height", legendHeight)
+      .attr("fill", `url(#${gradientId})`)
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 1);
+
+    // Legend labels
+    legend
+      .append("text")
+      .attr("x", 0)
+      .attr("y", legendHeight + 15)
+      .attr("font-size", 12)
+      .text("0");
+
+    legend
+      .append("text")
+      .attr("x", legendWidth)
+      .attr("y", legendHeight + 15)
+      .attr("text-anchor", "end")
+      .attr("font-size", 12)
+      .text("100");
+
+    legend
+      .append("text")
+      .attr("x", legendWidth / 2)
+      .attr("y", -5)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 12)
+      .attr("font-weight", "bold")
+      .text("Score");
+  }
 
   // Scroll hint overlay - small box at bottom
   const overlayDiv = document.createElement("div");

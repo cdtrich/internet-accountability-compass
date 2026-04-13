@@ -16,6 +16,7 @@
 
 .toggle-label-active {
   color: #000;
+  font-weight: 700;
 }
 
 .toggle-disabled .toggle-label {
@@ -62,6 +63,7 @@
 
 input:checked + .slider {
   background-color: #333;
+  font-weight: 700;
 }
 
 input:focus + .slider {

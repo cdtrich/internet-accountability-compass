@@ -9,7 +9,7 @@ import colorScales from "./scales.js";
  * @param {string} country - Country to display
  * @param {Object} options - width, height
  */
-export function polarCountryD3(data, country, options = {}) {
+export function polarCountryD3(data, country, isMobile, options = {}) {
   const { width = 400 } = options;
   const height = width;
 
@@ -157,7 +157,7 @@ export function polarCountryD3(data, country, options = {}) {
       .attr("class", `commitment-dot commitment-${d.commitment_num_cardinal}`)
       .attr("cx", 0)
       .attr("cy", 0)
-      .attr("r", isMobile ? 8 : 6)
+      .attr("r", isMobile ? 6 : 8)
       .attr("fill", fillScale.getColor(d.pillar_txt))
       .attr("stroke", "#fff")
       .attr("stroke-width", 2)
@@ -177,14 +177,20 @@ export function polarCountryD3(data, country, options = {}) {
     // Hover
     dot
       .on("mouseenter", function (event, d) {
-        d3.select(this).transition().duration(150).attr("r", 8);
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .attr("r", isMobile ? 8 : 10);
+
+        let scoreColor = fillScale.getColor(d.pillar_txt);
 
         tooltip.style("visibility", "visible").html(
           `
-            <strong>${d.NAME_ENGL}</strong><br>
+            <strong style="font-size: 28px; font-weight: bold; color: ${scoreColor}; margin-bottom: 8px;">
+            ${Math.floor(d.value)}
+          </strong><strong>${d.NAME_ENGL}</strong><br>
             ${d.commitment_txt_cardinal}<br>
-            ${d.pillar_txt}<br>
-            <strong>Score: ${Math.floor(d.value)}</strong>
+            ${d.pillar_txt}
           `,
         );
 
@@ -198,7 +204,10 @@ export function polarCountryD3(data, country, options = {}) {
           .style("left", event.pageX + 10 + "px");
       })
       .on("mouseleave", function () {
-        d3.select(this).transition().duration(150).attr("r", 6);
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .attr("r", isMobile ? 6 : 8);
         tooltip.style("visibility", "hidden");
       });
   });

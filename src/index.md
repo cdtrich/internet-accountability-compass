@@ -2,8 +2,9 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> -->
 <link rel="stylesheet" href="style.css">
+<!-- <link rel="stylesheet" href="./toggleSwitch.css"> -->
+<link rel="stylesheet" href="./modeToggle.css">
 <!-- sidebar -->
     <link
       rel="stylesheet"
@@ -15,9 +16,11 @@
 <!-- import components -->
 
 ```js
-import { colorScales } from "./components/scales.js";
+import colorScales from "./components/scales.js";
 import { mapTotalD3 } from "./components/mapTotalD3.js";
 import { sidebar } from "./components/sidebar.js";
+// import { toggleSwitch } from "./components/toggleSwitch.js";
+import { modeToggle } from "./components/modeToggle.js";
 ```
 
 <!-- hero -->
@@ -25,7 +28,6 @@ import { sidebar } from "./components/sidebar.js";
 <div class="hero">
   <h1>Internet <br>Accountability <br>Compass</h1>
   <h2 class="subheader">Monitoring progress.<br>Guiding policy.<br>Strengthening accountability.</h2>
-  <!-- <div id="hero-image"></div> -->
 </div>
 
 <div class="body-text">
@@ -35,19 +37,19 @@ The Internet Accountability Compass is an <b>interactive tool</b> to promote gre
 </p>
 
 <p style="font-size: 1.1em !important">
-The Compass is not a definitive answer to the challenge of accountability. Rather, it is one of many possible constellations of indicators and data points. Its purpose is to spark dialogueâ€”about what matters, how progress should be measured, and how countries can hold themselves and each other accountable across <a href="./directions">four core dimensions</a>: connectivity and infrastructure, rights and freedoms,responsibility and sustainability, and trust and resilience.
+The Compass is not a definitive answer to the challenge of accountability. Rather, it is one of many possible constellations of indicators and data points. Its purpose is to spark dialogue—about what matters, how progress should be measured, and how countries can hold themselves and each other accountable across <a href="./directions">four core dimensions</a>: connectivity and infrastructure, rights and freedoms,responsibility and sustainability, and trust and resilience.
 </p>
 
 <div class="desktop-notice" id="notice">
   Desktop recommended for full interactivity
-  <button onclick="document.getElementById('notice').style.display='none'" style="margin-left: 10px; cursor: pointer;">Ã—</button>
+  <button onclick="document.getElementById('notice').style.display='none'" style="margin-left: 10px; cursor: pointer;">×</button>
 </div>
 </div>
 
 <!-- key stats -->
 
+<!--
 <div class="body-text">
-
 <div class="grid grid-cols-3">
   <div class="card key keystats">
     <h2>Datapoints</h2>
@@ -62,32 +64,139 @@ The Compass is not a definitive answer to the challenge of accountability. Rathe
     <span class="big">12</span>
   </div>
 </div>
-<p style="font-weight: 700;"><a href="./countries.html">Go to country overview â†’</a></p>
+<p style="font-weight: 700;"><a href="./countries.html">Go to country overview →</a></p>
 </div>
+ -->
+<!-- Map toggle -->
 
-<!-- # Total score -->
+```js
+const mapMode = view(
+  modeToggle({
+    label1: "Latest",
+    label2: "Historical",
+    value1: "latest",
+    value2: "historical",
+    initial: "latest",
+  }),
+);
+```
+
+<!-- key stats -->
+
+```js
+// console.log("dfiCardinal", dfiCardinal);
+// Key stats for Total Score
+const latestYear = d3.max(dfiCardinal, (d) => d.year);
+const previousYear = latestYear - 1;
+// console.log("latestYear", latestYear);
+
+// Create fillScale instance for color calculations
+const fillScale = colorScales();
+
+// Filter for Total score and latest year
+const currentData = dfiCardinal.filter(
+  (d) => d.year === latestYear && d.pillar_txt === "Total score",
+);
+// console.log("currentData", currentData);
+
+// Calculate stats based on mode
+let statsData;
+if (mapMode === "latest") {
+  // Count by category for Total score
+  const counts = d3.rollup(
+    currentData,
+    (v) => v.length,
+    (d) => d.group_value,
+  );
+
+  statsData = [
+    {
+      label: "Off track",
+      count: counts.get("Off track") || 0,
+      color: fillScale.getOrdinalCategoryScale("Total score")("Off track"),
+    },
+    {
+      label: "Catching up",
+      count: counts.get("Catching up") || 0,
+      color: fillScale.getOrdinalCategoryScale("Total score")("Catching up"),
+    },
+    {
+      label: "On track",
+      count: counts.get("On track") || 0,
+      color: fillScale.getOrdinalCategoryScale("Total score")("On track"),
+    },
+    {
+      label: "Leading",
+      count: counts.get("Leading") || 0,
+      color: fillScale.getOrdinalCategoryScale("Total score")("Leading"),
+    },
+  ];
+} else {
+  // Historical mode - calculate changes for total score
+  const prevData = dfiCardinal.filter(
+    (d) => d.year === previousYear && d.pillar_txt === "Total score",
+  );
+
+  console.log("prevData", prevData);
+
+  let increases = 0,
+    decreases = 0,
+    noChange = 0;
+
+  currentData.forEach((curr) => {
+    const prev = prevData.find((p) => p.ISO3_CODE === curr.ISO3_CODE);
+    if (prev && curr.value !== null && prev.value !== null) {
+      const change = curr.value - prev.value;
+      if (change > 0) increases++;
+      else if (change < 0) decreases++;
+      else noChange++;
+    }
+  });
+
+  const totalColor = fillScale.getColor("Total score", 100);
+
+  statsData = [
+    { label: "Decrease", count: decreases, color: "#FDE74C" },
+    { label: "No change", count: noChange, color: "#afb6b5" },
+    { label: "Increase", count: increases, color: "#007162ff" },
+  ];
+}
+```
+
+<!-- key stats -->
+
+```html
+<div class="body-text">
+  <div class="grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+    ${statsData.map((stat) => html`
+    <div class="card key">
+      <span class="very-big" style="color: ${stat.color};">${stat.count}</span
+      ><span style="color: ${stat.color};">countries</span>
+      <h2>${stat.label}</h2>
+    </div>
+    `)}
+  </div>
+</div>
+```
+
+<!-- Total score map -->
 <div class="figure-w-full">
   ${resize((width) =>
     mapTotalD3(
       world,
-      null, // coast (not used)
+      null,
       dfiCardinal,
-      { width }
+      { width, mode: mapMode }
     )
   )}
 </div>
-
-<!-- scroll down arrow -->
-
-<!-- Scroll down for further information -->
-<!-- <div class="down-arrow"></div> -->
 
 <!-- body text -->
 <div class="body-text">
 
 <h2>Why the Compass?</h2>
 <p>
-The Internet is a cornerstone of modern lifeâ€”shaping how states govern, businesses operate, organisations function, and individuals connect. Recognising its transformative power, the international community has rallied around shared principles to foster a global, open, free, secure, and trustworthy Internet. These principles are enshrined in key political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
+The Internet is a cornerstone of modern life—shaping how states govern, businesses operate, organisations function, and individuals connect. Recognising its transformative power, the international community has rallied around shared principles to foster a global, open, free, secure, and trustworthy Internet. These principles are enshrined in key political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
 Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.eu/en/library/declaration-future-internet" target="_blank">Declaration on the Future of the Internet</a>.
 </p>
 
@@ -96,7 +205,7 @@ Yet, despite widespread consensus on these goals, progress toward their realisat
 </p>
 
 <p>
-The <b>Internet Accountability Compass</b> is designed to fill this gap. It serves as a reference point to assess how countries are advancing from high-level commitments to tangible implementation. By charting national performance across four cardinal dimensionsâ€”connectivity and infrastructure, rights and freedoms, responsibility and sustainability, and trust and resilienceâ€”the Compass contributed to bringing clarity to the state of Internet governance worldwide.
+The <b>Internet Accountability Compass</b> is designed to fill this gap. It serves as a reference point to assess how countries are advancing from high-level commitments to tangible implementation. By charting national performance across four cardinal dimensions—connectivity and infrastructure, rights and freedoms, responsibility and sustainability, and trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
 </p>
 
 <p>
@@ -108,11 +217,11 @@ Through rigorous, country-specific data and comparative indicators, the Internet
 <p>The Compass translates broad commitments into <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/dfi/b76f824bb5009098599dd71e1cd206d73f9d61fa/src/data/sources/Methodological%20Note%201.pdf" target="_blank"> measurable national and regional performance</a>, showing not only where practices align with promises, but also how the commitments themselves give shape to the digital landscape.</p>
 
 <p>
-The Internet Accountability Compass is not an audit mechanism or compliance checklist. It serves as a reference tool for governments, researchers, and civil society to assess national progress, identify trends, and learn from comparative practice. It is intended to bridge the gap between high-level digital commitments and their implementationâ€”contributing to a more inclusive, rights-based, and accountable digital future.
+The Internet Accountability Compass is not an audit mechanism or compliance checklist. It serves as a reference tool for governments, researchers, and civil society to assess national progress, identify trends, and learn from comparative practice. It is intended to bridge the gap between high-level digital commitments and their implementation—contributing to a more inclusive, rights-based, and accountable digital future.
 </p>
 <p>
-By charting national performance across <a href="./directions">four cardinal dimensions</a>â€”Connectivity and infrastructure, Rights and
-freedoms, Responsibility and sustainability, and Trust and resilienceâ€”the Compass contributed to bringing clarity to the state of Internet governance worldwide.
+By charting national performance across <a href="./directions">four cardinal dimensions</a>—Connectivity and infrastructure, Rights and
+freedoms, Responsibility and sustainability, and Trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
 </p>
   <!-- funding reference -->
   <h2>Team behind the Compass</h2>
@@ -181,7 +290,6 @@ const lookup = {
 ```
 
 ```js
-// console.log("countries", countries);
 const dfiFull = dfiFullParse.map((item) => {
   const pillar = lookup[item.pillar_num];
   const commitment = pillar?.commitments[item.commitment_num];
@@ -202,11 +310,6 @@ const dfiCardinal = dfiCardinalParse.map((item) => {
 });
 ```
 
-```js
-// console.log("dfiFull", dfiFull);
-// console.log("dfiCardinal", dfiCardinal);
-```
-
 <!-- world map and data -->
 
 ```js
@@ -217,10 +320,9 @@ var coastLoad = FileAttachment("./data/COAS_RG_60M_2016_4326.json").json();
 ```js
 var world = topojson
   .feature(worldLoad, worldLoad.objects.CNTR_RG_60M_2024_4326)
-  .features.filter((d) => d.properties.NAME_ENGL !== "Antarctica") // drop Antarctica directly
-  .filter((d) => d.properties.SVRG_UN === "UN Member State") // only UN member states
+  .features.filter((d) => d.properties.NAME_ENGL !== "Antarctica")
+  .filter((d) => d.properties.SVRG_UN === "UN Member State")
   .map((d) => {
-    // only keep these properties
     d.properties = {
       CNTR_ID: d.properties.CNTR_ID,
       ISO3_CODE: d.properties.ISO3_CODE,
@@ -233,8 +335,6 @@ var coast = topojson.feature(
   coastLoad.objects.COAS_RG_60M_2016_4326,
 );
 ```
-
-<!-- 1. input data -->
 
 ```js
 const uniqueCommitments = [
