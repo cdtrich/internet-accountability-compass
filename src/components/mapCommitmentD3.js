@@ -65,6 +65,13 @@ export function mapCommitmentD3(
       .y((d) => yScale(d.value))
       .curve(d3.curveCatmullRom);
 
+    const area = d3
+      .area()
+      .x((d) => xScale(d.year))
+      .y0(sparkH - marginBottom)
+      .y1((d) => yScale(d.value))
+      .curve(d3.curveCatmullRom);
+
     const svg = d3
       .create("svg")
       .attr("width", sparkW)
@@ -72,6 +79,15 @@ export function mapCommitmentD3(
       .attr("viewBox", [0, 0, sparkW, sparkH])
       .style("display", "block")
       .style("margin", "4px 0");
+
+    // Area
+    svg
+      .append("path")
+      .datum(countryData)
+      .attr("d", area)
+      .attr("fill", "#ccc")
+      .attr("fill-opacity", 0.5)
+      .attr("stroke", "none");
 
     // Line
     svg
@@ -102,6 +118,7 @@ export function mapCommitmentD3(
         .attr("y", yScale(d.value) - 8)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
+        .style("font-weight", "bold")
         .attr("fill", color)
         .text(`${Math.round(d.value)}`);
 

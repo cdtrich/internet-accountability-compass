@@ -46,12 +46,28 @@ export function sparkline(
     .y((d) => yScale(d.value))
     .curve(d3.curveCatmullRom);
 
+  const area = d3
+    .area()
+    .x((d) => xScale(d.year))
+    .y0(height - 2)
+    .y1((d) => yScale(d.value))
+    .curve(d3.curveCatmullRom);
+
   const svg = d3
     .create("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "overflow: visible;");
+
+  // Area
+  svg
+    .append("path")
+    .datum(pillarData)
+    .attr("d", area)
+    .attr("fill", strokeColor)
+    .attr("fill-opacity", 0.2)
+    .attr("stroke", "none");
 
   // Line
   svg

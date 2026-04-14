@@ -45,6 +45,19 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       .domain([0, 100])
       .range([sparkH - marginBottom, marginTop]);
 
+    const line = d3
+      .line()
+      .x((d) => xScale(d.year))
+      .y((d) => yScale(d.value))
+      .curve(d3.curveCatmullRom);
+
+    const area = d3
+      .area()
+      .x((d) => xScale(d.year))
+      .y0(sparkH - marginBottom)
+      .y1((d) => yScale(d.value))
+      .curve(d3.curveCatmullRom);
+
     const svg = d3
       .create("svg")
       .attr("width", sparkW)
@@ -53,27 +66,23 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       .style("display", "block")
       .style("margin", "4px 0");
 
-    // Draw line segments, each colored by its starting year's category
-    for (let i = 0; i < countryData.length - 1; i++) {
-      const current = countryData[i];
-      const next = countryData[i + 1];
+    // Area
+    svg
+      .append("path")
+      .datum(countryData)
+      .attr("d", area)
+      .attr("fill", "#ccc")
+      .attr("fill-opacity", 0.5)
+      .attr("stroke", "none");
 
-      const segmentColor =
-        current.group_value === "NA"
-          ? "#ccc"
-          : categoryColors[current.group_value] || "#ccc";
-
-      svg
-        .append("line")
-        .attr("x1", xScale(current.year))
-        .attr("y1", yScale(current.value))
-        .attr("x2", xScale(next.year))
-        .attr("y2", yScale(next.value))
-        // .attr("stroke", segmentColor)
-        .attr("stroke", "#000")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-linecap", "round");
-    }
+    // Line
+    // svg
+    //   .append("path")
+    //   .datum(countryData)
+    //   .attr("d", line)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "#000")
+    //   .attr("stroke-width", 0.5);
 
     // Dots with labels - colored by their year's category
     countryData.forEach((d, i) => {
@@ -91,6 +100,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .attr("cx", xScale(d.year))
         .attr("cy", yScale(d.value))
         .attr("r", 3)
+        .attr("stroke", "#fff")
         .attr("fill", dotColor);
 
       // Value label above (all points) - colored by category
@@ -101,8 +111,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .attr("y", yScale(d.value) - 8)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
-        // .attr("fill", dotColor)
-        .attr("fill", "#000")
+        .style("font-weight", "bold")
+        .attr("fill", dotColor)
+        // .attr("fill", "#000")
         .text(`${Math.round(d.value)}`);
 
       // Year label below (only first and last)
@@ -496,10 +507,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         tooltipHTML = `
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
             ${changeSign}${Math.round(change)}
-          </strong>
-          <strong>${fullData.properties.NAME_ENGL}</strong><br>
-          ${sparklineHTML}
-          ${pillarScores}
+          </strong><br>
+          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
+          <strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear})</span>
         `;
       } else {
         const categoryDisplay =

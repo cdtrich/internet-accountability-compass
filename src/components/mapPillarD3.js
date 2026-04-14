@@ -54,6 +54,13 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
       .y((d) => yScale(d.value))
       .curve(d3.curveCatmullRom);
 
+    const area = d3
+      .area()
+      .x((d) => xScale(d.year))
+      .y0(sparkH - marginBottom)
+      .y1((d) => yScale(d.value))
+      .curve(d3.curveCatmullRom);
+
     const svg = d3
       .create("svg")
       .attr("width", sparkW)
@@ -62,26 +69,42 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
       .style("display", "block")
       .style("margin", "4px 0");
 
-    // Line
+    // Area
     svg
       .append("path")
       .datum(countryData)
-      .attr("d", line)
-      .attr("fill", "none")
-      .attr("stroke", categoryColor)
-      .attr("stroke-width", 2);
+      .attr("d", area)
+      .attr("fill", "#ccc")
+      .attr("fill-opacity", 0.5)
+      .attr("stroke", "none");
+
+    // Line
+    // svg
+    //   .append("path")
+    //   .datum(countryData)
+    //   .attr("d", line)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "#ddd")
+    //   .attr("stroke-width", 2);
 
     // Dots with labels
     countryData.forEach((d, i) => {
       const isFirst = i === 0;
       const isLast = i === countryData.length - 1;
 
+      const dotColor =
+        d.group_value === "NA" || d.group_value == null
+          ? "#ccc"
+          : fillScale.getOrdinalCategoryScale(pillarTxt)(d.group_value) ||
+            "#ccc";
+
       svg
         .append("circle")
         .attr("cx", xScale(d.year))
         .attr("cy", yScale(d.value))
         .attr("r", 3)
-        .attr("fill", categoryColor);
+        .attr("stroke", "#fff")
+        .attr("fill", dotColor);
 
       // Value label above (all points)
       svg
@@ -91,7 +114,8 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
         .attr("y", yScale(d.value) - 8)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
-        .attr("fill", categoryColor)
+        .style("font-weight", "bold")
+        .attr("fill", dotColor)
         .text(`${Math.round(d.value)}`);
 
       // Year label below (only first and last)
@@ -403,7 +427,8 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
             ${changeSign}${Math.round(change)}
           </strong><br>
           <strong>${d.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #666;">${previousYear} → ${latestYear}</span>`;
+          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
+          <strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear})</span>`;
         } else {
           tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
         }
