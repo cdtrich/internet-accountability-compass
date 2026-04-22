@@ -157,7 +157,7 @@ if (mapMode === "latest") {
 
   statsData = [
     { label: "Decrease", count: decreases, color: "#FDE74C" },
-    { label: "No change", count: noChange, color: "#afb6b5" },
+    { label: "No change/not enough data", count: noChange, color: "#afb6b5" },
     { label: "Increase", count: increases, color: "#007162ff" },
   ];
 }

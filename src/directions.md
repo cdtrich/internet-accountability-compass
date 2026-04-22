@@ -76,6 +76,7 @@ const sourcesData = FileAttachment("./data/sources.csv").csv({
 
 ```js
 var worldLoad = FileAttachment("./data/CNTR_RG_60M_2024_4326.json").json();
+var coastLoad = FileAttachment("./data/COAS_RG_60M_2016_4326.json").json();
 ```
 
 ```js
@@ -92,6 +93,10 @@ var world = topojson
     };
     return d;
   });
+var coast = topojson.feature(
+  coastLoad,
+  coastLoad.objects.COAS_RG_60M_2016_4326,
+);
 ```
 
 <!-- 1. input data -->
@@ -104,7 +109,10 @@ const uniquePillars = [
       .map((item) => item.pillar_txt),
   ),
 ];
-// console.log("dfiCardinalParse", dfiCardinalParse);
+console.log(
+  "dfiCardinalParse",
+  dfiCardinalParse.filter((d) => d.NAME_ENGL === "Libya" && d.year === 2025),
+);
 ```
 
   <!-- 2. input  -->
@@ -225,9 +233,9 @@ if (mapMode === "latest") {
   const pillarColor = fillScale.getColor(selectedPillar, 100);
 
   statsData = [
-    { label: "Increase", count: increases, color: pillarColor },
-    { label: "No change", count: noChange, color: "#afb6b5" },
     { label: "Decrease", count: decreases, color: "#FDE74C" },
+    { label: "No change/not enough data", count: noChange, color: "#afb6b5" },
+    { label: "Increase", count: increases, color: pillarColor },
   ];
 }
 ```
@@ -263,6 +271,7 @@ const commitments = [
   ${resize((width) =>
     mapPillarD3(
       world,
+      coast,
       dfiCardinalParse,
       selectedPillar,
       { width, enableScrollZoom: true, mode: mapMode }
@@ -293,6 +302,7 @@ const commitmentLegend = view(
   ${resize((width) =>
     mapCommitmentD3(
       world,
+      coast,
       dfiFullParse.filter(d => d.pillar_txt === selectedPillar),
       selectedPillar,
       commitmentLegend,

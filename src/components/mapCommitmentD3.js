@@ -14,6 +14,7 @@ import { basePath } from "./basePath.js";
  */
 export function mapCommitmentD3(
   world,
+  coast,
   data,
   selectedPillar,
   selectedCommitment,
@@ -229,6 +230,28 @@ export function mapCommitmentD3(
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
+  // Pattern for "not enough data" countries
+  const defs = svg.append("defs");
+  const nedPattern = defs
+    .append("pattern")
+    .attr("id", "white-diagonal-lines-commitment")
+    .attr("patternUnits", "userSpaceOnUse")
+    .attr("width", 4.2425)
+    .attr("height", 4.2425)
+    .attr("patternTransform", "rotate(45)");
+  nedPattern
+    .append("rect")
+    .attr("width", 4.2425)
+    .attr("height", 4.2425)
+    .attr("fill", "#fff");
+  nedPattern
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 1.5)
+    .attr("height", 4.2425)
+    .attr("fill", "#ddd");
+
   // Projection
   const projection = d3
     .geoEqualEarth()
@@ -271,13 +294,15 @@ export function mapCommitmentD3(
     .attr("fill", (d) => {
       if (mode === "historical") {
         if (d.properties.change === null || d.properties.change === undefined)
-          return "#fff";
+          return d.properties.value !== undefined ? "#ddd" : "#fff";
         const change = d.properties.change;
         if (change > 0) return changeColors.positive;
         if (change < 0) return changeColors.negative;
         return changeColors.zero;
       } else {
-        if (isNaN(d.properties.value)) return "#fff";
+        if (d.properties.value !== undefined && isNaN(d.properties.value))
+          return "#ddd";
+        if (d.properties.value === undefined) return "#fff";
         return colorScale(d.properties.value);
       }
     })
@@ -300,6 +325,37 @@ export function mapCommitmentD3(
       }
     });
 
+  // Draw coast
+  if (coast) {
+    mapGroup
+      .append("path")
+      .datum(coast)
+      .attr("class", "coast")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.3);
+  }
+
+  // Not enough data overlay
+  mapGroup
+    .selectAll(".country-ned-overlay")
+    .data(
+      worldWithData.filter((d) =>
+        mode === "latest"
+          ? d.properties.value !== undefined && isNaN(d.properties.value)
+          : d.properties.value !== undefined &&
+            (d.properties.change === null ||
+              d.properties.change === undefined),
+      ),
+    )
+    .join("path")
+    .attr("class", "country-ned-overlay")
+    .attr("d", path)
+    .attr("fill", "url(#white-diagonal-lines-commitment)")
+    .attr("stroke", "none")
+    .style("pointer-events", "none");
+
   // Tooltip
   const tooltip = d3
     .select("body")
@@ -312,12 +368,20 @@ export function mapCommitmentD3(
   // Hover behavior - snap to centroid
   countries
     .on("mouseenter", function (event, d) {
-      // Raise to top and highlight stroke
-      d3.select(this)
-        .raise()
+      // Only raise countries with data — no-data countries have an overlay path
+      // that would be hidden if the country path is raised above it
+      const isNoData =
+        mode === "latest"
+          ? d.properties.value !== undefined && isNaN(d.properties.value)
+          : d.properties.value !== undefined &&
+            (d.properties.change === null ||
+              d.properties.change === undefined);
+      const sel = d3.select(this);
+      if (!isNoData) sel.raise();
+      sel
         .transition()
         .duration(150)
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 1)
         .attr("stroke", "#333");
 
       const centroid = path.centroid(d);
@@ -502,7 +566,7 @@ export function mapCommitmentD3(
     // Historical mode: 3-category legend
     const legendData = [
       { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: changeColors.zero },
+      { label: "No change", color: "#fff", stroke: "#ccc", strokeWidth: 1 },
       { label: "Increase", color: changeColors.positive },
     ];
 
@@ -512,7 +576,7 @@ export function mapCommitmentD3(
       .attr("x", -20)
       .attr("y", -20)
       .attr("width", 240)
-      .attr("height", legendData.length * 25 + 40)
+      .attr("height", legendData.length * 25 + 10 + 25 + 40)
       .attr("fill", "#ffffff80")
       .attr("rx", 4);
 
@@ -521,15 +585,17 @@ export function mapCommitmentD3(
       .data(legendData)
       .join("g")
       .attr("class", "legend-item")
-      .style("pointer-events", "none") // Let clicks pass through
-      .style("user-select", "none") // Let clicks pass through
+      .style("pointer-events", "none")
+      .style("user-select", "none")
       .attr("transform", (d, i) => `translate(0, ${i * 25})`);
 
     legendItems
       .append("rect")
       .attr("width", 18)
       .attr("height", 18)
-      .attr("fill", (d) => d.color);
+      .attr("fill", (d) => d.color)
+      .attr("stroke", (d) => d.stroke || "none")
+      .attr("stroke-width", (d) => d.strokeWidth || 0);
 
     legendItems
       .append("text")
@@ -538,6 +604,13 @@ export function mapCommitmentD3(
       .attr("dominant-baseline", "middle")
       .attr("font-size", 12)
       .text((d) => d.label);
+
+    const nedLegend = legend
+      .append("g")
+      .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
+    nedLegend.append("rect").attr("width", 18).attr("height", 18).attr("fill", "#ddd");
+    nedLegend.append("rect").attr("width", 18).attr("height", 18).attr("fill", "url(#white-diagonal-lines-commitment)");
+    nedLegend.append("text").attr("x", 24).attr("y", 9).attr("dominant-baseline", "middle").attr("font-size", 12).text("Not enough data");
   } else {
     // Latest mode: gradient legend
     const legendBg = legend
@@ -546,7 +619,7 @@ export function mapCommitmentD3(
       .attr("x", -20)
       .attr("y", -25)
       .attr("width", legendWidth + 40)
-      .attr("height", 75)
+      .attr("height", 115)
       .attr("fill", "#ffffff80")
       .attr("rx", 4);
 
@@ -598,6 +671,11 @@ export function mapCommitmentD3(
       .attr("font-size", 12)
       .attr("font-weight", "bold")
       .text("Score");
+
+    const nedLegendLatest = legend.append("g").attr("transform", "translate(0, 45)");
+    nedLegendLatest.append("rect").attr("width", 18).attr("height", 18).attr("fill", "#ddd");
+    nedLegendLatest.append("rect").attr("width", 18).attr("height", 18).attr("fill", "url(#white-diagonal-lines-commitment)");
+    nedLegendLatest.append("text").attr("x", 24).attr("y", 9).attr("dominant-baseline", "middle").attr("font-size", 12).text("Not enough data");
   }
 
   // Scroll hint overlay - small box at bottom

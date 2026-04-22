@@ -26,7 +26,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     const sparkH = 60;
     const marginLeft = 20;
     const marginRight = 20;
-    const marginTop = 20;
+    const marginTop = 0;
     const marginBottom = 20;
 
     const countryData = data
@@ -205,8 +205,14 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
     legendData = [
       { label: "Decrease", color: changeColors.negative },
-      // { label: "No change", color: changeColors.zero },
+      { label: "No change", color: changeColors.zero },
       { label: "Increase", color: changeColors.positive },
+      {
+        label: "Not enough data",
+        color: "url(#ned-hatch)",
+        stroke: "#ddd",
+        strokeWidth: 0.5,
+      },
     ];
   } else {
     // Latest mode: show current categories
@@ -225,10 +231,16 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     });
 
     legendData = [
-      { label: "Off track", color: categoryColors["Off track"] },
-      { label: "Catching up", color: categoryColors["Catching up"] },
-      { label: "On track", color: categoryColors["On track"] },
-      { label: "Leading", color: categoryColors["Leading"] },
+      // { label: "Off track", color: categoryColors["Off track"] },
+      // { label: "Catching up", color: categoryColors["Catching up"] },
+      // { label: "On track", color: categoryColors["On track"] },
+      // { label: "Leading", color: categoryColors["Leading"] },
+      {
+        label: "Not enough data",
+        color: "url(#ned-hatch)",
+        stroke: "#ddd",
+        strokeWidth: 0.5,
+      },
     ];
   }
 
@@ -326,6 +338,28 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
+  // Pattern for "not enough data" countries
+  const defs = svg.append("defs");
+  const nedPattern = defs
+    .append("pattern")
+    .attr("id", "ned-hatch")
+    .attr("patternUnits", "userSpaceOnUse")
+    .attr("width", 4.2425)
+    .attr("height", 4.2425)
+    .attr("patternTransform", "rotate(45)");
+  nedPattern
+    .append("rect")
+    .attr("width", 4.2425)
+    .attr("height", 4.2425)
+    .attr("fill", "#fff");
+  nedPattern
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 1.5)
+    .attr("height", 4.2425)
+    .attr("fill", "#ddd");
+
   // Projection
   const marginTop = 80;
   const projection = d3
@@ -356,16 +390,27 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   const mapGroup = svg.append("g").attr("class", "map-group");
 
+  // Helper: check if country has data in current mode
+  const hasData = (d) => {
+    if (mode === "historical") {
+      return d.properties.change !== null && d.properties.change !== undefined;
+    }
+    return d.properties.group_value && d.properties.group_value !== "NA";
+  };
+
   // Draw all countries (base layer)
+  // - With data: white fill, light gray stroke (will be covered by data layer)
+  // - Without data: coastline style (no fill, dark gray stroke)
   mapGroup
     .selectAll(".country-base")
     .data(worldWithData)
     .join("path")
     .attr("class", "country-base")
     .attr("d", path)
-    .attr("fill", "#fff")
+    .attr("fill", (d) => (hasData(d) ? "#fff" : "url(#ned-hatch)"))
     .attr("stroke", "#ddd")
-    .attr("stroke-width", 0.5);
+    .attr("stroke-width", 0.5)
+    .attr("pointer-events", "all");
 
   // Draw countries with data (colored layer)
   mapGroup
@@ -439,9 +484,10 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .style("cursor", "pointer")
     .on("mouseenter", function (event, d) {
       d3.select(this)
+        .raise()
         .transition()
         .duration(150)
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 1)
         .attr("stroke", "#333");
 
       const fullData = worldWithCentroids.find(
@@ -507,7 +553,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         tooltipHTML = `
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
             ${changeSign}${Math.round(change)}
-          </strong><br>
+          </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
           <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
           <strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear})</span>
         `;
@@ -553,7 +599,68 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .transition()
         .duration(150)
         .attr("stroke-width", 0.5)
-        .attr("stroke", "#fff");
+        .attr("stroke", "#ddd");
+
+      tooltip.style("visibility", "hidden");
+    });
+
+  // Hover interactions for countries WITHOUT data (base layer)
+  mapGroup
+    .selectAll(".country-base")
+    .filter((d) => !hasData(d))
+    .style("cursor", "pointer")
+    .on("click", function (_event, d) {
+      const iso3 = d.properties.ISO3_CODE;
+      if (iso3) window.location.href = `${basePath}/${iso3}/`;
+    })
+    .on("mouseenter", function (event, d) {
+      d3.select(this)
+        .raise()
+        .transition()
+        .duration(150)
+        .attr("stroke-width", 1)
+        .attr("stroke", "#333");
+
+      const fullData = worldWithCentroids.find(
+        (f) => f.properties.ISO3_CODE === d.properties.ISO3_CODE,
+      );
+
+      if (!fullData) return;
+
+      const centroid = fullData.properties.centroid;
+      if (!centroid) return;
+
+      const transform = d3.zoomTransform(svg.node());
+      const projectedCentroid = projection(centroid);
+      const zoomedCentroid = [
+        projectedCentroid[0] * transform.k + transform.x,
+        projectedCentroid[1] * transform.k + transform.y,
+      ];
+
+      const tooltipHTML = `
+        <strong>${d.properties.NAME_ENGL}</strong><br>
+        <span style="font-size: 11px; color: #666;">Not enough data</span>
+      `;
+
+      tooltip.style("visibility", "visible").html(tooltipHTML);
+
+      const svgRect = svg.node().getBoundingClientRect();
+      tooltip
+        .style(
+          "top",
+          svgRect.top + zoomedCentroid[1] + window.scrollY - 10 + "px",
+        )
+        .style(
+          "left",
+          svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
+        );
+    })
+    .on("mouseleave", function () {
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("stroke-width", 0.5)
+        .attr("stroke", "#ddd");
 
       tooltip.style("visibility", "hidden");
     });
@@ -638,20 +745,19 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .text("⌂");
 
   // Legend
-  const legendWidth = legendData.length * 120;
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
-    .attr("transform", `translate(${(width - legendWidth) / 2}, 20)`);
+    .attr("transform", `translate(100, ${height / 2})`);
 
   legend
     .append("rect")
     .attr("class", "legend-background")
     .attr("x", -20)
     .attr("y", -20)
-    .attr("width", legendWidth + 40)
-    .attr("height", 60)
-    .attr("fill", "#ffffff00")
+    .attr("width", 300)
+    .attr("height", legendData.length * 25 + 40)
+    .attr("fill", "#ffffff80")
     .attr("rx", 4);
 
   const legendItems = legend
@@ -659,13 +765,17 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .data(legendData)
     .join("g")
     .attr("class", "legend-item")
-    .attr("transform", (d, i) => `translate(${i * 120}, 0)`);
+    .style("pointer-events", "none")
+    .style("user-select", "none")
+    .attr("transform", (_d, i) => `translate(0, ${i * 25})`);
 
   legendItems
     .append("rect")
     .attr("width", 18)
     .attr("height", 18)
-    .attr("fill", (d) => d.color);
+    .attr("fill", (d) => d.color)
+    .attr("stroke", (d) => d.stroke || "none")
+    .attr("stroke-width", (d) => d.strokeWidth || 0);
 
   legendItems
     .append("text")

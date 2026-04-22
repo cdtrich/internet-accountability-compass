@@ -30,7 +30,7 @@
 /* Unselected state - light gray */
 .mode-toggle-item:not(.selected) {
   background-color: #e0e0e0;
-  color: #666;
+  color: #111;
 }
 
 .mode-toggle-item:not(.selected):hover {
@@ -39,10 +39,10 @@
 
 /* Selected state - dark gray */
 .mode-toggle-item.selected {
-  background-color: #666;
+  background-color: #222;
   color: white;
 }
 
 .mode-toggle-item.selected:hover {
-  background-color: #555;
+  background-color: #000;
 }

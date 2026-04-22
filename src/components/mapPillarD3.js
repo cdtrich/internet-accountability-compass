@@ -11,7 +11,7 @@ import { basePath } from "./basePath.js";
  * @param {string} selectedPillar - Selected pillar to display
  * @param {Object} options - width, height, mode ("latest" or "historical")
  */
-export function mapPillarD3(world, data, selectedPillar, options = {}) {
+export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   const { width = 975, height = 610, mode = "latest" } = options;
 
   const fillScale = colorScales();
@@ -199,7 +199,7 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
 
     legendData = [
       { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: changeColors.zero },
+      { label: "No change", color: "#fff", stroke: "#ccc", strokeWidth: 1 },
       { label: "Increase", color: changeColors.positive },
     ];
   } else {
@@ -305,13 +305,15 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .attr("fill", (d) => {
       if (mode === "historical") {
         if (d.properties.change === null || d.properties.change === undefined)
-          return "#fff";
+          return d.properties.value !== undefined ? "#ddd" : "#fff";
         const change = d.properties.change;
         if (change > 0) return changeColors.positive;
         if (change < 0) return changeColors.negative;
         return changeColors.zero;
       } else {
-        if (isNaN(d.properties.value)) return "#fff";
+        if (d.properties.value !== undefined && isNaN(d.properties.value))
+          return "#ddd";
+        if (d.properties.value === undefined) return "#fff";
         return fillScale.getOrdinalCategoryScale(d.properties.pillar_txt)(
           d.properties.group_value,
         );
@@ -336,21 +338,41 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
       }
     });
 
-  console.log(
-    "Countries drawn with data:",
-    // worldWithData.filter((d) => d.properties.note === " (partial data)"),
-    worldWithData.filter((d) => d.properties.ned === "not enough data"),
-  );
-
-  // Partial data overlay
+  // Not enough data overlay — grey base already set in fill
+  // latest: in dataset but no score; historical: in dataset but no prior-year value
   countries
-    // .filter((d) => d.properties.note === " (partial data)")
-    .filter((d) => d.properties.ned === "not enough data")
+    .filter((d) =>
+      mode === "latest"
+        ? d.properties.value !== undefined && isNaN(d.properties.value)
+        : d.properties.value !== undefined &&
+          (d.properties.change === null || d.properties.change === undefined),
+    )
     .append("path")
     .attr("d", path)
     .attr("fill", "url(#white-diagonal-lines-map)")
     .attr("stroke", "none")
     .style("pointer-events", "none");
+
+  // Partial data overlay — white hatch on top of category/change fill (both modes)
+  countries
+    .filter((d) => d.properties.ned === "Partial data")
+    .append("path")
+    .attr("d", path)
+    .attr("fill", "url(#white-diagonal-lines-map)")
+    .attr("stroke", "none")
+    .style("pointer-events", "none");
+
+  // Draw coast
+  if (coast) {
+    mapGroup
+      .append("path")
+      .datum(coast)
+      .attr("class", "coast")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 0.3);
+  }
 
   // Tooltip
   const tooltip = d3
@@ -369,7 +391,7 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
         .select("path")
         .transition()
         .duration(150)
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 1)
         .attr("stroke", "#333");
 
       const centroid = path.centroid(d);
@@ -561,12 +583,7 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .attr("x", -20)
     .attr("y", -20)
     .attr("width", 300)
-    .attr(
-      "height",
-      mode === "latest"
-        ? legendData.length * 25 + 10 + 25 + 40 // Items + gap + partial + padding
-        : legendData.length * 25 + 40,
-    ) // Items + padding (no partial)
+    .attr("height", legendData.length * 25 + 10 + 25 + 10 + 25 + 40)
     .attr("fill", "#ffffff80")
     .attr("rx", 4);
 
@@ -583,7 +600,9 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .append("rect")
     .attr("width", 18)
     .attr("height", 18)
-    .attr("fill", (d) => d.color);
+    .attr("fill", (d) => d.color)
+    .attr("stroke", (d) => d.stroke || "none")
+    .attr("stroke-width", (d) => d.strokeWidth || 0);
 
   legendItems
     .append("text")
@@ -593,33 +612,57 @@ export function mapPillarD3(world, data, selectedPillar, options = {}) {
     .attr("font-size", 12)
     .text((d) => d.label);
 
-  // Partial data legend item (only in latest mode)
-  if (mode === "latest") {
-    const partialLegend = legend
-      .append("g")
-      .attr("class", "partial-legend")
-      .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
+  // Not enough data legend item
+  const nedLegend = legend
+    .append("g")
+    .attr("class", "ned-legend")
+    .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
 
-    partialLegend
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", "#aaa");
+  nedLegend
+    .append("rect")
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", "#ddd");
 
-    partialLegend
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", "url(#white-diagonal-lines-map)");
+  nedLegend
+    .append("rect")
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", "url(#white-diagonal-lines-map)");
 
-    partialLegend
-      .append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dominant-baseline", "middle")
-      .attr("font-size", 12)
-      .text("Partial data (≥1 indicator missing)");
-  }
+  nedLegend
+    .append("text")
+    .attr("x", 24)
+    .attr("y", 9)
+    .attr("dominant-baseline", "middle")
+    .attr("font-size", 12)
+    .text("Not enough data");
+
+  // Partial data legend item
+  const partialLegend = legend
+    .append("g")
+    .attr("class", "partial-legend")
+    .attr("transform", `translate(0, ${legendData.length * 25 + 10 + 35})`);
+
+  partialLegend
+    .append("rect")
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", "#111");
+
+  partialLegend
+    .append("rect")
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", "url(#white-diagonal-lines-map)");
+
+  partialLegend
+    .append("text")
+    .attr("x", 24)
+    .attr("y", 9)
+    .attr("dominant-baseline", "middle")
+    .attr("font-size", 12)
+    .text("Partial data");
 
   // Scroll hint overlay - small box at bottom
   const overlayDiv = document.createElement("div");
