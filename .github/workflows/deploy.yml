@@ -1,11 +1,7 @@
 name: Deploy
 
 on:
-  # Run this workflow whenever a new commit is pushed to main.
   push: { branches: [main] }
-  # Run this workflow once per day, at 10:15 UTC
-  # schedule: [{ cron: "15 10 * * 0" }]
-  # Run this workflow when triggered manually in GitHub's UI.
   workflow_dispatch: {}
 
 jobs:
@@ -24,38 +20,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # Add R setup
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: "4.3.2"
-          use-public-rspm: true # Use pre-compiled binaries (much faster!)
-
-      # Add caching BEFORE installing packages
-      - name: Cache R packages
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ hashFiles('deploy.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-r-
-
-      - name: Install R dependencies
-        run: |
-          Rscript -e "install.packages(c('readr', 'dplyr', 'tidyr', 'readxl', 'stringr', 'here', 'jsonlite', 'purrr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
-        # Add any other R packages your scripts use
       - run: npm ci
-      - id: date
-        run: echo "date=$(TZ=CET date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-      - id: cache-data
-        uses: actions/cache@v4
-        with:
-          path: src/.observablehq/cache
-          key: data-${{ hashFiles('src/data/*') }}-${{ steps.date.outputs.date }}
-      # Debug step to check R installation
-      - name: Verify R installation
-        run: |
-          which Rscript
-          Rscript --version
       - run: npm run build
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3

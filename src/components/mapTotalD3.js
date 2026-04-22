@@ -160,9 +160,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
   // Opacity scale based on absolute change magnitude
   // 0 change → 0 opacity, 20+ change → 1 opacity
   const opacityScale = d3
-    .scaleLinear()
-    .domain([0, 20])
-    .range([0, 1])
+    .scaleSymlog()
+    .domain([0, 10])
+    .range([0.2, 1])
     .clamp(true);
 
   let worldWithData, legendData;
@@ -384,11 +384,13 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     })
     .on("zoom", (event) => {
       mapGroup.attr("transform", event.transform);
+      coastGroup.attr("transform", event.transform);
     });
 
   svg.call(zoom);
 
   const mapGroup = svg.append("g").attr("class", "map-group");
+  const coastGroup = svg.append("g").attr("class", "coast-group");
 
   // Helper: check if country has data in current mode
   const hasData = (d) => {
@@ -444,16 +446,17 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("stroke", "#fff")
     .attr("stroke-width", 0.5);
 
-  // Draw coast if provided
+  // Draw coast if provided (separate group so it stays above raised country paths)
   if (coast) {
-    mapGroup
+    coastGroup
       .append("path")
       .datum(coast)
       .attr("class", "coast")
       .attr("d", path)
       .attr("fill", "none")
-      .attr("stroke", "#333")
-      .attr("stroke-width", 0.3);
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 0.3)
+      .attr("pointer-events", "none");
   }
 
   // Tooltip

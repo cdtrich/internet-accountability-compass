@@ -184,7 +184,7 @@ if (mapMode === "latest") {
   ${resize((width) =>
     mapTotalD3(
       world,
-      null,
+      coast,
       dfiCardinal,
       { width, mode: mapMode }
     )

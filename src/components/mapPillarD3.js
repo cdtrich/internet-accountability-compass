@@ -146,9 +146,9 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
 
   // Opacity scale for historical mode
   const opacityScale = d3
-    .scaleLinear()
-    .domain([0, 20])
-    .range([0, 1])
+    .scaleSymlog()
+    .domain([0, 10])
+    .range([0.2, 1])
     .clamp(true);
 
   // Change colors for historical mode
