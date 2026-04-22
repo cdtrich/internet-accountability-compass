@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.13.3">
+<title>Internet Accountability Compass</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_import/style.52e48ff2.css">
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_import/style.52e48ff2.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="modulepreload" href="./_observablehq/client.d0526745.js">
+<link rel="modulepreload" href="./_observablehq/runtime.e080113b.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.73a8ec5a.js">
+<link rel="modulepreload" href="./_import/components/scales.3650d4d9.js">
+<link rel="modulepreload" href="./_import/components/onlyUnique.413399e1.js">
+<link rel="modulepreload" href="./_import/components/customLegend.d045b046.js">
+<link rel="modulepreload" href="./_import/components/sidebar.9aff6629.js">
+<link rel="modulepreload" href="./_import/components/pillarRenderer.5b2606d3.js">
+<link rel="modulepreload" href="./_import/components/sources.8e9bc14b.js">
+<link rel="modulepreload" href="./_import/components/mapPillarD3.231ec2f3.js">
+<link rel="modulepreload" href="./_import/components/mapCommitmentD3.651b8045.js">
+<link rel="modulepreload" href="./_import/components/modeToggle.d0a665e8.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/e324157d.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/72f4716c.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.4ef1d259.js">
+<link rel="modulepreload" href="./_npm/topojson-client@3.1.0/edd9ee95.js">
+<link rel="modulepreload" href="./_import/components/pillarText.aadf4616.js">
+<link rel="modulepreload" href="./_import/components/basePath.f3174b65.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/9cffc2bd.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/18cbf477.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e93ca09f.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/0f2de24d.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/65eb105b.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/7ef8fb2e.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/aeb57b94.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/1d2aed74.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/5ced1d52.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/9ba9c7f3.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/4202580c.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/cdd7e898.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/b4e2ad9a.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e804d15.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.2/3785bf2d.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/40599fb3.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/e49e792c.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/8d1e5425.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/20d3f133.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/7553081f.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/0dfd751c.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/3c90ee06.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/720b7f0a.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/ba24c2e7.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/4d94e5b7.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/6d3a6726.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/9f03c579.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/07c9626f.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/b58a267d.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/004da2ac.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/b5786b3f.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/e08981d9.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/02d43215.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/aa00730b.js">
+<script type="module">
+
+import {define} from "./_observablehq/client.d0526745.js";
+import {registerFile} from "./_observablehq/stdlib.73a8ec5a.js";
+
+registerFile("./data/CNTR_RG_60M_2024_4326.json", {"name":"./data/CNTR_RG_60M_2024_4326.json","mimeType":"application/json","path":"./_file/data/CNTR_RG_60M_2024_4326.21027f91.json","lastModified":1753547366135,"size":249066});
+registerFile("./data/COAS_RG_60M_2016_4326.json", {"name":"./data/COAS_RG_60M_2016_4326.json","mimeType":"application/json","path":"./_file/data/COAS_RG_60M_2016_4326.b7f65278.json","lastModified":1753547366135,"size":175950});
+registerFile("./data/dfiCardinal.csv", {"name":"./data/dfiCardinal.csv","mimeType":"text/csv","path":"./_file/data/dfiCardinal.a0294bda.csv","lastModified":1776860904626,"size":473717});
+registerFile("./data/dfiFull.csv", {"name":"./data/dfiFull.csv","mimeType":"text/csv","path":"./_file/data/dfiFull.72322038.csv","lastModified":1776860895508,"size":1530999});
+registerFile("./data/sources.csv", {"name":"./data/sources.csv","mimeType":"text/csv","path":"./_file/data/sources.b227adae.csv","lastModified":1772267298977,"size":166973});
+
+define({id: "a5c0a905", outputs: ["colorScales","onlyUnique","customLegend","viewofCustomLegend","sidebar","renderPillarContent","sources","mapPillarD3","mapCommitmentD3","modeToggle"], body: async () => {
+const [{default: colorScales}, {onlyUnique}, {customLegend, viewofCustomLegend}, {sidebar}, {renderPillarContent}, {sources}, {mapPillarD3}, {mapCommitmentD3}, {modeToggle}] = await Promise.all([import("./_import/components/scales.3650d4d9.js"), import("./_import/components/onlyUnique.413399e1.js"), import("./_import/components/customLegend.d045b046.js"), import("./_import/components/sidebar.9aff6629.js"), import("./_import/components/pillarRenderer.5b2606d3.js"), import("./_import/components/sources.8e9bc14b.js"), import("./_import/components/mapPillarD3.231ec2f3.js"), import("./_import/components/mapCommitmentD3.651b8045.js"), import("./_import/components/modeToggle.d0a665e8.js")]);
+// import { toggleSwitch } from "./components/toggleSwitch.js";
+
+return {colorScales,onlyUnique,customLegend,viewofCustomLegend,sidebar,renderPillarContent,sources,mapPillarD3,mapCommitmentD3,modeToggle};
+}});
+
+define({id: "79224bef", inputs: ["FileAttachment"], outputs: ["dfiFullParse","dfiCardinalParse","sourcesData"], body: (FileAttachment) => {
+const dfiFullParse = FileAttachment("./data/dfiFull.csv").csv({ typed: true });
+const dfiCardinalParse = FileAttachment("./data/dfiCardinal.csv").csv({
+  typed: true,
+});
+const sourcesData = FileAttachment("./data/sources.csv").csv({
+  typed: true,
+});
+return {dfiFullParse,dfiCardinalParse,sourcesData};
+}});
+
+define({id: "61a2b3f7", inputs: ["FileAttachment"], outputs: ["worldLoad","coastLoad"], body: (FileAttachment) => {
+var worldLoad = FileAttachment("./data/CNTR_RG_60M_2024_4326.json").json();
+var coastLoad = FileAttachment("./data/COAS_RG_60M_2016_4326.json").json();
+return {worldLoad,coastLoad};
+}});
+
+define({id: "c7dc7db9", inputs: ["topojson","worldLoad","coastLoad"], outputs: ["world","coast"], body: (topojson,worldLoad,coastLoad) => {
+var world = topojson
+  .feature(worldLoad, worldLoad.objects.CNTR_RG_60M_2024_4326)
+  .features.filter((d) => d.properties.NAME_ENGL !== "Antarctica") // drop Antarctica directly
+  .filter((d) => d.properties.SVRG_UN === "UN Member State") // only UN member states
+  .map((d) => {
+    // only keep these properties
+    d.properties = {
+      CNTR_ID: d.properties.CNTR_ID,
+      ISO3_CODE: d.properties.ISO3_CODE,
+      NAME_ENGL: d.properties.NAME_ENGL,
+    };
+    return d;
+  });
+var coast = topojson.feature(
+  coastLoad,
+  coastLoad.objects.COAS_RG_60M_2016_4326,
+);
+return {world,coast};
+}});
+
+define({id: "d4ca936a", inputs: ["dfiCardinalParse"], outputs: ["uniquePillars"], body: (dfiCardinalParse) => {
+const uniquePillars = [
+  ...new Set(
+    dfiCardinalParse
+      .filter((d) => d.pillar_txt !== "Total score")
+      .map((item) => item.pillar_txt),
+  ),
+];
+console.log(
+  "dfiCardinalParse",
+  dfiCardinalParse.filter((d) => d.NAME_ENGL === "Libya" && d.year === 2025),
+);
+return {uniquePillars};
+}});
+
+define({id: "62ae05e1", inputs: ["htl"], outputs: ["filterLegend"], body: (htl) => {
+const filterLegend = (domain, range) => {
+  const value = new Map(domain.map((d) => [d, true]));
+  const _set = () =>
+    Set(
+      node,
+      [...value].filter((d) => d[1]).map((d) => d[0]),
+    );
+  const oninput = (e) => (value.set(e.target.id, e.target.checked), _set());
+  const node = htl.html`<div style="font-family: var(--sans-serif); font-size: 13px; display: flex; gap: 1em;">
+    ${domain.map(
+      (d, i) => htl.html`<div style="display: flex;">
+      <input type="checkbox" id="${d}" name="${d}" checked style="accent-color: ${range[i]}" oninput=${oninput}>
+      <label for="${d}">${d}</label>
+    </div>`,
+    )}
+  </div>`;
+  _set();
+  return node;
+};
+return {filterLegend};
+}});
+
+define({id: "0a3288e2", inputs: ["view","modeToggle"], outputs: ["mapMode"], body: (view,modeToggle) => {
+const mapMode = view(
+  modeToggle({
+    label1: "Latest",
+    label2: "Historical",
+    value1: "latest",
+    value2: "historical",
+    initial: "latest",
+  }),
+);
+return {mapMode};
+}});
+
+define({id: "58a8998a", inputs: ["view","viewofCustomLegend","uniquePillars"], outputs: ["selectedPillar"], body: (view,viewofCustomLegend,uniquePillars) => {
+// console.log("uniquePillars", uniquePillars);
+const selectedPillar = view(
+  viewofCustomLegend(
+    uniquePillars,
+    "Connectivity and infrastructure",
+    "pillar",
+  ),
+);
+return {selectedPillar};
+}});
+
+define({id: "6db96a48", inputs: ["d3","dfiCardinalParse","colorScales","selectedPillar","mapMode"], outputs: ["latestYear","previousYear","fillScale","currentData","statsData"], body: (d3,dfiCardinalParse,colorScales,selectedPillar,mapMode) => {
+const latestYear = d3.max(dfiCardinalParse, (d) => d.year);
+const previousYear = latestYear - 1;
+
+// Create fillScale instance for color calculations
+const fillScale = colorScales();
+
+// Filter for current pillar and latest year
+const currentData = dfiCardinalParse.filter(
+  (d) => d.pillar_txt === selectedPillar && d.year === latestYear,
+);
+
+// Calculate stats based on mode
+let statsData;
+if (mapMode === "latest") {
+  // Count by category
+  const counts = d3.rollup(
+    currentData,
+    (v) => v.length,
+    (d) => d.group_value,
+  );
+
+  statsData = [
+    {
+      label: "Off track",
+      count: counts.get("Off track") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Off track"),
+    },
+    {
+      label: "Catching up",
+      count: counts.get("Catching up") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Catching up"),
+    },
+    {
+      label: "On track",
+      count: counts.get("On track") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("On track"),
+    },
+    {
+      label: "Leading",
+      count: counts.get("Leading") || 0,
+      color: fillScale.getOrdinalCategoryScale(selectedPillar)("Leading"),
+    },
+  ];
+} else {
+  // Historical mode - calculate changes
+  const prevData = dfiCardinalParse.filter(
+    (d) => d.pillar_txt === selectedPillar && d.year === previousYear,
+  );
+
+  let increases = 0,
+    decreases = 0,
+    noChange = 0;
+
+  currentData.forEach((curr) => {
+    const prev = prevData.find((p) => p.ISO3_CODE === curr.ISO3_CODE);
+    if (prev) {
+      const change = curr.value - prev.value;
+      if (change > 0) increases++;
+      else if (change < 0) decreases++;
+      else noChange++;
+    }
+  });
+
+  const pillarColor = fillScale.getColor(selectedPillar, 100);
+
+  statsData = [
+    { label: "Decrease", count: decreases, color: "#FDE74C" },
+    { label: "No change/not enough data", count: noChange, color: "#afb6b5" },
+    { label: "Increase", count: increases, color: pillarColor },
+  ];
+}
+return {latestYear,previousYear,fillScale,currentData,statsData};
+}});
+
+define({id: "6ca19fb4", inputs: ["dfiFullParse","selectedPillar"], outputs: ["dfiFullFiltered"], body: (dfiFullParse,selectedPillar) => {
+const dfiFullFiltered = dfiFullParse.filter(
+  (d) => d.pillar_txt === selectedPillar && d.pillar_txt !== "Total score",
+);
+return {dfiFullFiltered};
+}});
+
+define({id: "9b3912fe", inputs: ["dfiFullFiltered"], outputs: ["commitments"], body: (dfiFullFiltered) => {
+const commitments = [
+  ...new Set(dfiFullFiltered.map((d) => d.commitment_txt_cardinal)),
+];
+return {commitments};
+}});
+
+define({id: "ec152fc5", inputs: ["html","mapMode","statsData","display"], body: async (html,mapMode,statsData,display) => {
+display(await(
+html.fragment`<div class="grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+  ${statsData.map((stat) => html`
+  <div class="card key">
+    <span class="very-big" style="color: ${stat.color};">${stat.count}</span
+    ><span style="color: ${stat.color};">countries</span>
+    <h2>${stat.label}</h2>
+  </div>
+  `)}
+</div>`
+))
+}});
+
+define({id: "3cb18e6b", mode: "inline", inputs: ["resize","mapPillarD3","world","coast","dfiCardinalParse","selectedPillar","mapMode","display"], body: async (resize,mapPillarD3,world,coast,dfiCardinalParse,selectedPillar,mapMode,display) => {
+display(await(
+resize((width) =>
+    mapPillarD3(
+      world,
+      coast,
+      dfiCardinalParse,
+      selectedPillar,
+      { width, enableScrollZoom: true, mode: mapMode }
+    )
+  )
+))
+}});
+
+define({id: "3b397cd4", inputs: ["renderPillarContent","selectedPillar"], body: (renderPillarContent,selectedPillar) => {
+renderPillarContent(selectedPillar);
+}});
+
+define({id: "c53afc5e", inputs: ["view","viewofCustomLegend","commitments","selectedPillar"], outputs: ["commitmentLegend"], body: (view,viewofCustomLegend,commitments,selectedPillar) => {
+// pass selected pillar for coloring
+const commitmentLegend = view(
+  viewofCustomLegend(commitments, commitments[0], "commitment", selectedPillar),
+);
+// console.log("commitments", commitments);
+// console.log("dfiFullFiltered", dfiFullFiltered);
+return {commitmentLegend};
+}});
+
+define({id: "5f11a77f", mode: "inline", inputs: ["resize","mapCommitmentD3","world","coast","dfiFullParse","selectedPillar","commitmentLegend","mapMode","display"], body: async (resize,mapCommitmentD3,world,coast,dfiFullParse,selectedPillar,commitmentLegend,mapMode,display) => {
+display(await(
+resize((width) =>
+    mapCommitmentD3(
+      world,
+      coast,
+      dfiFullParse.filter(d => d.pillar_txt === selectedPillar),
+      selectedPillar,
+      commitmentLegend,
+      { width, enableScrollZoom: true, mode: mapMode }
+    )
+  )
+))
+}});
+
+define({id: "f51deca7", inputs: ["sourcesData","view","Inputs","html"], outputs: ["sourceTypeUnique","sourceCountryUnique","selectSourceType","selectSourceCountry"], body: (sourcesData,view,Inputs,html) => {
+// unique source types and countries
+const sourceTypeUnique = [...new Set(sourcesData.map((d) => d.type))];
+const sourceCountryUnique = [...new Set(sourcesData.map((d) => d.NAME_ENGL))];
+// inputs
+const selectSourceType = view(
+  Inputs.checkbox(sourceTypeUnique, {
+    // label: "Source type",
+    format: (x) =>
+      html`<span style="font-weight: [400, 700, 200];">${x}</span>`,
+  }),
+);
+const selectSourceCountry = view(
+  Inputs.search(sourceCountryUnique, {
+    value: "",
+    datalist: sourceCountryUnique,
+    placeholder: "Search countries",
+    output: null,
+  }),
+);
+return {sourceTypeUnique,sourceCountryUnique,selectSourceType,selectSourceCountry};
+}});
+
+define({id: "61a1140b", inputs: ["sourcesData","selectedPillar","selectSourceType","selectSourceCountry","sources"], outputs: ["sourcesDataUnique","sourcesDataPillar","sourcesDataFiltered"], body: (sourcesData,selectedPillar,selectSourceType,selectSourceCountry,sources) => {
+// remove duplicate sources
+const sourcesDataUnique = sourcesData.filter(
+  (d, index, self) =>
+    index ===
+    self.findIndex(
+      (item) => item.NAME_ENGL === d.NAME_ENGL && item.title === d.title,
+    ),
+);
+// filter by pillar
+const sourcesDataPillar = sourcesDataUnique.filter(
+  (d) => d.pillar_txt === selectedPillar,
+);
+// filter by input
+const sourcesDataFiltered = sourcesDataPillar.filter((d) => {
+  const typeMatch =
+    !selectSourceType ||
+    selectSourceType.length === 0 ||
+    selectSourceType.includes(d.type);
+  const countryMatch =
+    !selectSourceCountry ||
+    selectSourceCountry.length === 0 ||
+    selectSourceCountry.includes(d.NAME_ENGL);
+  return typeMatch && countryMatch;
+});
+
+sources(sourcesDataFiltered);
+return {sourcesDataUnique,sourcesDataPillar,sourcesDataFiltered};
+}});
+
+define({id: "561e4127", mode: "inline", inputs: ["sidebar","display"], body: async (sidebar,display) => {
+display(await(
+sidebar()
+))
+}});
+
+</script>
+</head>
+<body>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<!-- import externals -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="./_file/style.5dc96c04.css">
+<!-- <link rel="stylesheet" href="./toggleSwitch.css"> -->
+<link rel="stylesheet" href="./_file/modeToggle.ad3d6df9.css">
+<!-- sidebar -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="./_file/sidebar.790138e3.css">
+<link rel="stylesheet" href="./_file/custom-legend.1d7c51f6.css">
+
+<!-- back to root button -->
+<!-- <a href="../" class="back-to-root">
+  <span class="arrow"></span>
+</a> -->
+<!-- import components -->
+<div class="observablehq observablehq--block"><!--:a5c0a905:--></div>
+<!-- hero -->
+<div class="hero">
+  <h1>Directions</h1>
+  <h2 class="subheader">Helping countries stay on course.</h2>
+  <!-- <div id="hero-image"></div> -->
+</div>
+<div class="body-text">
+  <p>The Internet Accountability Compass offers more than a snapshotâ€”it provides a sense of direction. Designed for governments and the wider multistakeholder community, the Compass supports accountability by <b>increasing transparency</b> around national policies and actions that shape the digital space. It is both a tool for assessment and a catalyst for progress.
+  </p>
+  <p>By illuminating where countries stand and how far they have come, the Compass seeks to <b>inspire ambition</b>, <b>encourage peer learning</b>, and <b>foster collective progress</b> toward a digital future that is open, inclusive, secure, and rights-respecting. The Compass is not prescriptiveâ€”it does not claim to be the only path forward. Instead, it offers one possible constellation of indicators and data points that reflect shared aspirations.
+  </p>
+    <p>To interpret this progress, the Compass uses four categories to describe each countryâ€™s current trajectory:
+    </p>
+      <ol>
+        <li><b>Off Track:</b> The countryâ€™s current efforts diverge from international principles and commitments. A strategic shift is needed to align with shared goals.</li>
+        <li><b>Catching Up:</b> The country has taken steps to align with global objectives; foundations are forming, but progress is still limited or uneven.
+        </li>
+        <li><b>On Track:</b> The countryâ€™s policies and actions are aligned with global objectives, showing steady and measurable advancement.
+        </li>
+        <li><b>Leading:</b> The country is not only on track but is setting a positive exampleâ€”showing innovation, good practices, or leadership that others can learn from.
+        </li>
+      </ol>
+</div>
+<!-- data -->
+<div class="observablehq observablehq--block"><!--:79224bef:--></div>
+<!-- world map and data -->
+<div class="observablehq observablehq--block"><!--:61a2b3f7:--></div>
+<div class="observablehq observablehq--block"><!--:c7dc7db9:--></div>
+<!-- 1. input data -->
+<div class="observablehq observablehq--block"><!--:d4ca936a:--></div>
+  <!-- 2. input  -->
+<div class="observablehq observablehq--block"><!--:62ae05e1:--></div>
+<!-- Map toggle -->
+<div class="observablehq observablehq--block"><!--:0a3288e2:--></div>
+<div class="observablehq observablehq--block"><!--:58a8998a:--></div>
+<!-- key stats -->
+<div class="observablehq observablehq--block"><!--:6db96a48:--></div>
+<div class="observablehq observablehq--block"><!--:6ca19fb4:--></div>
+<div class="observablehq observablehq--block"><!--:9b3912fe:--></div>
+<!-- key stats -->
+<div class="observablehq observablehq--block"><observablehq-loading></observablehq-loading><!--:ec152fc5:--></div>
+<!-- Pillar map (replace existing mapPillar) -->
+<div class="figure-w-full">
+  <observablehq-loading></observablehq-loading><!--:3cb18e6b:-->
+</div>
+<!-- CONDITIONAL BODY TEXT PER PILLAR -->
+<div class="observablehq observablehq--block"><!--:3b397cd4:--></div>
+<div id="pillar-content"></div>
+<!-- CONDITIONAL COMMITMENT MAPS PER PILLAR -->
+<div class="observablehq observablehq--block"><!--:c53afc5e:--></div>
+<div class="figure-w-full">
+  <observablehq-loading></observablehq-loading><!--:5f11a77f:-->
+</div>
+<!-- sources section -->
+<div class="body-text">
+  <h2>Resources</h2>
+</div>
+<div class="body-text body-input">
+<div class="observablehq observablehq--block"><!--:f51deca7:--></div>
+</div>
+<div class="observablehq observablehq--block"><!--:61a1140b:--></div>
+<div class="body-text">
+  <div id="sources-section"></div>
+</div>
+<!-- sidebar -->
+<div>
+    <observablehq-loading></observablehq-loading><!--:561e4127:-->
+</div>
+</main>
+</div>
+</body>
+</html>

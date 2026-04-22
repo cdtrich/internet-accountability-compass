@@ -1,0 +1,48 @@
+/* Mode Toggle (Latest/Historical) - styled like customLegend */
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.mode-toggle-item {
+  padding: 8px 24px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  user-select: none;
+}
+
+/* First item - rounded left */
+.mode-toggle-item:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Last item - rounded right */
+.mode-toggle-item:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Unselected state - light gray */
+.mode-toggle-item:not(.selected) {
+  background-color: #e0e0e0;
+  color: #111;
+}
+
+.mode-toggle-item:not(.selected):hover {
+  background-color: #d0d0d0;
+}
+
+/* Selected state - dark gray */
+.mode-toggle-item.selected {
+  background-color: #222;
+  color: white;
+}
+
+.mode-toggle-item.selected:hover {
+  background-color: #000;
+}

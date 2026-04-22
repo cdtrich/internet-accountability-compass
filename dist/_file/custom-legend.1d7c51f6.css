@@ -1,0 +1,43 @@
+/* Custom Legend - styled like modeToggle */
+.custom-legend {
+  display: flex;
+  justify-content: center;
+  gap: 0; /* All attached to each other */
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.legend-item {
+  padding: 8px 24px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500; /* No bold on select */
+  transition: all 0.2s ease;
+  border: none;
+  user-select: none;
+}
+
+/* First item - rounded left only */
+.legend-item:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Last item - rounded right only */
+.legend-item:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Single item - rounded all corners */
+.legend-item:only-child {
+  border-radius: 4px;
+}
+
+/* Hover effect - slight opacity increase */
+.legend-item:hover {
+  filter: brightness(0.95);
+}
+
+/* Selected state - no bold, colors handled by JS */
+.legend-item.selected {
+  font-weight: 500; /* Same as unselected, no bold */
+}
