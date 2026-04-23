@@ -123,16 +123,19 @@ svg tspan,
 [class*="plot-"][class*="swatch"],
 [class*="plot-"][class*="swatches"] {
   font-size: clamp(1rem, 0.5vw + 0.05rem, 1rem) !important;
+  font-family: var(--sans-serif) !important;
 }
 
 /* Apply Nunito Sans to all D3 charts */
 svg {
-  font-family: sans-serif;
+  font-family: var(--sans-serif) !important;
+  /* font-family: sans-serif; */
 }
 
 /* Or more specifically for chart text */
 svg text {
-  font-family: sans-serif;
+  font-family: var(--sans-serif) !important;
+  /* font-family: sans-serif; */
 }
 
 [class*="plot-"] {
