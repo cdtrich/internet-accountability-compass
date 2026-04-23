@@ -119,7 +119,7 @@ var commitmentUnique = commitments.filter(onlyUnique);
 <div class="grid grid-cols-3">
 
   <div class="card grid-col-1">
-  <p>${country} scores a <span style="font-weight: 700;">total of ${total} </span>points (<i>${group}</i>) in ${latestYear}.</p>
+  ${isNaN(total) ? html`<p><i>There is not enough data available to generate a total score for ${latestYear}.</i></p>` : html`<p>${country} scores a <span style="font-weight: 700;">total of ${total} </span>points (<i>${group}</i>) in ${latestYear}.</p>`}
   <p>Cardinal point breakdown:</p>
 <ul style="list-style: none; padding-left: 0;">
   <li style="margin-bottom: 10px;">

@@ -128,7 +128,7 @@ df_rename <- df_all_years %>%
 
 dfi_clean <- df_rename %>%
     # drop values without total
-    tidyr::drop_na(total) %>%
+    # tidyr::drop_na(total) %>%
     # generate urls
     # mutate(country_url = paste0("countries/", str_to_lower(ISO3_CODE))) %>%
     # Adding a sequential count for commitments within each pillar

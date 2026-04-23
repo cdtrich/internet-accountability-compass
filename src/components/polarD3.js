@@ -438,7 +438,9 @@ export function polar(data, isMobile, options = {}) {
       .attr("text-anchor", "middle")
       .attr("font-size", 14)
       .attr("opacity", 0)
-      .text(`${Math.floor(totalScore)} (${group})`)
+      .text(
+        `${isNaN(totalScore) ? "Not enough data" : Math.floor(totalScore)} ${isNaN(totalScore) ? "" : `(${group})`}`,
+      )
       .transition()
       .delay(cell.row * 200 + 1500)
       .duration(400)

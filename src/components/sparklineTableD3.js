@@ -84,9 +84,7 @@ export function sparkline(
     .attr("stroke-width", 1.5);
 
   const dotColor = (d) =>
-    totalMode
-      ? categoryColors[d.group_value] ?? "#ccc"
-      : strokeColor;
+    totalMode ? (categoryColors[d.group_value] ?? "#ccc") : strokeColor;
 
   // Latest dot (always visible)
   const latest = pillarData[pillarData.length - 1];

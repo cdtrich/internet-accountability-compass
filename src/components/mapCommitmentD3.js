@@ -213,6 +213,15 @@ export function mapCommitmentD3(
         d.year === latestYear,
     );
 
+    console.log(
+      "India",
+      data.filter((d) => d.ISO3_CODE === "IND"),
+    );
+    console.log(
+      "Cuba",
+      data.filter((d) => d.ISO3_CODE === "CUB"),
+    );
+
     const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
     worldWithData = world.map((feature) => {
       const matchingData = dataMap.get(feature.properties.ISO3_CODE);
@@ -238,7 +247,7 @@ export function mapCommitmentD3(
     .attr("patternUnits", "userSpaceOnUse")
     .attr("width", 4.2425)
     .attr("height", 4.2425)
-    .attr("patternTransform", "rotate(45)");
+    .attr("patternTransform", "rotate(-45)");
   nedPattern
     .append("rect")
     .attr("width", 4.2425)
@@ -345,8 +354,7 @@ export function mapCommitmentD3(
         mode === "latest"
           ? d.properties.value !== undefined && isNaN(d.properties.value)
           : d.properties.value !== undefined &&
-            (d.properties.change === null ||
-              d.properties.change === undefined),
+            (d.properties.change === null || d.properties.change === undefined),
       ),
     )
     .join("path")
@@ -374,8 +382,7 @@ export function mapCommitmentD3(
         mode === "latest"
           ? d.properties.value !== undefined && isNaN(d.properties.value)
           : d.properties.value !== undefined &&
-            (d.properties.change === null ||
-              d.properties.change === undefined);
+            (d.properties.change === null || d.properties.change === undefined);
       const sel = d3.select(this);
       if (!isNoData) sel.raise();
       sel
@@ -608,9 +615,23 @@ export function mapCommitmentD3(
     const nedLegend = legend
       .append("g")
       .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
-    nedLegend.append("rect").attr("width", 18).attr("height", 18).attr("fill", "#ddd");
-    nedLegend.append("rect").attr("width", 18).attr("height", 18).attr("fill", "url(#white-diagonal-lines-commitment)");
-    nedLegend.append("text").attr("x", 24).attr("y", 9).attr("dominant-baseline", "middle").attr("font-size", 12).text("Not enough data");
+    nedLegend
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "#ddd");
+    nedLegend
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "url(#white-diagonal-lines-commitment)");
+    nedLegend
+      .append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dominant-baseline", "middle")
+      .attr("font-size", 12)
+      .text("Not enough data");
   } else {
     // Latest mode: gradient legend
     const legendBg = legend
@@ -672,10 +693,26 @@ export function mapCommitmentD3(
       .attr("font-weight", "bold")
       .text("Score");
 
-    const nedLegendLatest = legend.append("g").attr("transform", "translate(0, 45)");
-    nedLegendLatest.append("rect").attr("width", 18).attr("height", 18).attr("fill", "#ddd");
-    nedLegendLatest.append("rect").attr("width", 18).attr("height", 18).attr("fill", "url(#white-diagonal-lines-commitment)");
-    nedLegendLatest.append("text").attr("x", 24).attr("y", 9).attr("dominant-baseline", "middle").attr("font-size", 12).text("Not enough data");
+    const nedLegendLatest = legend
+      .append("g")
+      .attr("transform", "translate(0, 45)");
+    nedLegendLatest
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "#ddd");
+    nedLegendLatest
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", "url(#white-diagonal-lines-commitment)");
+    nedLegendLatest
+      .append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dominant-baseline", "middle")
+      .attr("font-size", 12)
+      .text("Not enough data");
   }
 
   // Scroll hint overlay - small box at bottom

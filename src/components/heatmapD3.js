@@ -281,7 +281,7 @@ export function heatmap(data, isMobile, options = {}) {
           .append("tspan")
           .attr("x", 0)
           .attr("dy", i === 0 ? (isMobile ? "-1em" : "-2.5em") : "1.1em")
-          .attr("fill", color) // ADD COLOR
+          .attr("fill", line === "Total score" ? "#000" : color) // ADD COLOR
           .attr("font-weight", 700) // ADD BOLD
           .text(line);
       });
