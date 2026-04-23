@@ -188,9 +188,12 @@ const pillar0Header = html`<div
   </div>
   ${viewMode === "historical"
     ? html`<div class="card" style="flex: 1;">
-        ${pillarSparklineD3(
-          dfiCardinal.filter((d) => d.NAME_ENGL === country),
-          dfiCardinalCountry[0].pillar_txt,
+        ${resize((width) =>
+          pillarSparklineD3(
+            dfiCardinal.filter((d) => d.NAME_ENGL === country),
+            dfiCardinalCountry[0].pillar_txt,
+            { width },
+          ),
         )}
       </div>`
     : html`<div style="flex: 1;"></div>`}
@@ -256,9 +259,12 @@ const pillar1Header = html`<div
   </div>
   ${viewMode === "historical"
     ? html`<div class="card" style="flex: 1;">
-        ${pillarSparklineD3(
-          dfiCardinal.filter((d) => d.NAME_ENGL === country),
-          dfiCardinalCountry[1].pillar_txt,
+        ${resize((width) =>
+          pillarSparklineD3(
+            dfiCardinal.filter((d) => d.NAME_ENGL === country),
+            dfiCardinalCountry[1].pillar_txt,
+            { width },
+          ),
         )}
       </div>`
     : html`<div style="flex: 1;"></div>`}
@@ -324,9 +330,12 @@ const pillar2Header = html`<div
   </div>
   ${viewMode === "historical"
     ? html`<div class="card" style="flex: 1;">
-        ${pillarSparklineD3(
-          dfiCardinal.filter((d) => d.NAME_ENGL === country),
-          dfiCardinalCountry[2].pillar_txt,
+        ${resize((width) =>
+          pillarSparklineD3(
+            dfiCardinal.filter((d) => d.NAME_ENGL === country),
+            dfiCardinalCountry[2].pillar_txt,
+            { width },
+          ),
         )}
       </div>`
     : html`<div style="flex: 1;"></div>`}
@@ -392,9 +401,12 @@ const pillar3Header = html`<div
   </div>
   ${viewMode === "historical"
     ? html`<div class="card" style="flex: 1;">
-        ${pillarSparklineD3(
-          dfiCardinal.filter((d) => d.NAME_ENGL === country),
-          dfiCardinalCountry[3].pillar_txt,
+        ${resize((width) =>
+          pillarSparklineD3(
+            dfiCardinal.filter((d) => d.NAME_ENGL === country),
+            dfiCardinalCountry[3].pillar_txt,
+            { width },
+          ),
         )}
       </div>`
     : html`<div style="flex: 1;"></div>`}

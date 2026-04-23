@@ -28,7 +28,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     const sparkH = 60; // Increased for labels
     const marginLeft = 20;
     const marginRight = 20;
-    const marginTop = 20; // Space for labels above points
+    const marginTop = 15; // Space for labels above points
     const marginBottom = 20; // Space for year labels below
 
     const countryData = data
@@ -247,8 +247,9 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
-  // Add pattern for partial data
   const defs = svg.append("defs");
+
+  // Partial data pattern: rotate(45)
   defs
     .append("pattern")
     .attr("id", "white-diagonal-lines-map")
@@ -256,6 +257,21 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .attr("width", 4.2425)
     .attr("height", 4.2425)
     .attr("patternTransform", "rotate(45)")
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 1.5)
+    .attr("height", 4.2425)
+    .attr("fill", "white");
+
+  // Not enough data pattern: rotate(-45)
+  defs
+    .append("pattern")
+    .attr("id", "white-diagonal-lines-map-ned")
+    .attr("patternUnits", "userSpaceOnUse")
+    .attr("width", 4.2425)
+    .attr("height", 4.2425)
+    .attr("patternTransform", "rotate(-45)")
     .append("rect")
     .attr("x", 0)
     .attr("y", 0)
@@ -349,7 +365,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     )
     .append("path")
     .attr("d", path)
-    .attr("fill", "url(#white-diagonal-lines-map)")
+    .attr("fill", "url(#white-diagonal-lines-map-ned)")
     .attr("stroke", "none")
     .style("pointer-events", "none");
 
@@ -628,7 +644,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .append("rect")
     .attr("width", 18)
     .attr("height", 18)
-    .attr("fill", "url(#white-diagonal-lines-map)");
+    .attr("fill", "url(#white-diagonal-lines-map-ned)");
 
   nedLegend
     .append("text")

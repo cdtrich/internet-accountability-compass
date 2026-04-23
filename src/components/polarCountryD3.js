@@ -187,9 +187,9 @@ export function polarCountryD3(data, country, isMobile, options = {}) {
         tooltip.style("visibility", "visible").html(
           `
             <strong style="font-size: 28px; font-weight: bold; color: ${scoreColor}; margin-bottom: 8px;">
-            ${Math.floor(d.value)}
-          </strong><strong>${d.NAME_ENGL}</strong><br>
-            ${d.commitment_txt_cardinal}<br>
+            ${Math.floor(d.value)}</strong>
+          <br>
+            <span style="color: ${scoreColor};">${d.commitment_txt_cardinal}</span><br>
             ${d.pillar_txt}
           `,
         );

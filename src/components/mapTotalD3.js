@@ -26,7 +26,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     const sparkH = 60;
     const marginLeft = 20;
     const marginRight = 20;
-    const marginTop = 0;
+    const marginTop = 15;
     const marginBottom = 20;
 
     const countryData = data
@@ -346,7 +346,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("patternUnits", "userSpaceOnUse")
     .attr("width", 4.2425)
     .attr("height", 4.2425)
-    .attr("patternTransform", "rotate(45)");
+    .attr("patternTransform", "rotate(-45)");
   nedPattern
     .append("rect")
     .attr("width", 4.2425)

@@ -206,7 +206,7 @@ export function straightPlotD3(data, country, pillar, options = {}) {
 
         tooltip
           .style("visibility", "visible")
-          .html(`<strong>${d.label}</strong><br>Score: ${Math.round(d.value)}`);
+          .html(`<strong>${d.label}</strong><br>${Math.round(d.value)}`);
 
         tooltip
           .style("top", event.pageY - 10 + "px")

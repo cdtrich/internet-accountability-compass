@@ -9,7 +9,7 @@ import colorScales from "./scales.js";
  * @param {string} pillar - Pillar name
  * @returns {HTMLElement} SVG DOM node
  */
-export function pillarSparklineD3(data, pillar) {
+export function pillarSparklineD3(data, pillar, { width = 190 } = {}) {
   const fillScale = colorScales();
   const pillarColor = fillScale.getColor(pillar);
 
@@ -23,12 +23,10 @@ export function pillarSparklineD3(data, pillar) {
     return document.createElement("span"); // Return empty span if no data
   }
 
-  // Dimensions - larger for visibility
-  const width = 380;
   const height = 180;
   const marginLeft = 20;
   const marginRight = 20;
-  const marginTop = 20;
+  const marginTop = 50;
   const marginBottom = 20;
 
   // Scales
@@ -49,7 +47,35 @@ export function pillarSparklineD3(data, pillar) {
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
-    .style("display", "block");
+    .style("display", "block")
+    .style("max-width", "100%")
+    .style("height", "auto");
+
+  // Title
+  svg
+    .append("text")
+    .attr("x", marginLeft)
+    .attr("y", marginTop - 30)
+    .attr("text-anchor", "start")
+    .attr("fill", "#666")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 2)
+    .attr("paint-order", "stroke")
+    .text("Cardinal average")
+    .each(function () {
+      this.style.setProperty("font-size", "12px", "important");
+    });
+
+  // Background rect
+  svg
+    .append("rect")
+    .attr("x", marginLeft)
+    .attr("y", yScale(100))
+    .attr("width", width - marginLeft - marginRight)
+    .attr("height", yScale(0) - yScale(100))
+    .attr("stroke", "#eee")
+    .attr("stroke-width", 1)
+    .attr("fill", "#ffffff9x0");
 
   // Line generator
   const line = d3
@@ -91,9 +117,15 @@ export function pillarSparklineD3(data, pillar) {
       .attr("x", xScale(d.year))
       .attr("y", yScale(d.value) - 8)
       .attr("text-anchor", "middle")
-      .style("font-size", "10px")
-      .attr("fill", "#000")
-      .text(Math.round(d.value));
+      // .attr("fill", "#000")
+      .attr("fill", pillarColor)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 4)
+      .attr("paint-order", "stroke")
+      .text(Math.round(d.value))
+      .each(function () {
+        this.style.setProperty("font-size", "12px", "important");
+      });
 
     // Year label below (only first and last)
     if (isFirst || isLast) {
@@ -103,9 +135,14 @@ export function pillarSparklineD3(data, pillar) {
         .attr("x", xScale(d.year))
         .attr("y", height - 5)
         .attr("text-anchor", "middle")
-        .style("font-size", "10px")
         .attr("fill", "#333")
-        .text(shortYear);
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2)
+        .attr("paint-order", "stroke")
+        .text(shortYear)
+        .each(function () {
+          this.style.setProperty("font-size", "12px", "important");
+        });
     }
   });
 

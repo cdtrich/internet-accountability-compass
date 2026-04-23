@@ -11,11 +11,18 @@ import { basePath } from "./basePath.js";
  * @param {Array} yearDomain - [minYear, maxYear] for fixed x-axis
  * @param {Object} options
  */
+const categoryColors = {
+  "Off track": "#FDE74C",
+  "Catching up": "#afb6b5ff",
+  "On track": "#4ed0bfff",
+  Leading: "#007162ff",
+};
+
 export function sparkline(
   data,
   pillarTxt,
   yearDomain,
-  { width = 120, height = 32, color = null } = {},
+  { width = 120, height = 32, color = null, totalMode = false } = {},
 ) {
   const fillScale = colorScales();
 
@@ -29,8 +36,6 @@ export function sparkline(
 
   const strokeColor = color ?? fillScale.getColor(pillarTxt);
 
-  const years = pillarData.map((d) => d.year);
-  // Use fixed yearDomain instead of data-specific extent
   const xScale = d3
     .scaleLinear()
     .domain(yearDomain)
@@ -65,8 +70,8 @@ export function sparkline(
     .append("path")
     .datum(pillarData)
     .attr("d", area)
-    .attr("fill", strokeColor)
-    .attr("fill-opacity", 0.2)
+    .attr("fill", totalMode ? "#ccc" : strokeColor)
+    .attr("fill-opacity", totalMode ? 0.5 : 0.2)
     .attr("stroke", "none");
 
   // Line
@@ -75,8 +80,13 @@ export function sparkline(
     .datum(pillarData)
     .attr("d", line)
     .attr("fill", "none")
-    .attr("stroke", strokeColor)
+    .attr("stroke", totalMode ? "#555" : strokeColor)
     .attr("stroke-width", 1.5);
+
+  const dotColor = (d) =>
+    totalMode
+      ? categoryColors[d.group_value] ?? "#ccc"
+      : strokeColor;
 
   // Latest dot (always visible)
   const latest = pillarData[pillarData.length - 1];
@@ -85,9 +95,9 @@ export function sparkline(
     .attr("cx", xScale(latest.year))
     .attr("cy", yScale(latest.value))
     .attr("r", 3)
-    .attr("fill", strokeColor);
+    .attr("fill", dotColor(latest));
 
-  // Intermediate dots (visible on hover only - outline only)
+  // Intermediate dots (visible on hover only)
   const intermediate = pillarData.slice(0, -1);
   const dots = svg
     .selectAll(".interim-dot")
@@ -97,10 +107,10 @@ export function sparkline(
     .attr("cx", (d) => xScale(d.year))
     .attr("cy", (d) => yScale(d.value))
     .attr("r", 3)
-    .attr("fill", "none")
-    .attr("stroke", strokeColor)
+    .attr("fill", totalMode ? (d) => dotColor(d) : "none")
+    .attr("stroke", totalMode ? "none" : strokeColor)
     .attr("stroke-width", 1)
-    .style("opacity", 0); // Hidden by default
+    .style("opacity", 0);
 
   // Tooltip (reuse shared .chart-tooltip)
   const tooltip = d3
@@ -249,6 +259,7 @@ export function sparklineTableD3(data, isMobile, { width = 640 } = {}) {
       sparkline(countryData, "Total score", yearDomain, {
         width: sparkW,
         height: sparkH,
+        totalMode: true,
       }),
     );
 
