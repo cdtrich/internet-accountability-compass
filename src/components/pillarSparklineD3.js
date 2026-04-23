@@ -75,7 +75,7 @@ export function pillarSparklineD3(data, pillar, { width = 190 } = {}) {
     .attr("height", yScale(0) - yScale(100))
     .attr("stroke", "#eee")
     .attr("stroke-width", 1)
-    .attr("fill", "#ffffff9x0");
+    .attr("fill", "#ffffff80");
 
   // Line generator
   const line = d3
