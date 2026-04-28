@@ -43,19 +43,19 @@ import { modeToggle } from "./components/modeToggle.js";
   <!-- <div id="hero-image"></div> -->
 </div>
 <div class="body-text">
-  <p>The Internet Accountability Compass offers more than a snapshotâ€”it provides a sense of direction. Designed for governments and the wider multistakeholder community, the Compass supports accountability by <b>increasing transparency</b> around national policies and actions that shape the digital space. It is both a tool for assessment and a catalyst for progress.
+  <p>The Internet Accountability Compass offers more than a snapshot—it provides a sense of direction. Designed for governments and the wider multistakeholder community, the Compass supports accountability by <b>increasing transparency</b> around national policies and actions that shape the digital space. It is both a tool for assessment and a catalyst for progress.
   </p>
-  <p>By illuminating where countries stand and how far they have come, the Compass seeks to <b>inspire ambition</b>, <b>encourage peer learning</b>, and <b>foster collective progress</b> toward a digital future that is open, inclusive, secure, and rights-respecting. The Compass is not prescriptiveâ€”it does not claim to be the only path forward. Instead, it offers one possible constellation of indicators and data points that reflect shared aspirations.
+  <p>By illuminating where countries stand and how far they have come, the Compass seeks to <b>inspire ambition</b>, <b>encourage peer learning</b>, and <b>foster collective progress</b> toward a digital future that is open, inclusive, secure, and rights-respecting. The Compass is not prescriptive—it does not claim to be the only path forward. Instead, it offers one possible constellation of indicators and data points that reflect shared aspirations.
   </p>
-    <p>To interpret this progress, the Compass uses four categories to describe each countryâ€™s current trajectory:
+    <p>To interpret this progress, the Compass uses four categories to describe each country's current trajectory:
     </p>
       <ol>
-        <li><b>Off Track:</b> The countryâ€™s current efforts diverge from international principles and commitments. A strategic shift is needed to align with shared goals.</li>
+        <li><b>Off Track:</b> The country's current efforts diverge from international principles and commitments. A strategic shift is needed to align with shared goals.</li>
         <li><b>Catching Up:</b> The country has taken steps to align with global objectives; foundations are forming, but progress is still limited or uneven.
         </li>
-        <li><b>On Track:</b> The countryâ€™s policies and actions are aligned with global objectives, showing steady and measurable advancement.
+        <li><b>On Track:</b> The country's policies and actions are aligned with global objectives, showing steady and measurable advancement.
         </li>
-        <li><b>Leading:</b> The country is not only on track but is setting a positive exampleâ€”showing innovation, good practices, or leadership that others can learn from.
+        <li><b>Leading:</b> The country is not only on track but is setting a positive example—showing innovation, good practices, or leadership that others can learn from.
         </li>
       </ol>
 </div>
