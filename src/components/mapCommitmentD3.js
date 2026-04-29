@@ -153,14 +153,14 @@ export function mapCommitmentD3(
   const opacityScale = d3
     .scaleLinear()
     .domain([0, 20])
-    .range([0, 1])
+    .range([0.2, 1])
     .clamp(true);
 
   // Change colors for historical mode
   const changeColors = {
     positive: pillarColor, // Pillar color for improvements
     negative: "#FDE74C", // Yellow for declines
-    zero: "#afb6b5ff", // Gray for no change
+    zero: "#555555", // Gray for no change
   };
 
   let worldWithData;
@@ -573,7 +573,7 @@ export function mapCommitmentD3(
     // Historical mode: 3-category legend
     const legendData = [
       { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: "#fff", stroke: "#ccc", strokeWidth: 1 },
+      { label: "No change", color: "#55555520", strokeWidth: 1 },
       { label: "Increase", color: changeColors.positive },
     ];
 

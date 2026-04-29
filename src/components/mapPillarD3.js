@@ -156,7 +156,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   const changeColors = {
     positive: pillarColor, // Pillar color for improvements
     negative: "#FDE74C", // Yellow for declines
-    zero: "#afb6b5ff", // Gray for no change
+    zero: "#555555", // Gray for no change
   };
 
   let worldWithData, legendData;
@@ -199,7 +199,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
 
     legendData = [
       { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: "#fff", stroke: "#ccc", strokeWidth: 1 },
+      { label: "No change", color: "#55555520", strokeWidth: 1 },
       { label: "Increase", color: changeColors.positive },
     ];
   } else {
