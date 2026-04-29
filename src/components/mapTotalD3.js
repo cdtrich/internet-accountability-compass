@@ -154,7 +154,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
   const changeColors = {
     positive: "#007162ff", // Green for improvements
     negative: "#FDE74C", // Yellow for declines
-    zero: "#fff", // Gray for no change
+    zero: "#555555", // Gray for no change
   };
 
   // Opacity scale based on absolute change magnitude
@@ -205,7 +205,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
     legendData = [
       { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: changeColors.zero },
+      { label: "No change", color: "#55555520", strokeWidth: 1 },
       { label: "Increase", color: changeColors.positive },
       {
         label: "Not enough data",
