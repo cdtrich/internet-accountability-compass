@@ -344,7 +344,7 @@ const uniquePillars = [...new Set(dfiCardinal.map((item) => item.pillar_txt))];
 ```
 
 <!-- sidebar -->
-
+<!--  -->
 <div>
     ${sidebar()}
 </div>
