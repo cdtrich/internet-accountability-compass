@@ -8,7 +8,7 @@ export function sidebar() {
 
   const container = document.createElement("div");
   container.innerHTML = `
-    <div class="sidebar collapsed" id="sidebar">
+    <div class="sidebar${isMobile ? " collapsed" : ""}" id="sidebar">
       <div class="sidebar-content">
         <ul class="sidebar-menu">
           <li>
@@ -36,6 +36,12 @@ export function sidebar() {
             </a>
           </li>
           <li>
+            <a href="${basePath}/blog">
+              <i class="fas fa-newspaper"></i>
+              <span>Blog</span>
+            </a>
+          </li>
+          <li>
             <a href="${basePath}/methodology">
               <i class="fas fa-tools"></i>
               <span>Methodology</span>
@@ -47,31 +53,6 @@ export function sidebar() {
   `;
 
   const sidebarEl = container.querySelector("#sidebar");
-
-  // Add hover event listeners (desktop only)
-  if (!isMobile) {
-    sidebarEl.addEventListener("mouseenter", function () {
-      sidebarEl.classList.remove("collapsed");
-    });
-
-    sidebarEl.addEventListener("mouseleave", function () {
-      sidebarEl.classList.add("collapsed");
-    });
-
-    // Touch events for tablets/touch laptops
-    let touchTimeout;
-
-    sidebarEl.addEventListener("touchstart", function () {
-      clearTimeout(touchTimeout);
-      sidebarEl.classList.remove("collapsed");
-    });
-
-    sidebarEl.addEventListener("touchend", function () {
-      touchTimeout = setTimeout(() => {
-        sidebarEl.classList.add("collapsed");
-      }, 2000);
-    });
-  }
 
   function highlightCurrentPage() {
     const currentPath = window.location.pathname.replace(basePath, "") || "/";
@@ -87,6 +68,7 @@ export function sidebar() {
         (href === "/countries" && currentPath.startsWith("/countries")) ||
         (href === "/directions" && currentPath.startsWith("/directions")) ||
         (href === "/perspectives" && currentPath.startsWith("/perspectives")) ||
+        (href === "/blog" && currentPath.startsWith("/blog")) ||
         (href === "/methodology" && currentPath.startsWith("/methodology"))
       ) {
         link.classList.add("active");

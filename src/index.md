@@ -19,6 +19,7 @@
 import colorScales from "./components/scales.js";
 import { mapTotalD3 } from "./components/mapTotalD3.js";
 import { sidebar } from "./components/sidebar.js";
+import { blogPreview } from "./components/blogPreview.js";
 // import { toggleSwitch } from "./components/toggleSwitch.js";
 import { modeToggle } from "./components/modeToggle.js";
 ```
@@ -39,6 +40,9 @@ The Internet Accountability Compass is an <b>interactive tool</b> to promote gre
 <p style="font-size: 1.1em !important">
 The Compass is not a definitive answer to the challenge of accountability. Rather, it is one of many possible constellations of indicators and data points. Its purpose is to spark dialogue—about what matters, how progress should be measured, and how countries can hold themselves and each other accountable across <a href="./directions">four core dimensions</a>: connectivity and infrastructure, rights and freedoms,responsibility and sustainability, and trust and resilience.
 </p>
+
+<p style="font-size: 1.1em !important">
+!!! ADDITIONAL PARAGRAPH INTRODUCING THE TOGGLE BETWEEN LATEST AND HISTORICAL !!! </p>
 
 <div class="desktop-notice" id="notice">
   Desktop recommended for full interactivity
@@ -223,23 +227,26 @@ The Internet Accountability Compass is not an audit mechanism or compliance chec
 By charting national performance across <a href="./directions">four cardinal dimensions</a>—Connectivity and infrastructure, Rights and
 freedoms, Responsibility and sustainability, and Trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
 </p>
-  <!-- funding reference -->
-  <h2>Team behind the Compass</h2>
-  <p>
-  The Compass was developed by the <a href="https://globalgovernanceprogramme.eui.eu/gifi/" target="_blank">Global Initiative on the Future of the Internet</a> at the European University Institute. Dr Patryk Pawlak and Nils Berglund are responsible for the concept, data collection and development of the Compass. The <a href="./methodology">methodology section</a> explains the approach and procedures adopted by the team. During the process, the authors benefited from numerous inputs through interviews and workshops. Christian Dietrich prepared and implemented the visual design for the Compass.
-  </p>
-  
-  <p>
-  The Global Initiative on the Future of the Internet is funded by the European Union. However, the Compass is the result of independent research conducted at the EUI. As such, the views and material presented in the Compass cannot be attributed to the EU or any of its bodies and agencies.
-  </p>
+  <h2>Latest analysis</h2>
+  ${blogPreview()}
 
-  <div class="grid grid-cols-4 gap-4">
-  <div>
-    <img class="keystats" src="https://ec.europa.eu/regional_policy/images/information-sources/logo-download-center/eu_funded_en.jpg" width="100%">
-  </div>
-  <div class="col-span-3">
-  </div>
-  </div>
+<!-- funding reference -->
+<h2>Team behind the Compass</h2>
+<p>
+The Compass was developed by the <a href="https://globalgovernanceprogramme.eui.eu/gifi/" target="_blank">Global Initiative on the Future of the Internet</a> at the European University Institute. Dr Patryk Pawlak and Nils Berglund are responsible for the concept, data collection and development of the Compass. The <a href="./methodology">methodology section</a> explains the approach and procedures adopted by the team. During the process, the authors benefited from numerous inputs through interviews and workshops. Christian Dietrich prepared and implemented the visual design for the Compass.
+</p>
+
+<p>
+The Global Initiative on the Future of the Internet is funded by the European Union. However, the Compass is the result of independent research conducted at the EUI. As such, the views and material presented in the Compass cannot be attributed to the EU or any of its bodies and agencies.
+</p>
+
+<div class="grid grid-cols-4 gap-4">
+<div>
+  <img class="keystats" src="https://ec.europa.eu/regional_policy/images/information-sources/logo-download-center/eu_funded_en.jpg" width="100%">
+</div>
+<div class="col-span-3">
+</div>
+</div>
 
 </div>
 

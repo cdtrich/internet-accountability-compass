@@ -10,7 +10,15 @@ import * as d3 from "npm:d3";
  * @param {Object} options - width, height
  */
 export function mapSourcesD3(world, coast, sourcesData, options = {}) {
-  const { width = 975, height = 610 } = options;
+  const {
+    width = 975,
+    height = 610,
+    selectedType = "⌕ Analysis",
+    typeColor = "#007162",
+    initialCountry = null,
+  } = options;
+
+  const baseType = selectedType.replace(/^[⌕¶⚑]\s*/, "");
 
   // Count resources by type per country
   const resourceCounts = {};
@@ -26,15 +34,17 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
       };
     }
     // Extract base type (remove icon prefix if present)
-    const baseType = d.type.replace(/^[⌕¶⚑]\s*/, "");
-    if (resourceCounts[iso].hasOwnProperty(baseType)) {
-      resourceCounts[iso][baseType]++;
+    const bt = d.type.replace(/^[⌕¶⚑]\s*/, "");
+    if (resourceCounts[iso].hasOwnProperty(bt)) {
+      resourceCounts[iso][bt]++;
       resourceCounts[iso].total++;
     }
   });
 
-  // Get unique ISO codes for countries with resources
-  const countriesWithResources = Object.keys(resourceCounts);
+  // Countries that have data for the selected type
+  const countriesWithResources = Object.keys(resourceCounts).filter(
+    (iso) => resourceCounts[iso][baseType] > 0,
+  );
 
   // Merge world data with resource counts
   const worldWithData = world.map((feature) => {
@@ -97,7 +107,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
   }
 
   // State for selected country
-  let selectedCountry = null;
+  let selectedCountry = initialCountry;
 
   // Background rectangle to capture clicks on empty space
   mapGroup
@@ -123,7 +133,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
     .attr("d", path)
     .attr("fill", (d) =>
       countriesWithResources.includes(d.properties.ISO3_CODE)
-        ? "#32baa8"
+        ? typeColor
         : "#eee",
     )
     .attr("stroke", "#eee")
@@ -163,7 +173,10 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
       );
   }
 
-  // External selection (from input or other sources)
+  // Apply initial country selection immediately (e.g. when type switches mid-selection)
+  if (selectedCountry) updateStyles();
+
+  // External selection (from map click in other re-renders or future clicks)
   window.addEventListener("map-country-selected", (e) => {
     selectedCountry = e.detail;
     updateStyles();
@@ -206,10 +219,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
       const counts = d.properties;
       const tooltipContent = `
         <strong>${counts.NAME_ENGL}</strong><br>
-        Number of resources: ${counts.total}<br>
-        ⌕ Analysis: ${counts.Analysis}<br>
-        ¶ Source: ${counts.Source}<br>
-        ⚑ Project: ${counts.Project}
+        ${selectedType}: ${counts[baseType] || 0}
       `;
 
       tooltip.style("visibility", "visible").html(tooltipContent);
@@ -245,7 +255,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
     .attr("class", "zoom-controls")
     .attr("transform", `translate(${width - 50}, ${height - 200})`);
 
-  const controlColor = "#32baa8";
+  const controlColor = typeColor;
 
   // Zoom in button
   const zoomInButton = controlsGroup

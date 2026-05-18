@@ -8,21 +8,18 @@
 />
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="./sidebar.css" />
+<link rel="stylesheet" href="./custom-legend.css" />
 </head>
-
-<!-- back to root button -->
-<!-- <a href="../" class="back-to-root">
-  <span class="arrow"></span>
-</a> -->
 
 <!-- import components -->
 
 ```js
-// import { colorScales } from "./components/scales.js";
-// import { onlyUnique } from "./components/onlyUnique.js";
 import { sources } from "./components/sources.js";
-// import { mapSources } from "./components/mapSources.js";
 import { mapSourcesD3 } from "./components/mapSourcesD3.js";
+import {
+  viewofSourcesLegend,
+  SOURCE_TYPE_COLORS,
+} from "./components/sourcesLegend.js";
 import { sidebar } from "./components/sidebar.js";
 ```
 
@@ -38,24 +35,21 @@ const sourcesData = FileAttachment("./data/sources.csv").csv({
 <div class="hero">
   <h1>Perspectives</h1>
   <h2 class="subheader">Sharing knowledge to accelerate progress.</h2>
-  <!-- <div id="hero-image"></div> -->
 </div>
 
 <div class="body-text">
-<p>Accountability in the digital realm is not a new conceptâ€”extensive research, advocacy, and policy innovation have shaped the global understanding of what it means to build a safe, inclusive, and rights-respecting Internet. Around the world, governments, civil society, international organisations, and research institutions have developed tools, frameworks, and initiatives to uphold commitments to connectivity, human rights, sustainability, and resilience.</p>
+<p>Accountability in the digital realm is not a new concept—extensive research, advocacy, and policy innovation have shaped the global understanding of what it means to build a safe, inclusive, and rights-respecting Internet. Around the world, governments, civil society, international organisations, and research institutions have developed tools, frameworks, and initiatives to uphold commitments to connectivity, human rights, sustainability, and resilience.</p>
 
 <p>Yet this valuable knowledge often remains fragmented, siloed by region, sector, or theme. This section brings together <b>a curated collection of complementary sources, analysis, and projects</b> that highlight good practices, policy innovations, and real-world applications of the principles captured in the Internet Accountability Compass.</p>
 
-<p>Whether it's a successful regulatory reform, an inclusive AI policy, a transparent approach to digital trade, or a strong national cybersecurity frameworkâ€”these examples demonstrate that progress is possible. They also offer insights into how shared digital principles, such as those in the Global Digital Compact, can be translated into meaningful action.</p>
+<p>Whether it's a successful regulatory reform, an inclusive AI policy, a transparent approach to digital trade, or a strong national cybersecurity framework—these examples demonstrate that progress is possible. They also offer insights into how shared digital principles, such as those in the Global Digital Compact, can be translated into meaningful action.</p>
 
-<p>Together, these resources help build a clearer picture of what digital accountability looks like in practiceâ€”and how it can be strengthened globally.</p>
+<p>Together, these resources help build a clearer picture of what digital accountability looks like in practice—and how it can be strengthened globally.</p>
 </div>
 
-<!-- data processing: unique types and countries for dropdown, and deduplicated data -->
+<!-- data processing -->
 
 ```js
-const sourceTypeUnique = [...new Set(sourcesData.map((d) => d.type))];
-const sourceCountryUnique = [...new Set(sourcesData.map((d) => d.NAME_ENGL))];
 const sourceISOUnique = [...new Set(sourcesData.map((d) => d.ISO3_CODE))];
 
 const sourcesDataUnique = sourcesData.filter(
@@ -94,142 +88,48 @@ const coast = topojson.feature(
 );
 ```
 
+<!-- Resources heading + type legend -->
+
+<div class="body-text">
+  <h2>Resources</h2>
+  <i>Select resources by type and/or country.</i>
+
+</div>
+
 ```js
-const worldFiltered = world.filter((feature) =>
-  sourceISOUnique.includes(feature.properties.ISO3_CODE),
-);
+const selectedSourceType = view(viewofSourcesLegend("⌕ Analysis"));
+```
+
+```js
+const selectedCountry = Mutable(null);
+window.addEventListener("map-country-selected", (e) => {
+  selectedCountry.value = e.detail;
+});
 ```
 
 <!-- map -->
 <div class="figure-w-full">
-      ${resize((width) => mapSourcesD3(world, coast, sourcesData, {width, height: 400 }))}
+  ${resize((width) => mapSourcesD3(world, coast, sourcesData, {
+    width,
+    height: 400,
+    selectedType: selectedSourceType,
+    typeColor: SOURCE_TYPE_COLORS[selectedSourceType],
+    initialCountry: selectedCountry,
+  }))}
 </div>
 
-<!-- input controls -->
-
-<div class="body-text">
-  <h2>Resources</h2>
-</div>
-<!-- <p>Select a resource type.</p> -->
-
-<div class="body-text body-input">
-
-```js
-// console.log("worldFiltered", worldFiltered);
-const selectSourceType = view(
-  Inputs.checkbox(sourceTypeUnique, {
-    // label: "Source type",
-    format: (x) =>
-      html`<span style="font-weight: [400, 700, 200];">${x}</span>`,
-  }),
-);
-```
-
-<!-- Select a country. -->
-
-```js
-const selectSourceCountry = view(
-  Inputs.search(sourceCountryUnique, {
-    value: "",
-    datalist: sourceCountryUnique,
-    placeholder: "Search countries",
-    output: null,
-  }),
-);
-```
-
-<!-- filtered data -->
+<!-- filtered cards -->
 
 ```js
 const sourcesDataFiltered = sourcesDataUnique.filter((d) => {
-  const typeMatch =
-    !selectSourceType ||
-    selectSourceType.length === 0 ||
-    selectSourceType.includes(d.type);
-  const countryMatch =
-    !selectSourceCountry ||
-    selectSourceCountry.length === 0 ||
-    selectSourceCountry.includes(d.NAME_ENGL);
+  const typeMatch = d.type === selectedSourceType;
+  const countryMatch = !selectedCountry || d.NAME_ENGL === selectedCountry;
   return typeMatch && countryMatch;
 });
 sources(sourcesDataFiltered);
 ```
 
-<!-- interactivity -->
-
-```js
-// Debounce helper to speed up text input
-function debounce(fn, delay) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), delay);
-  };
-}
-```
-
-```js
-{
-  if (!window._mapCountryListenerSet) {
-    window._mapCountryListenerSet = true;
-
-    function debounce(fn, delay) {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => fn(...args), delay);
-      };
-    }
-
-    function trySetupMapInputSync() {
-      const input = document.querySelector(
-        "input[placeholder='Search countries']",
-      );
-      if (!input) {
-        console.log("â³ Input not yet mounted, trying again...");
-        requestAnimationFrame(trySetupMapInputSync);
-        return;
-      }
-
-      console.log("âœ… Input found. Setting up sync...");
-
-      // ðŸ–±ï¸ Map click â†’ input update
-      window.addEventListener("map-country-selected", (e) => {
-        const country = e.detail;
-        console.log("ðŸ—ºï¸ Map clicked:", country);
-
-        input.value = country || "";
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      });
-
-      // âŒ¨ï¸ Typing â†’ map update (debounced)
-      let lastDispatched = null;
-
-      const sendToMap = debounce((value) => {
-        if (value !== lastDispatched) {
-          lastDispatched = value;
-          window.dispatchEvent(
-            new CustomEvent("map-country-selected", { detail: value }),
-          );
-        }
-      }, 150);
-
-      input.addEventListener("input", (e) => {
-        const typed = e.target.value;
-        console.log("âŒ¨ï¸ Input typed:", typed);
-        sendToMap(typed);
-      });
-    }
-
-    trySetupMapInputSync();
-  }
-}
-```
-
-</div>
-
 <div class="body-text">
-  <!-- sources section -->
   <div id="sources-section"></div>
 </div>
 

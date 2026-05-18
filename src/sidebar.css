@@ -15,7 +15,7 @@
 
 .sidebar {
   position: fixed;
-  top: 38%;
+  top: 50%;
   transform: translateY(-50%);
   left: 0;
   width: var(--sidebar-width);
@@ -107,10 +107,7 @@
 }
 
 .collapsed .sidebar-menu span {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+  visibility: hidden;
 }
 
 /* Responsive adjustments */
@@ -155,21 +152,6 @@
   }
 }
 
-/* Ensure hover works on touch devices */
-@media (hover: hover) {
-  /* Only apply hover effects on devices that support hover */
-  .sidebar.collapsed:hover {
-    width: var(--sidebar-width);
-    opacity: 1;
-  }
-
-  .sidebar.collapsed:hover .sidebar-menu span {
-    opacity: 1;
-    width: auto;
-    height: auto;
-    overflow: visible;
-  }
-}
 
 /* For touch devices, ensure the sidebar is visible when touched */
 /* @media (hover: none) {

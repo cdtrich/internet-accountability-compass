@@ -41,3 +41,21 @@
 .legend-item.selected {
   font-weight: 500; /* Same as unselected, no bold */
 }
+
+/* Sources legend: icon and label inline */
+.sources-legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 28px;
+}
+
+.sources-legend-icon {
+  font-size: 1.5em;
+  line-height: 1.2;
+}
+
+.sources-legend-label {
+  font-size: 1em;
+}

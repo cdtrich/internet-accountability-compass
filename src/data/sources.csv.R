@@ -3,9 +3,22 @@ library(tidyr)
 library(readxl)
 library(readr)
 library(stringr)
+library(googlesheets4)
+
+# last updated: 2025-05-17
+
+# Skip authentication for public/link-shareable sheets
+gs4_deauth() # 2026-05-17
+
+# Your Google Sheet ID (extracted from URL)
+sheet_id <- "10ZMGjh0TKSleCDj0eT8iC5T91fGksKsiE66k0Ub9INA"
 
 # read data
-sources <- read_excel("src/data/Sources-sep24.xlsx") %>%
+sources <- read_sheet(
+    sheet_id,
+    # skip = 2,
+    # col_types = "c" # Read everything as character first, then convert
+) %>%
     # select and clean names
     select(1:9) %>%
     rename(
