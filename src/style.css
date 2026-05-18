@@ -55,6 +55,8 @@ body,
 h1,
 .body-text,
 .body-text > p,
+.body-text > h1,
+.body-text > h2,
 #pillar-content,
 .figure-w-full > * {
   /* font-family: "Nunito Sans", sans-serif; */
@@ -82,6 +84,7 @@ h1,
     margin-left: 0;
   }
   .hero > h1,
+  .body-text > h1,
   h1 {
     margin: 2rem 0;
     max-width: none;
@@ -432,6 +435,10 @@ a:hover {
 
 .hero h1 {
   font-size: 6em;
+}
+
+.body-text > h1 {
+  font-size: 2rem !important;
 }
 
 .chart-tooltip {

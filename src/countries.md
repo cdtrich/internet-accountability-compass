@@ -185,4 +185,3 @@ const chartView =
 <div>
     ${sidebar()}
 </div>
-````

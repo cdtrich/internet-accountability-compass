@@ -22,6 +22,8 @@ import { sidebar } from "./components/sidebar.js";
   <h2 class="subheader">Analysis, commentary, and updates from the team.</h2>
 </div>
 
+<div class="body-text">
+
   <p>The Internet Accountability Compass team publishes short-form analysis, commentary on emerging digital governance trends, and updates on the state of Internet accountability worldwide. Entries draw on the data and frameworks underpinning the Compass to shed light on the forces shaping the global digital landscape.</p>
 
 <!-- --- -->
@@ -182,7 +184,7 @@ The Compass data reveals a small but growing group of countries that are consist
 
 Importantly, high performance on rights and freedoms is positively correlated with strong performance on the other three dimensions of the Compass. Countries that protect digital rights also tend to have better connectivity, stronger resilience, and more credible responsibility frameworks. This correlation does not resolve all normative debates, but it does suggest that rights protection and broader digital development goals are more complementary than they are in tension—a finding that should inform how international support for digital governance is designed and conditioned.
 
-<!-- --- -->
+</div>
 
 <!-- sidebar -->
 <div>
