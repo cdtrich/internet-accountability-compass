@@ -471,7 +471,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .style("border-radius", "8px")
     .style("box-shadow", "0 4px 12px rgba(0,0,0,0.15)")
     .style("pointer-events", "none")
-    .style("font-family", "sans-serif")
+    .style("font-family", "var(--sans-serif)")
     .style("font-size", "14px")
     .style("line-height", "1.6")
     .style("max-width", "300px")

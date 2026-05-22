@@ -75,13 +75,13 @@ const sourcesData = FileAttachment("./data/sources.csv").csv({
 <!-- world map and data -->
 
 ```js
-var worldLoad = FileAttachment("./data/CNTR_RG_60M_2024_4326.json").json();
-var coastLoad = FileAttachment("./data/COAS_RG_60M_2016_4326.json").json();
+var worldLoad = FileAttachment("./data/CNTR_RG_20M_2024_4326.json").json();
+var coastLoad = FileAttachment("./data/COAS_RG_20M_2016_4326.json").json();
 ```
 
 ```js
 var world = topojson
-  .feature(worldLoad, worldLoad.objects.CNTR_RG_60M_2024_4326)
+  .feature(worldLoad, worldLoad.objects.CNTR_RG_20M_2024_4326)
   .features.filter((d) => d.properties.NAME_ENGL !== "Antarctica") // drop Antarctica directly
   .filter((d) => d.properties.SVRG_UN === "UN Member State") // only UN member states
   .map((d) => {
@@ -95,7 +95,7 @@ var world = topojson
   });
 var coast = topojson.feature(
   coastLoad,
-  coastLoad.objects.COAS_RG_60M_2016_4326,
+  coastLoad.objects.COAS_RG_20M_2016_4326,
 );
 ```
 
@@ -222,7 +222,7 @@ if (mapMode === "latest") {
 
   currentData.forEach((curr) => {
     const prev = prevData.find((p) => p.ISO3_CODE === curr.ISO3_CODE);
-    if (prev) {
+    if (prev && Number.isFinite(curr.value) && Number.isFinite(prev.value)) {
       const change = curr.value - prev.value;
       if (change > 0) increases++;
       else if (change < 0) decreases++;
@@ -234,7 +234,7 @@ if (mapMode === "latest") {
 
   statsData = [
     { label: "Decrease", count: decreases, color: "#FDE74C" },
-    { label: "No change/not enough data", count: noChange, color: "#afb6b5" },
+    { label: "No change", count: noChange, color: "#afb6b5" },
     { label: "Increase", count: increases, color: pillarColor },
   ];
 }

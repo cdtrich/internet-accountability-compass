@@ -52,7 +52,12 @@ const sourcesData = FileAttachment("./data/sources.csv").csv({
 ```js
 const sourceISOUnique = [...new Set(sourcesData.map((d) => d.ISO3_CODE))];
 
-const sourcesDataUnique = sourcesData.filter(
+const sourcesDataNormalized = sourcesData.map((d) => ({
+  ...d,
+  type: d.type.replace(/^[⌕¶⚑]\s*/, ""),
+}));
+
+const sourcesDataUnique = sourcesDataNormalized.filter(
   (d, index, self) =>
     index ===
     self.findIndex(
@@ -97,7 +102,7 @@ const coast = topojson.feature(
 </div>
 
 ```js
-const selectedSourceType = view(viewofSourcesLegend("⌕ Analysis"));
+const selectedSourceType = view(viewofSourcesLegend("Analysis"));
 ```
 
 ```js

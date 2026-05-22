@@ -30,14 +30,14 @@ export function sidebar() {
             </a>
           </li>
           <li>
-            <a href="${basePath}/perspectives">
-              <i class="fas fa-comments"></i>
-              <span>Perspectives</span>
+            <a href="${basePath}/resources">
+              <i class="fas fa-newspaper"></i>
+              <span>Resources</span>
             </a>
           </li>
           <li>
             <a href="${basePath}/blog">
-              <i class="fas fa-newspaper"></i>
+              <i class="fas fa-comments"></i>
               <span>Blog</span>
             </a>
           </li>
@@ -67,7 +67,7 @@ export function sidebar() {
           (currentPath === "/" || currentPath === "/index")) ||
         (href === "/countries" && currentPath.startsWith("/countries")) ||
         (href === "/directions" && currentPath.startsWith("/directions")) ||
-        (href === "/perspectives" && currentPath.startsWith("/perspectives")) ||
+        (href === "/resources" && currentPath.startsWith("/resources")) ||
         (href === "/blog" && currentPath.startsWith("/blog")) ||
         (href === "/methodology" && currentPath.startsWith("/methodology"))
       ) {

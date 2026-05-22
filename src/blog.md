@@ -190,3 +190,46 @@ Importantly, high performance on rights and freedoms is positively correlated wi
 <div>
     ${sidebar()}
 </div>
+
+```js
+{
+  document.querySelectorAll(".blog-toc").forEach((el) => el.remove());
+
+  const toc = document.createElement("nav");
+  toc.className = "blog-toc";
+
+  const heading = document.createElement("p");
+  heading.className = "blog-toc-heading";
+  heading.textContent = "Contents";
+  toc.appendChild(heading);
+
+  const list = document.createElement("ul");
+
+  document.querySelectorAll(".body-text h1[id]").forEach((h1) => {
+    const next = h1.nextElementSibling;
+    const dateText = next?.classList.contains("blog-date")
+      ? next.textContent.split("·")[0].trim()
+      : "";
+
+    const li = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = `#${h1.id}`;
+
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "blog-toc-title";
+    titleSpan.textContent = h1.textContent;
+
+    const dateSpan = document.createElement("span");
+    dateSpan.className = "blog-toc-date";
+    dateSpan.textContent = dateText;
+
+    link.appendChild(titleSpan);
+    link.appendChild(dateSpan);
+    li.appendChild(link);
+    list.appendChild(li);
+  });
+
+  toc.appendChild(list);
+  document.body.appendChild(toc);
+}
+```

@@ -149,7 +149,7 @@ if (mapMode === "latest") {
 
   currentData.forEach((curr) => {
     const prev = prevData.find((p) => p.ISO3_CODE === curr.ISO3_CODE);
-    if (prev && curr.value !== null && prev.value !== null) {
+    if (prev && Number.isFinite(curr.value) && Number.isFinite(prev.value)) {
       const change = curr.value - prev.value;
       if (change > 0) increases++;
       else if (change < 0) decreases++;
@@ -161,7 +161,7 @@ if (mapMode === "latest") {
 
   statsData = [
     { label: "Decrease", count: decreases, color: "#FDE74C" },
-    { label: "No change/not enough data", count: noChange, color: "#afb6b5" },
+    { label: "No change", count: noChange, color: "#afb6b5" },
     { label: "Increase", count: increases, color: "#007162ff" },
   ];
 }
@@ -198,6 +198,12 @@ if (mapMode === "latest") {
 <!-- body text -->
 <div class="body-text">
 
+<p> </p>
+<p> </p>
+
+<h2>Latest posts</h2>
+  ${blogPreview()}
+
 <h2>Why the Compass?</h2>
 <p>
 The Internet is a cornerstone of modern life—shaping how states govern, businesses operate, organisations function, and individuals connect. Recognising its transformative power, the international community has rallied around shared principles to foster a global, open, free, secure, and trustworthy Internet. These principles are enshrined in key political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
@@ -227,9 +233,7 @@ The Internet Accountability Compass is not an audit mechanism or compliance chec
 By charting national performance across <a href="./directions">four cardinal dimensions</a>—Connectivity and infrastructure, Rights and
 freedoms, Responsibility and sustainability, and Trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
 </p>
-  <h2>Latest analysis</h2>
-  ${blogPreview()}
-
+  
 <!-- funding reference -->
 <h2>Team behind the Compass</h2>
 <p>
@@ -320,13 +324,13 @@ const dfiCardinal = dfiCardinalParse.map((item) => {
 <!-- world map and data -->
 
 ```js
-var worldLoad = FileAttachment("./data/CNTR_RG_60M_2024_4326.json").json();
-var coastLoad = FileAttachment("./data/COAS_RG_60M_2016_4326.json").json();
+var worldLoad = FileAttachment("./data/CNTR_RG_20M_2024_4326.json").json();
+var coastLoad = FileAttachment("./data/COAS_RG_20M_2016_4326.json").json();
 ```
 
 ```js
 var world = topojson
-  .feature(worldLoad, worldLoad.objects.CNTR_RG_60M_2024_4326)
+  .feature(worldLoad, worldLoad.objects.CNTR_RG_20M_2024_4326)
   .features.filter((d) => d.properties.NAME_ENGL !== "Antarctica")
   .filter((d) => d.properties.SVRG_UN === "UN Member State")
   .map((d) => {
@@ -339,7 +343,7 @@ var world = topojson
   });
 var coast = topojson.feature(
   coastLoad,
-  coastLoad.objects.COAS_RG_60M_2016_4326,
+  coastLoad.objects.COAS_RG_20M_2016_4326,
 );
 ```
 

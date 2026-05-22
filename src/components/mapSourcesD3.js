@@ -13,12 +13,12 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
   const {
     width = 975,
     height = 610,
-    selectedType = "⌕ Analysis",
+    selectedType = "Analysis",
     typeColor = "#007162",
     initialCountry = null,
   } = options;
 
-  const baseType = selectedType.replace(/^[⌕¶⚑]\s*/, "");
+  const baseType = selectedType;
 
   // Count resources by type per country
   const resourceCounts = {};
@@ -30,13 +30,12 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
         Analysis: 0,
         Source: 0,
         Project: 0,
+        Academic: 0,
         total: 0,
       };
     }
-    // Extract base type (remove icon prefix if present)
-    const bt = d.type.replace(/^[⌕¶⚑]\s*/, "");
-    if (resourceCounts[iso].hasOwnProperty(bt)) {
-      resourceCounts[iso][bt]++;
+    if (resourceCounts[iso].hasOwnProperty(d.type)) {
+      resourceCounts[iso][d.type]++;
       resourceCounts[iso].total++;
     }
   });

@@ -1,7 +1,32 @@
 const SOURCE_CONFIG = [
-  { fullType: "⌕ Analysis", icon: "⌕", label: "Analysis", color: "#007162", textColor: "#007162" },
-  { fullType: "¶ Source",   icon: "¶",  label: "Source",   color: "#4ed0bf", textColor: "#007162" },
-  { fullType: "⚑ Project",  icon: "⚑",  label: "Project",  color: "#FDE74C", textColor: "#8a7600" },
+  {
+    fullType: "Analysis",
+    icon: '<i class="fa-solid fa-magnifying-glass"></i>',
+    label: "Analysis",
+    color: "#007162",
+    textColor: "#007162",
+  },
+  {
+    fullType: "Source",
+    icon: '<i class="fa-solid fa-book-open"></i>',
+    label: "Source",
+    color: "#4ed0bf",
+    textColor: "#007162",
+  },
+  {
+    fullType: "Project",
+    icon: '<i class="fa-solid fa-flag"></i>',
+    label: "Project",
+    color: "#FDE74C",
+    textColor: "#8a7600",
+  },
+  {
+    fullType: "Academic",
+    icon: '<i class="fa-solid fa-graduation-cap"></i>',
+    label: "Academic",
+    color: "#555555",
+    textColor: "#555555",
+  },
 ];
 
 export const SOURCE_TYPE_COLORS = Object.fromEntries(
@@ -33,7 +58,7 @@ function applyStyles(item, config, isSelected) {
   }
 }
 
-export function viewofSourcesLegend(initialType = "⌕ Analysis") {
+export function viewofSourcesLegend(initialType = "Analysis") {
   const selectedValue = { value: initialType };
 
   const container = document.createElement("div");
