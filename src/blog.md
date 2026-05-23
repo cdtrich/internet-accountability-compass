@@ -206,10 +206,11 @@ Importantly, high performance on rights and freedoms is positively correlated wi
   const list = document.createElement("ul");
 
   document.querySelectorAll(".body-text h1[id]").forEach((h1) => {
-    const next = h1.nextElementSibling;
-    const dateText = next?.classList.contains("blog-date")
-      ? next.textContent.split("·")[0].trim()
-      : "";
+    let next = h1.nextElementSibling;
+    while (next && !next.querySelector(".blog-date")) {
+      next = next.nextElementSibling;
+    }
+    const dateText = next ? next.querySelector(".blog-date").textContent.trim() : "";
 
     const li = document.createElement("li");
     const link = document.createElement("a");

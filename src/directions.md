@@ -29,6 +29,7 @@ import { customLegend, viewofCustomLegend } from "./components/customLegend.js";
 import { sidebar } from "./components/sidebar.js";
 import { renderPillarContent } from "./components/pillarRenderer.js";
 import { sources } from "./components/sources.js";
+import { viewofSourcesLegend } from "./components/sourcesLegend.js";
 import { mapPillarD3 } from "./components/mapPillarD3.js";
 import { mapCommitmentD3 } from "./components/mapCommitmentD3.js";
 // import { toggleSwitch } from "./components/toggleSwitch.js";
@@ -70,6 +71,7 @@ const dfiCardinalParse = FileAttachment("./data/dfiCardinal.csv").csv({
 const sourcesData = FileAttachment("./data/sources.csv").csv({
   typed: true,
 });
+1;
 ```
 
 <!-- world map and data -->
@@ -320,17 +322,11 @@ const commitmentLegend = view(
 <div class="body-text body-input">
 
 ```js
-// unique source types and countries
-const sourceTypeUnique = [...new Set(sourcesData.map((d) => d.type))];
+const selectSourceType = view(viewofSourcesLegend("Analysis"));
+```
+
+```js
 const sourceCountryUnique = [...new Set(sourcesData.map((d) => d.NAME_ENGL))];
-// inputs
-const selectSourceType = view(
-  Inputs.checkbox(sourceTypeUnique, {
-    // label: "Source type",
-    format: (x) =>
-      html`<span style="font-weight: [400, 700, 200];">${x}</span>`,
-  }),
-);
 const selectSourceCountry = view(
   Inputs.search(sourceCountryUnique, {
     value: "",
@@ -358,10 +354,8 @@ const sourcesDataPillar = sourcesDataUnique.filter(
 );
 // filter by input
 const sourcesDataFiltered = sourcesDataPillar.filter((d) => {
-  const typeMatch =
-    !selectSourceType ||
-    selectSourceType.length === 0 ||
-    selectSourceType.includes(d.type);
+  const normalizedType = d.type.replace(/^[⌕¶⚑]\s*/, "");
+  const typeMatch = normalizedType === selectSourceType;
   const countryMatch =
     !selectSourceCountry ||
     selectSourceCountry.length === 0 ||

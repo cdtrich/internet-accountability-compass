@@ -9,7 +9,7 @@ library(purrr)
 # READ ALL DATA FILES ---------------------------------------------------------
 
 # Skip authentication for public/link-shareable sheets
-gs4_deauth() # 2026-05-17
+gs4_deauth() # 2026-05-23
 
 # Your Google Sheet ID (extracted from URL)
 sheet_id <- "15_2sax_UIxuyDnvFvwQD3ZKi-h5IyzDxZCxXwwR-9xA"

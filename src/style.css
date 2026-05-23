@@ -311,7 +311,8 @@ a.blog-img-link {
 
 .blog-toc-date {
   display: block;
-  color: #999;
+  font-weight: 400;
+  color: #595959;
   font-size: 0.72rem;
 }
 
