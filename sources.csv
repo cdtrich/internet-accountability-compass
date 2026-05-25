@@ -56,6 +56,7 @@ Bangladesh,BGD,3,Responsibility and sustainability,Analysis,Digital economy & go
 Bangladesh,BGD,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,2
 Bangladesh,BGD,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,2
 Bangladesh,BGD,3,Responsibility and sustainability,Analysis,Trends & governance,Internet Society,https://www.internetsociety.org/globalinternetreport/,2
+Bangladesh,BGD,2,Rights and freedoms,Academic,Freedom of expression,JAAS,https://doi.org/10.1177/00219096261437744,4
 Belgium,BEL,2,Rights and freedoms,Analysis,Digital rights,Freedom House,https://freedomhouse.org/country/belgium/freedom-net/2024,2
 Belize,BLZ,4,Trust and resilience,Project,Building Resilient MSMEs Project (Belize),GIFI,NA,1
 Benin,BEN,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/BJ,3
@@ -112,6 +113,7 @@ Burundi,BDI,1,Connectivity and infrastructure,Analysis,Global indicators & bench
 Burundi,BDI,3,Responsibility and sustainability,Analysis,Digital economy & governance,World Bank,https://www.worldbank.org/en/publication/digital-progress-and-trends-report,3
 Burundi,BDI,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,3
 Burundi,BDI,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,3
+Cambodia,KHM,3,Responsibility and sustainability,Academic,Platforms governance,Open Reserch Europe,https://doi.org/10.12688/openreseurope.18820.2,4
 Cameroon,CMR,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/CM,3
 Cameroon,CMR,4,Trust and resilience,Analysis,Internet resilience,Internet Society,https://pulse.internetsociety.org/en/resilience/CM,3
 Cameroon,CMR,1,Connectivity and infrastructure,Analysis,Mobile connectivity enablers,GSMA,https://www.mobileconnectivityindex.com/assets/excelData/MCI_data_2025.xlsx,3
@@ -187,6 +189,7 @@ China,CHN,3,Responsibility and sustainability,Analysis,Trends & governance,Inter
 China,CHN,1,Connectivity and infrastructure,Analysis,The Locknet (China),China File,https://locknet.chinafile.com/the-locknet/intro/,1
 China,CHN,2,Rights and freedoms,Analysis,The Locknet (China),China File,https://locknet.chinafile.com/the-locknet/intro/,1
 China,CHN,3,Responsibility and sustainability,Analysis,The Locknet (China),China File,https://locknet.chinafile.com/the-locknet/intro/,1
+China,CHN,1,Connectivity and infrastructure,Academic,Export surveillance,IJCJ&SD,https://doi.org/10.5204/ijcjsd.1908,4
 Colombia,COL,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/CO,2
 Colombia,COL,4,Trust and resilience,Analysis,Internet resilience,Internet Society,https://pulse.internetsociety.org/en/resilience/CO,2
 Colombia,COL,2,Rights and freedoms,Analysis,Digital rights,Freedom House,https://freedomhouse.org/country/colombia/freedom-net/2024,2
@@ -427,6 +430,7 @@ Indonesia,IDN,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.a
 Indonesia,IDN,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,2
 Indonesia,IDN,3,Responsibility and sustainability,Analysis,Trends & governance,Internet Society,https://www.internetsociety.org/globalinternetreport/,2
 Indonesia,IDN,2,Rights and freedoms,Analysis,Digital rights & online expression,SafeNet,https://safenet.or.id/id/2025/02/laporan-situasi-hak-hak-digital-indonesia-2024/,NA
+Iran,IRN,2,Rights and freedoms,Academic,Diaspora journalism,IJP/P,https://doi.org/10.1177/1940161224129,4
 Israel,ISR,2,Rights and freedoms,Analysis,Digital rights,Freedom House,https://freedomhouse.org/country/israel/freedom-net/2024,2
 Italy,ITA,2,Rights and freedoms,Analysis,Digital rights,Freedom House,https://freedomhouse.org/country/italy/freedom-net/2024,2
 Jamaica,JAM,3,Inclusive and Affordable Access to the Internet,Source,National Broadband Initiative (Jamaica),Government,"https://jis.gov.jm/over-620-educational-institutions-now-have-internet-access-via-the-national-broadband-initiative/#:~:text=The%20national%20broadband%20network%20aims,speed%20as%20a%20basic%20requirement.",1
@@ -567,6 +571,7 @@ Mozambique,MOZ,1,Connectivity and infrastructure,Analysis,Global indicators & be
 Mozambique,MOZ,3,Responsibility and sustainability,Analysis,Digital economy & governance,World Bank,https://www.worldbank.org/en/publication/digital-progress-and-trends-report,3
 Mozambique,MOZ,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,3
 Mozambique,MOZ,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,3
+Myanmar/Burma,MMR,3,Responsibility and sustainability,Academic,Platforms governance,Open Reserch Europe,https://doi.org/10.12688/openreseurope.18820.2,4
 Namibia,NAM,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/NA,3
 Namibia,NAM,4,Trust and resilience,Analysis,Internet resilience,Internet Society,https://pulse.internetsociety.org/en/resilience/NA,3
 Namibia,NAM,1,Connectivity and infrastructure,Analysis,Mobile connectivity enablers,GSMA,https://www.mobileconnectivityindex.com/assets/excelData/MCI_data_2025.xlsx,3
@@ -664,7 +669,8 @@ Rwanda,RWA,3,Responsibility and sustainability,Analysis,Digital economy & govern
 Rwanda,RWA,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,2
 Rwanda,RWA,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,2
 Rwanda,RWA,3,Responsibility and sustainability,Analysis,Trends & governance,Internet Society,https://www.internetsociety.org/globalinternetreport/,2
-Saudi Arabia,SAU,2,Rights and freedoms,Analysis,"Censorship, platform blocks, surveillance",Freedom House,https://freedomhouse.org/country/saudi-arabia/freedom-net/2024,NA
+Saudi Arabia,SAU,4,Trust and resilience,Academic,Transnational repression,JCLQ,https://doi.org/10.1017/S0020589323000532,4
+Saudi Arabia,SAU,2,Rights and freedoms,Analysis,"Censorship, platform blocks, surveillance",Freedom House,https://freedomhouse.org/country/saudi-arabia/freedom-net/2024,3
 Senegal,SEN,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/SN,2
 Senegal,SEN,4,Trust and resilience,Analysis,Internet resilience,Internet Society,https://pulse.internetsociety.org/en/resilience/SN,2
 Senegal,SEN,2,Rights and freedoms,Analysis,Digital rights,Freedom House,https://freedomhouse.org/country/senegal/freedom-net/2024,2
@@ -782,6 +788,7 @@ Thailand,THA,3,Responsibility and sustainability,Analysis,Digital economy & gove
 Thailand,THA,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,2
 Thailand,THA,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,2
 Thailand,THA,3,Responsibility and sustainability,Analysis,Trends & governance,Internet Society,https://www.internetsociety.org/globalinternetreport/,2
+Thailand,THA,3,Responsibility and sustainability,Academic,Platforms governance,Open Reserch Europe,https://doi.org/10.12688/openreseurope.18820.2,4
 Togo,TGO,1,Connectivity and infrastructure,Analysis,Resilience & infrastructure,Internet Society,https://pulse.internetsociety.org/en/reports/TG,3
 Togo,TGO,4,Trust and resilience,Analysis,Internet resilience,Internet Society,https://pulse.internetsociety.org/en/resilience/TG,3
 Togo,TGO,1,Connectivity and infrastructure,Analysis,Mobile connectivity enablers,GSMA,https://www.mobileconnectivityindex.com/assets/excelData/MCI_data_2025.xlsx,3
@@ -891,15 +898,23 @@ Zimbabwe,ZWE,1,Connectivity and infrastructure,Analysis,Global indicators & benc
 Zimbabwe,ZWE,3,Responsibility and sustainability,Analysis,Digital economy & governance,World Bank,https://www.worldbank.org/en/publication/digital-progress-and-trends-report,3
 Zimbabwe,ZWE,4,Trust and resilience,Analysis,Shutdowns,Access Now,https://www.accessnow.org/wp-content/uploads/2025/02/KeepItOn-2024-Internet-Shutdowns-Annual-Report.pdf,3
 Zimbabwe,ZWE,2,Rights and freedoms,Analysis,Network disruptions & censorship,NetBlocks,https://netblocks.org/reports,3
+Global,GLO,2,Rights and freedoms,Academic,Transnational repression,Journal of Democracy,https://www.journalofdemocracy.org/articles/the-golden-age-of-transnational-repression/,NA
 Global,GLO,2,Rights and freedoms,Analysis,Digital authoritarianism (Global),Berggruen Institute,https://cdn.sanity.io/files/9xbysn2u/production/4d7f42a888168a1d66292f26cdc50b5e3ff8d698.pdf,1
 Global,GLO,2,Rights and freedoms,Analysis,Anti-censorship technologies (Global),GIFI,https://globalgovernanceprogramme.eui.eu/gifi/eui-freedom-house-report-on-anti-censorship-tools-and-end-to-end-encryption/,1
 Global,GLO,1,Connectivity and infrastructure,Analysis,Anti-censorship technologies (Global),GIFI,https://globalgovernanceprogramme.eui.eu/gifi/eui-freedom-house-report-on-anti-censorship-tools-and-end-to-end-encryption/,1
 Global,GLO,2,Rights and freedoms,Analysis,Freedom on the Net 2024 (Global),Freedom House,https://freedomhouse.org/sites/default/files/2024-10/FREEDOM-ON-THE-NET-2024-DIGITAL-BOOKLET.pdf,1
+Global,GLO,3,Responsibility and sustainability,Academic,Digital sovereignty,JCLS,https://doi.org/10.18311/JCLS/2025/v2i4/53913,4
+Global,GLO,3,Responsibility and sustainability,Academic,Authoritarian collaboration,Democratization,https://doi.org/10.1080/13510347.2024.2442377,4
+Global,GLO,4,Trust and resilience,Academic,Transnational repression,JCLQ,https://doi.org/10.1017/S0020589323000532,4
+Global,GLO,2,Rights and freedoms,Academic,Transnational repression,EJIS,https://doi.org/10.1017/eis.2022.27,4
+Asia,ASI,3,Responsibility and sustainability,Academic,Platforms governance,Open Reserch Europe,https://doi.org/10.12688/openreseurope.18820.2,4
 Africa,AFR,3,Responsibility and sustainability,Analysis,Political economy of AI,Research ICT Africa,https://researchictafrica.net/research/a-new-primer-on-the-political-economy-of-african-ai/,3
-Africa,AFR,4,Responsibility and sustainability,Analysis,AI and democracy,Research ICT Africa,https://researchictafrica.net/research/how-might-ai-reshape-democracy-on-the-african-continent/,3
+Africa,AFR,3,Responsibility and sustainability,Analysis,AI and democracy,Research ICT Africa,https://researchictafrica.net/research/how-might-ai-reshape-democracy-on-the-african-continent/,3
 Africa,AFR,3,Responsibility and sustainability,Analysis,Data access and policies,Research ICT Africa,https://researchictafrica.net/research/towards-an-african-alliance-for-meaningful-access-to-intermediaries-data-holdings/,3
 Africa,AFR,3,Responsibility and sustainability,Analysis,Cross-border data flows,Research ICT Africa,https://researchictafrica.net/research/cross-border-data-flows-in-africa-an-analysis-of-the-alignment-with-afcfta/,3
 Africa,AFR,1,Connectivity and infrastructure,Analysis,Digital inclusion,Research ICT Africa,https://researchictafrica.net/research/policy-regulatory-and-industry-responses-to-demand-side-constraints-on-digital-cnclusion/,3
 Africa,AFR,2,Rights and freedoms,Analysis,Internet freedoms in Africa,CIPESA,https://cipesa.org/download/reports/SIFA23_Report.pdf,3
-Africa,AFR,3,Rights and freedoms,Analysis,LONDA 2023/2024: Digital Rights in Africa,Paradigm,https://paradigmhq.org/londa/,3
-Europe,EUR,3,Rights and freedoms,Analysis,Digital rights in Europe,EDRI,https://edri.org/our-work/edri-annual-report-2024-reinforcing-digital-rights-and-justice-in-uncertain-times/,3
+Africa,AFR,2,Rights and freedoms,Analysis,LONDA 2023/2024: Digital Rights in Africa,Paradigm,https://paradigmhq.org/londa/,3
+Europe,EUR,2,Rights and freedoms,Analysis,Digital rights in Europe,EDRI,https://edri.org/our-work/edri-annual-report-2024-reinforcing-digital-rights-and-justice-in-uncertain-times/,3
+Europe,EUR,3,Responsibility and sustainability,Analysis,Surveillance exports,HRW,https://www.hrw.org/report/2026/05/12/looking-the-other-way/eu-failure-to-prevent-surveillance-exports-to-rights,4
+Europe,EUR,3,Responsibility and sustainability,Academic,Dual-use regulation,Defence Studies,https://doi.org/10.1080/14702436.2023.2277455,4

@@ -16,6 +16,7 @@ theme: air
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 <link rel="stylesheet" href="../sidebar.css" />
+<link rel="stylesheet" href="../custom-legend.css" />
 </head>
 
 <!-- import components -->
@@ -27,7 +28,7 @@ import { sources } from "../components/sources.js";
 import { onlyUnique } from "../components/onlyUnique.js";
 import { sidebar } from "../components/sidebar.js";
 import { pillarTextShort } from "../components/pillarTextShort.js";
-import { sourcesLegend } from "../components/sourcesLegend.js";
+import { viewofSourcesLegend } from "../components/sourcesLegend.js";
 import { pillarSparklineD3 } from "../components/pillarSparklineD3.js";
 import { indicatorHistorical } from "../components/indicatorHistorical.js";
 import { modeToggle } from "../components/modeToggle.js";
@@ -462,20 +463,20 @@ var resourcesHeading = sourcesData.length === 0 ? "" : "Resources";
 
 <h1>${resourcesHeading}</h1>
 
-  <div class="grid grid-cols-4 gap-4">
-  <div>
-      ${resize((width) => sourcesLegend(sourcesData, {width}))}
-    </div>
-  </div>
-  <div class="col-span-3">
-  </div>
-
-  <div id="sources-section">
-  </div>
+```js
+const selectSourceType = view(viewofSourcesLegend(null));
+```
 
 ```js
-sources(sourcesData);
+const sourcesFiltered = selectSourceType === null
+  ? sourcesData
+  : sourcesData.filter(
+      (d) => d.type.replace(/^[⌕¶⚑]\s*/, "") === selectSourceType,
+    );
+sources(sourcesFiltered);
 ```
+
+<div id="sources-section"></div>
 
 <!-- sidebar -->
 

@@ -74,12 +74,13 @@ export function viewofSourcesLegend(initialType = "Analysis") {
     applyStyles(item, config, fullType === initialType);
 
     item.addEventListener("click", () => {
-      selectedValue.value = fullType;
+      const next = selectedValue.value === fullType ? null : fullType;
+      selectedValue.value = next;
       container.querySelectorAll(".legend-item").forEach((el) => {
         const cfg = SOURCE_CONFIG.find((c) => c.fullType === el.dataset.value);
-        applyStyles(el, cfg, el.dataset.value === fullType);
+        applyStyles(el, cfg, el.dataset.value === next);
       });
-      container.value = fullType;
+      container.value = next;
       container.dispatchEvent(new Event("input"));
     });
 
