@@ -5,7 +5,7 @@ library(readr)
 library(stringr)
 library(googlesheets4)
 
-# last updated: 2025-05-25
+# last updated: 2025-05-29
 
 # Skip authentication for public/link-shareable sheets
 gs4_deauth() # 2026-05-17
