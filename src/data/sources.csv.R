@@ -5,10 +5,10 @@ library(readr)
 library(stringr)
 library(googlesheets4)
 
-# last updated: 2025-05-29
+# last updated: 2026-06-01
 
 # Skip authentication for public/link-shareable sheets
-gs4_deauth() # 2026-05-17
+gs4_deauth() # 2026-06-01
 
 # Your Google Sheet ID (extracted from URL)
 sheet_id <- "10ZMGjh0TKSleCDj0eT8iC5T91fGksKsiE66k0Ub9INA"
