@@ -30,7 +30,7 @@ import { sidebar } from "./components/sidebar.js";
 
 <a class="blog-img-link" href="#charting-a-way-for-stronger-internet-accountability">
   <div class="blog-img-wrap">
-    <img src="https://picsum.photos/seed/globalcompact/640/340" alt="">
+    <img src="https://picsum.photos/seed/charting/640/340" alt="">
   </div>
 </a>
 
@@ -112,7 +112,7 @@ _You can find the full piece [here](https://cadmus.eui.eu/entities/publication/4
 
 <a class="blog-img-link" href="#from-promises-to-practice-the-real-test-of-global-digital-cooperation">
   <div class="blog-img-wrap">
-    <img src="https://picsum.photos/seed/globalcompact/640/340" alt="">
+    <img src="https://picsum.photos/seed/cooperation/640/340" alt="">
   </div>
 </a>
 
@@ -168,7 +168,7 @@ You can read the full piece [here](https://www.eui.eu/news-hub?id=from-promises-
 
 <a class="blog-img-link" href="#regional-contributions-to-global-internet-accountability-debates">
   <div class="blog-img-wrap">
-    <img src="https://picsum.photos/seed/globalcompact/640/340" alt="">
+    <img src="https://picsum.photos/seed/debates/640/340" alt="">
   </div>
 </a>
 

@@ -7,25 +7,26 @@ export function blogPreview() {
 
   const posts = [
     {
-      title: "The Global Digital Compact One Year On: Promises, Progress, and Persistent Gaps",
-      slug: "the-global-digital-compact-one-year-on",
-      image: "https://picsum.photos/seed/globalcompact/640/340",
-      date: "12 May 2026",
+      title: "Charting a Way for Stronger Internet Accountability",
+      slug: "charting-a-way-for-stronger-internet-accountability",
+      image: "https://picsum.photos/seed/charting/640/340",
+      date: "27 May 2026",
       author: "Patryk Pawlak",
     },
     {
-      title: "Bridging the Digital Divide: Infrastructure Accountability in the Global South",
-      slug: "bridging-the-digital-divide",
-      image: "https://picsum.photos/seed/infrastructure2030/640/340",
-      date: "28 April 2026",
-      author: "Nils Berglund",
+      title:
+        "From Promises to Practice: The Real Test of Global Digital Cooperation",
+      slug: "from-promises-to-practice-the-real-test-of-global-digital-cooperation",
+      image: "https://picsum.photos/seed/cooperation/640/340",
+      date: "27 April 2026",
+      author: "Patryk Pawlak and Nils Berglund",
     },
     {
-      title: "AI Governance in Practice: From Principles to Accountability Frameworks",
-      slug: "ai-governance-in-practice",
+      title: "Regional Contributions to Global Internet Accountability Debates",
+      slug: "regional-contributions-to-global-internet-accountability-debates",
       image: "https://picsum.photos/seed/aigovernance42/640/340",
-      date: "14 April 2026",
-      author: "Patryk Pawlak",
+      date: "27 May 2026",
+      author: "Nils Berglund",
     },
   ];
 
