@@ -102,7 +102,7 @@ const sourcesData = sourcesParse
   .filter((d) => d.NAME_ENGL === country)
   .filter(
     (d, index, self) =>
-      index === self.findIndex((item) => item.title === d.title),
+      index === self.findIndex((item) => (item.url || `${item.title}|${item.publisher}`) === (d.url || `${d.title}|${d.publisher}`)),
   );
 ```
 

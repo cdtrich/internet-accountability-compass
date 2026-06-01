@@ -345,7 +345,7 @@ const sourcesDataUnique = sourcesData.filter(
   (d, index, self) =>
     index ===
     self.findIndex(
-      (item) => item.NAME_ENGL === d.NAME_ENGL && item.title === d.title,
+      (item) => item.NAME_ENGL === d.NAME_ENGL && (item.url || `${item.title}|${item.publisher}`) === (d.url || `${d.title}|${d.publisher}`),
     ),
 );
 // filter by pillar
