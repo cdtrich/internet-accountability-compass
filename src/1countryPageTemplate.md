@@ -38,8 +38,15 @@ import { modeToggle } from "../components/modeToggle.js";
 
 ```js
 const countryISO = "COUNTRY_ISO_PLACEHOLDER";
-// check if viewed on mobile
-const isMobile = window.innerWidth <= 768;
+// reactively track whether the viewport is mobile-sized, so charts can
+// adapt on resize/orientation change rather than only at first render
+const isMobile = Generators.observe((notify) => {
+  const mql = window.matchMedia("(max-width: 768px)");
+  notify(mql.matches);
+  const onChange = (event) => notify(event.matches);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+});
 ```
 
 <!-- load data -->
@@ -173,6 +180,7 @@ const viewMode = view(
 
 ```js
 const pillar0Header = html`<div
+  class="pillar-section-header"
   style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
 >
   <div style="flex: 2;">
@@ -214,6 +222,7 @@ if (viewMode === "latest") {
   pillar0Content = resize((width) =>
     straightPlotD3(dfiLatest, country, dfiCardinalCountry[0].pillar_txt, {
       width,
+      isMobile,
     }),
   );
 } else {
@@ -240,10 +249,11 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar0Content}</div>
+<div class="chart-breakout">${pillar0Content}</div>
 
 ```js
 const pillar1Header = html`<div
+  class="pillar-section-header"
   style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
 >
   <div style="flex: 2;">
@@ -285,6 +295,7 @@ if (viewMode === "latest") {
   pillar1Content = resize((width) =>
     straightPlotD3(dfiLatest, country, dfiCardinalCountry[1].pillar_txt, {
       width,
+      isMobile,
     }),
   );
 } else {
@@ -311,10 +322,11 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar1Content}</div>
+<div class="chart-breakout">${pillar1Content}</div>
 
 ```js
 const pillar2Header = html`<div
+  class="pillar-section-header"
   style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
 >
   <div style="flex: 2;">
@@ -356,6 +368,7 @@ if (viewMode === "latest") {
   pillar2Content = resize((width) =>
     straightPlotD3(dfiLatest, country, dfiCardinalCountry[2].pillar_txt, {
       width,
+      isMobile,
     }),
   );
 } else {
@@ -382,10 +395,11 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar2Content}</div>
+<div class="chart-breakout">${pillar2Content}</div>
 
 ```js
 const pillar3Header = html`<div
+  class="pillar-section-header"
   style="display: flex; gap: 20px; margin-bottom: 20px; align-items: start;"
 >
   <div style="flex: 2;">
@@ -427,6 +441,7 @@ if (viewMode === "latest") {
   pillar3Content = resize((width) =>
     straightPlotD3(dfiLatest, country, dfiCardinalCountry[3].pillar_txt, {
       width,
+      isMobile,
     }),
   );
 } else {
@@ -453,7 +468,7 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar3Content}</div>
+<div class="chart-breakout">${pillar3Content}</div>
 
 <!-- sources -->
 

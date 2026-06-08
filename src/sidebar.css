@@ -167,3 +167,109 @@
     overflow: visible;
   }
 } */
+
+/* ─── BACKDROP (shared, hidden by default) ─────────────────────── */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 999;
+}
+.sidebar-backdrop.visible {
+  display: block;
+}
+
+/* ─── MOBILE TOP BAR + HAMBURGER ───────────────────────────────── */
+.mobile-top-bar {
+  display: none; /* shown only on mobile via media query */
+}
+
+.mobile-hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  color: var(--text-color);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── MOBILE OVERRIDES (≤768px) ────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Top bar */
+  .mobile-top-bar {
+    display: flex;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: var(--sidebar-color);
+    z-index: 1001;
+    align-items: center;
+    padding: 0 0.5rem;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Sidebar: full-height overlay, slides in from left */
+  .sidebar,
+  .sidebar.mobile-hidden {
+    top: 0;
+    left: -220px;
+    width: 200px;
+    height: 100vh;
+    border-radius: 0 10px 10px 0;
+    transform: none;
+    opacity: 1;
+    transition: left 0.25s ease;
+    z-index: 1002;
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* Nav list: vertical, left-aligned, below top bar */
+  .sidebar-menu {
+    align-items: flex-start;
+    margin-top: 56px;
+    overflow-y: auto;
+  }
+
+  .sidebar-menu li {
+    width: 100%;
+    text-align: left;
+  }
+
+  .sidebar-menu a {
+    flex-direction: row;
+    gap: 14px;
+    padding: 14px 20px;
+    justify-content: flex-start;
+    min-height: 48px;
+  }
+
+  .sidebar-menu i {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+    width: 22px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-menu span {
+    font-size: 1rem;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Suppress desktop collapsed-state overrides on mobile */
+  .sidebar.collapsed,
+  .collapsed .sidebar-menu span,
+  .collapsed .sidebar-menu i {
+    all: unset;
+  }
+}

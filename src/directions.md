@@ -111,10 +111,10 @@ const uniquePillars = [
       .map((item) => item.pillar_txt),
   ),
 ];
-console.log(
-  "dfiCardinalParse",
-  dfiCardinalParse.filter((d) => d.NAME_ENGL === "Libya" && d.year === 2025),
-);
+// console.log(
+//   "dfiCardinalParse",
+//   dfiCardinalParse.filter((d) => d.NAME_ENGL === "Libya" && d.year === 2025),
+// );
 ```
 
   <!-- 2. input  -->
@@ -257,7 +257,7 @@ const commitments = [
 <!-- key stats -->
 
 ```html
-<div class="grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+<div class="grid keystats-grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
   ${statsData.map((stat) => html`
   <div class="card key">
     <span class="very-big" style="color: ${stat.color};">${stat.count}</span

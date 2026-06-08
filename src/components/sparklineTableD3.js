@@ -36,10 +36,13 @@ export function sparkline(
 
   const strokeColor = color ?? fillScale.getColor(pillarTxt);
 
+  // Right inset wide enough that the latest-point dot (radius 3, drawn at
+  // the scale's upper end) stays within the SVG's own box rather than relying
+  // on overflow room from a neighboring cell (which isn't always there)
   const xScale = d3
     .scaleLinear()
     .domain(yearDomain)
-    .range([2, width - 2]);
+    .range([2, width - 5]);
   const yScale = d3
     .scaleLinear()
     .domain([0, 100])
@@ -222,11 +225,17 @@ export function sparklineTableD3(data, isMobile, { width = 640 } = {}) {
     const th = document.createElement("th");
 
     if (i > 1) {
-      // Pillar headers - wrap and color
-      const wrappedLines = wrapText(text, 15);
+      // Pillar headers - colored; rotated to vertical on mobile (where
+      // narrow columns don't have room for horizontal text), wrapped on
+      // desktop where columns are wide enough
       th.style.color = fillScale.getColor(pillars[i - 2]);
       th.style.fontWeight = "700";
-      th.innerHTML = wrappedLines.join("<br>");
+      if (isMobile) {
+        th.className = "sparkline-th-rotated";
+        th.innerHTML = wrapText(pillars[i - 2], 20).join("<br>");
+      } else {
+        th.innerHTML = wrapText(text, 15).join("<br>");
+      }
     } else {
       th.textContent = text;
     }

@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { basePath } from "./basePath.js";
+import { legendGridSize, renderSwatchLegend } from "./mapLegend.js";
 
 /**
  * D3 Map with Zoom/Pan
@@ -12,7 +13,18 @@ import { basePath } from "./basePath.js";
  * @param {Object} options - width, height, mode ("latest" or "historical")
  */
 export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
-  const { width = 975, height = 610, mode = "latest" } = options;
+  const { width = 975, mode = "latest" } = options;
+
+  // Derive height from the world geo's natural aspect ratio at this width so
+  // fitSize() fills the box exactly — a fixed height causes letterboxing
+  // (empty bands above/below the map) whenever the box's aspect ratio
+  // doesn't match the geo's
+  const worldGeo = { type: "FeatureCollection", features: world };
+  const probeProjection = d3.geoEqualEarth().fitWidth(width, worldGeo);
+  const [[, probeY0], [, probeY1]] = d3
+    .geoPath(probeProjection)
+    .bounds(worldGeo);
+  const height = probeY1 - probeY0;
 
   const fillScale = colorScales();
 
@@ -239,12 +251,36 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     ];
   }
 
+  // Append the hatch-pattern entries so they lay out as part of the same
+  // legend grid rather than as hand-positioned extras
+  legendData = [
+    ...legendData,
+    {
+      label: "Not enough data",
+      color: "#ddd",
+      pattern: "url(#white-diagonal-lines-map-ned)",
+    },
+    {
+      label: "Partial data",
+      color: "#111",
+      pattern: "url(#white-diagonal-lines-map)",
+    },
+  ];
+
+  // Reserve space below the map for the legend — sized to its actual content
+  // height (plus a small gap above and margin below) so it always has room
+  // and never overlaps or overflows, regardless of the map's aspect ratio
+  const legendGrid = legendGridSize(legendData.length);
+  const legendContentHeight = legendGrid.height + 40;
+  const legendAreaHeight = legendContentHeight + 40;
+  const totalHeight = height + legendAreaHeight;
+
   // Create SVG
   const svg = d3
     .create("svg")
     .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
+    .attr("height", totalHeight)
+    .attr("viewBox", [0, 0, width, totalHeight])
     .attr("style", "max-width: 100%; height: auto;");
 
   const defs = svg.append("defs");
@@ -400,7 +436,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
 
   // Hover behavior - snap to centroid
   countries
-    .on("mouseenter", function (event, d) {
+    .on("mouseenter touchstart", function (event, d) {
       // Raise to top and highlight stroke
       d3.select(this)
         .raise()
@@ -492,7 +528,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
     })
-    .on("mouseleave", function () {
+    .on("mouseleave touchend", function () {
       // Reset stroke (no need to lower - rendering order is fine)
       d3.select(this)
         .select("path")
@@ -508,12 +544,12 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr("transform", `translate(${width - 50}, ${height - 200})`);
+    .attr("transform", `translate(50, ${height - 130})`);
 
   // Zoom in button
   const zoomInButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-in")
     .style("cursor", "pointer")
     .on("click", () => {
       svg.transition().duration(300).call(zoom.scaleBy, 1.5);
@@ -538,7 +574,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   // Zoom out button
   const zoomOutButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-out")
     .attr("transform", "translate(0, 50)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -564,7 +600,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   // Reset zoom button
   const resetButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-reset")
     .attr("transform", "translate(0, 100)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -586,11 +622,15 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .attr("fill", "#007162")
     .text("⌂");
 
-  // Legend
+  // Legend — centered in the reserved area below the map (20px gap above)
+  const legendBlockWidth = legendGrid.width + 40;
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
-    .attr("transform", `translate(100, ${height / 2})`);
+    .attr(
+      "transform",
+      `translate(${(width - legendBlockWidth) / 2 + 20}, ${height + 40})`,
+    );
 
   // Add white background box
   const legendBg = legend
@@ -598,87 +638,12 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .attr("class", "legend-background")
     .attr("x", -20)
     .attr("y", -20)
-    .attr("width", 300)
-    .attr("height", legendData.length * 25 + 10 + 25 + 10 + 25 + 40)
+    .attr("width", legendGrid.width + 40)
+    .attr("height", legendGrid.height + 40)
     .attr("fill", "#ffffff80")
     .attr("rx", 4);
 
-  const legendItems = legend
-    .selectAll(".legend-item")
-    .data(legendData)
-    .join("g")
-    .attr("class", "legend-item")
-    .style("pointer-events", "none") // Let clicks pass through
-    .style("user-select", "none") // Let clicks pass through
-    .attr("transform", (d, i) => `translate(0, ${i * 25})`);
-
-  legendItems
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", (d) => d.color)
-    .attr("stroke", (d) => d.stroke || "none")
-    .attr("stroke-width", (d) => d.strokeWidth || 0);
-
-  legendItems
-    .append("text")
-    .attr("x", 24)
-    .attr("y", 9)
-    .attr("dominant-baseline", "middle")
-    .attr("font-size", 12)
-    .text((d) => d.label);
-
-  // Not enough data legend item
-  const nedLegend = legend
-    .append("g")
-    .attr("class", "ned-legend")
-    .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
-
-  nedLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "#ddd");
-
-  nedLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "url(#white-diagonal-lines-map-ned)");
-
-  nedLegend
-    .append("text")
-    .attr("x", 24)
-    .attr("y", 9)
-    .attr("dominant-baseline", "middle")
-    .attr("font-size", 12)
-    .text("Not enough data");
-
-  // Partial data legend item
-  const partialLegend = legend
-    .append("g")
-    .attr("class", "partial-legend")
-    .attr("transform", `translate(0, ${legendData.length * 25 + 10 + 35})`);
-
-  partialLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "#111");
-
-  partialLegend
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", "url(#white-diagonal-lines-map)");
-
-  partialLegend
-    .append("text")
-    .attr("x", 24)
-    .attr("y", 9)
-    .attr("dominant-baseline", "middle")
-    .attr("font-size", 12)
-    .text("Partial data");
+  renderSwatchLegend(legend, legendData);
 
   // Scroll hint overlay - small box at bottom
   const overlayDiv = document.createElement("div");

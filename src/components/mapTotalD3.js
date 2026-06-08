@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { basePath } from "./basePath.js";
+import { legendGridSize, renderSwatchLegend } from "./mapLegend.js";
 
 /**
  * D3 Map for Total Score
@@ -12,7 +13,18 @@ import { basePath } from "./basePath.js";
  * @param {Object} options - width, height, mode ("latest" or "historical")
  */
 export function mapTotalD3(world, coast, dataCardinal, options = {}) {
-  const { width = 975, height = 610, mode = "latest" } = options;
+  const { width = 975, mode = "latest" } = options;
+
+  // Derive height from the world geo's natural aspect ratio at this width
+  // (plus the top margin reserved for the legend) so fitSize() fills its box
+  // exactly — a fixed height causes letterboxing (empty bands above/below
+  // the map) whenever the box's aspect ratio doesn't match the geo's
+  const worldGeo = { type: "FeatureCollection", features: world };
+  const probeProjection = d3.geoEqualEarth().fitWidth(width, worldGeo);
+  const [[, probeY0], [, probeY1]] = d3
+    .geoPath(probeProjection)
+    .bounds(worldGeo);
+  const height = probeY1 - probeY0 + 40;
 
   // Helper: Create inline sparkline for tooltip with color-coded dots
   function createTooltipSparkline(
@@ -330,12 +342,20 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     },
   }));
 
+  // Reserve space below the map for the legend — sized to its actual content
+  // height (plus a small gap above and margin below) so it always has room
+  // and never overlaps or overflows, regardless of the map's aspect ratio
+  const legendGrid = legendGridSize(legendData.length);
+  const legendContentHeight = legendGrid.height + 40;
+  const legendAreaHeight = legendContentHeight + 40;
+  const totalHeight = height + legendAreaHeight;
+
   // Create SVG
   const svg = d3
     .create("svg")
     .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
+    .attr("height", totalHeight)
+    .attr("viewBox", [0, 0, width, totalHeight])
     .attr("style", "max-width: 100%; height: auto;");
 
   // Pattern for "not enough data" countries
@@ -361,7 +381,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("fill", "#ddd");
 
   // Projection
-  const marginTop = 80;
+  const marginTop = 40;
   const projection = d3
     .geoEqualEarth()
     .fitSize([width, height - marginTop], {
@@ -485,7 +505,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       if (iso3) window.location.href = `${basePath}/${iso3}/`;
     })
     .style("cursor", "pointer")
-    .on("mouseenter", function (event, d) {
+    .on("mouseenter touchstart", function (event, d) {
       d3.select(this)
         .raise()
         .transition()
@@ -597,7 +617,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
     })
-    .on("mouseleave", function () {
+    .on("mouseleave touchend", function () {
       d3.select(this)
         .transition()
         .duration(150)
@@ -616,7 +636,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
       const iso3 = d.properties.ISO3_CODE;
       if (iso3) window.location.href = `${basePath}/${iso3}/`;
     })
-    .on("mouseenter", function (event, d) {
+    .on("mouseenter touchstart", function (event, d) {
       d3.select(this)
         .raise()
         .transition()
@@ -658,7 +678,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
     })
-    .on("mouseleave", function () {
+    .on("mouseleave touchend", function () {
       d3.select(this)
         .transition()
         .duration(150)
@@ -672,11 +692,14 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr("transform", `translate(${width - 50}, ${height - 200})`);
+    .attr(
+      "transform",
+      `translate(50, ${height - 130})`,
+    );
 
   const zoomInButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-in")
     .style("cursor", "pointer")
     .on("click", () => {
       svg.transition().duration(300).call(zoom.scaleBy, 1.5);
@@ -700,7 +723,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   const zoomOutButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-out")
     .attr("transform", "translate(0, 50)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -725,7 +748,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   const resetButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-reset")
     .attr("transform", "translate(0, 100)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -747,46 +770,27 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
     .attr("fill", "#007162")
     .text("⌂");
 
-  // Legend
+  // Legend — centered in the reserved area below the map (20px gap above)
+  const legendBlockWidth = legendGrid.width + 40;
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
-    .attr("transform", `translate(100, ${height / 2})`);
+    .attr(
+      "transform",
+      `translate(${(width - legendBlockWidth) / 2 + 20}, ${height + 40})`,
+    );
 
   legend
     .append("rect")
     .attr("class", "legend-background")
     .attr("x", -20)
     .attr("y", -20)
-    .attr("width", 300)
-    .attr("height", legendData.length * 25 + 40)
+    .attr("width", legendGrid.width + 40)
+    .attr("height", legendGrid.height + 40)
     .attr("fill", "#ffffff80")
     .attr("rx", 4);
 
-  const legendItems = legend
-    .selectAll(".legend-item")
-    .data(legendData)
-    .join("g")
-    .attr("class", "legend-item")
-    .style("pointer-events", "none")
-    .style("user-select", "none")
-    .attr("transform", (_d, i) => `translate(0, ${i * 25})`);
-
-  legendItems
-    .append("rect")
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", (d) => d.color)
-    .attr("stroke", (d) => d.stroke || "none")
-    .attr("stroke-width", (d) => d.strokeWidth || 0);
-
-  legendItems
-    .append("text")
-    .attr("x", 24)
-    .attr("y", 9)
-    .attr("dominant-baseline", "middle")
-    .attr("font-size", 12)
-    .text((d) => d.label);
+  renderSwatchLegend(legend, legendData);
 
   // Scroll hint overlay
   const overlayDiv = document.createElement("div");

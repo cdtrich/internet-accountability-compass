@@ -141,7 +141,7 @@ if (mapMode === "latest") {
     (d) => d.year === previousYear && d.pillar_txt === "Total score",
   );
 
-  console.log("prevData", prevData);
+  // console.log("prevData", prevData);
 
   let increases = 0,
     decreases = 0,
@@ -171,7 +171,7 @@ if (mapMode === "latest") {
 
 ```html
 <div class="body-text">
-  <div class="grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+  <div class="grid keystats-grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
     ${statsData.map((stat) => html`
     <div class="card key">
       <span class="very-big" style="color: ${stat.color};">${stat.count}</span

@@ -27,7 +27,7 @@ title: "Coutry overview"
 
 ```js
 import { colorScales } from "./components/scales.js";
-import { polar } from "./components/polarD3.js";
+import { polarD3 } from "./components/polarD3.js";
 import { heatmap } from "./components/heatmapD3.js";
 import { sidebar } from "./components/sidebar.js";
 import { sparklineTableD3 } from "./components/sparklineTableD3.js";
@@ -145,7 +145,7 @@ const chartView =
     ? html`<div class="figure-w-full">
         <div class="card">
           ${resize((width) =>
-            polar(
+            polarD3(
               dfiFull.filter((d) => d.year === latestYear),
               isMobile,
               { width },

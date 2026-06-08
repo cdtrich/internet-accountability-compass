@@ -316,9 +316,53 @@ a.blog-img-link {
   font-size: 0.72rem;
 }
 
-@media (max-width: 1100px) {
+@media (min-width: 769px) and (max-width: 1100px) {
   .blog-toc {
     display: none;
+  }
+}
+
+/* Blog ToC — mobile: collapsible panel toggled from the sticky top bar */
+.toc-toggle-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans-serif);
+  font-size: 0.85rem;
+  color: var(--text-color);
+  padding: 10px 12px;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .mobile-top-bar {
+    justify-content: space-between;
+  }
+
+  .toc-toggle-button {
+    display: flex;
+  }
+
+  .blog-toc {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    width: auto;
+    max-height: calc(100vh - 48px);
+    background: var(--sidebar-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    box-sizing: border-box;
+    z-index: 1000;
+  }
+
+  .blog-toc.toc-open {
+    display: block;
   }
 }
 
@@ -1520,6 +1564,174 @@ a[href].observablehq-header-anchor {
 #observablehq-search-results li[data-score="4"]:after {
   width: calc(var(--relevance-width) * 0.8125);
 }
+/* ─────────────────────────────────────────────────────────────
+   MEDIUM-SCREEN SIDEBAR FIX (769px – 1200px)
+   At this range the sidebar width is calc(100vw / 12), which
+   exceeds the 5vw translateX offset used by .body-text / .hero.
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .body-text,
+  #pillar-content {
+    transform: none;
+    padding-left: calc(100vw / 12 + 1rem);
+    box-sizing: border-box;
+  }
+
+  .hero {
+    transform: none;
+    padding-left: calc(100vw / 12 + 1rem);
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .figure-w-full {
+    width: calc(100vw - 100vw / 12 - 0.5rem);
+    transform: none;
+    margin: 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE LAYOUT — Phase 1 + 2
+   Breakpoint: 768px  (matches isMobile threshold in sidebar.js)
+   Sidebar becomes a hamburger overlay; a fixed 48px top bar
+   takes its place, so content needs top clearance, not left.
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Push content below the fixed top bar */
+  #observablehq-center {
+    padding-top: 48px;
+  }
+
+  /* Remove left-sidebar offset; sidebar is now an overlay */
+  .body-text,
+  #pillar-content {
+    transform: none;
+    margin-left: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+    width: auto;
+  }
+
+  .hero {
+    transform: none;
+    margin-left: 0;
+    padding-left: 1rem;
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  /* Full-width figures: fill viewport edge-to-edge */
+  .figure-w-full {
+    width: 100vw;
+    transform: none;
+    margin: 0 -1rem;
+  }
+
+  /* Override the margin-left: 12% rule from the 640px block */
+  body,
+  h1,
+  h2,
+  .body-text,
+  .body-text > .body-input,
+  .body-text > p,
+  .body-text > ol,
+  #pillar-content,
+  .keystats {
+    margin-left: 0;
+  }
+
+  /* Stack pillar description + historical sparkline vertically */
+  .pillar-section-header {
+    flex-direction: column;
+  }
+  .pillar-section-header > * {
+    flex: unset !important;
+    width: 100% !important;
+    font-size: 1.5em !important;
+  }
+
+  /* Minimum 44 px tap targets for legend tiles */
+  .legend-item,
+  .sources-legend-item {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* Clickable tile legends (pillar/commitment & source-type filters): wrap
+     into a centered 2-column layout (2x2 / 2x1) instead of a single row
+     that overflows the viewport */
+  .custom-legend {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .legend-item {
+    flex: 0 1 calc(50% - 4px);
+    text-align: center;
+  }
+  .sources-legend-item {
+    justify-content: center;
+  }
+  .legend-item,
+  .legend-item:first-child,
+  .legend-item:last-child,
+  .legend-item:only-child {
+    border-radius: 4px;
+  }
+
+  /* Maps: drop +/- zoom buttons in favor of pinch-to-zoom; keep reset */
+  .zoom-button-in,
+  .zoom-button-out {
+    display: none;
+  }
+  .zoom-button-reset {
+    transform: translate(0, 0) !important;
+  }
+
+  /* Key stats: 2x2 grid, centered, regardless of desktop column count.
+     Framework's .grid-cols-* rules live in @container blocks and would
+     otherwise win on wider mobile viewports, so force it with !important
+     on a dedicated class rather than relying on :has() support. */
+  .keystats-grid.keystats-grid.keystats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    justify-items: center;
+    text-align: center;
+  }
+
+  /* Country page beeswarm charts: break out of the .body-text padding so
+     they can use the full viewport width (straightPlotD3 trims a sliver
+     off that for the bubble gutter) */
+  .chart-breakout {
+    width: 100vw;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  /* Sparkline table: rotate pillar column headers to vertical so narrow
+     mobile columns don't truncate/wrap them — needs a taller header row
+     (more top margin) to fit the rotated text */
+  .sparkline-table th.sparkline-th-rotated {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    height: 8rem;
+    text-align: left;
+    vertical-align: bottom;
+  }
+
+  /* Tighten horizontal cell padding so the gap between the country ISO
+     code and the first (Total) sparkline column shrinks along with every
+     other inter-column gap — keeping all gaps equal at ~0.5rem (was 1.5rem,
+     since each cell carried 0.75rem of padding on both sides) */
+  .sparkline-table th,
+  .sparkline-table td {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
 @media print {
   #observablehq-center {
     padding-left: 1em !important;

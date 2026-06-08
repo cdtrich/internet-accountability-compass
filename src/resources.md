@@ -33,7 +33,7 @@ const sourcesData = FileAttachment("./data/sources.csv").csv({
 
 <!-- hero -->
 <div class="hero">
-  <h1>Perspectives</h1>
+  <h1>Resources</h1>
   <h2 class="subheader">Sharing knowledge to accelerate progress.</h2>
 </div>
 
@@ -61,7 +61,10 @@ const sourcesDataUnique = sourcesDataNormalized.filter(
   (d, index, self) =>
     index ===
     self.findIndex(
-      (item) => item.NAME_ENGL === d.NAME_ENGL && (item.url || `${item.title}|${item.publisher}`) === (d.url || `${d.title}|${d.publisher}`),
+      (item) =>
+        item.NAME_ENGL === d.NAME_ENGL &&
+        (item.url || `${item.title}|${item.publisher}`) ===
+          (d.url || `${d.title}|${d.publisher}`),
     ),
 );
 ```

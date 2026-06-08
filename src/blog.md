@@ -228,6 +228,7 @@ _You can read the full piece [here](https://cadmus.eui.eu/entities/publication/4
 ```js
 {
   document.querySelectorAll(".blog-toc").forEach((el) => el.remove());
+  document.querySelectorAll(".toc-toggle-button").forEach((el) => el.remove());
 
   const toc = document.createElement("nav");
   toc.className = "blog-toc";
@@ -268,5 +269,30 @@ _You can read the full piece [here](https://cadmus.eui.eu/entities/publication/4
 
   toc.appendChild(list);
   document.body.appendChild(toc);
+
+  // Mobile: surface the ToC via a toggle button in the sticky top bar.
+  // The top bar is created by sidebar(), which may render after this cell,
+  // so poll briefly until it shows up in the DOM.
+  if (window.innerWidth <= 768) {
+    let attempts = 0;
+    const attachTocToggle = () => {
+      const topBar = document.querySelector(".mobile-top-bar");
+      if (!topBar) {
+        if (++attempts < 50) requestAnimationFrame(attachTocToggle);
+        return;
+      }
+      if (topBar.querySelector(".toc-toggle-button")) return;
+
+      const tocToggle = document.createElement("button");
+      tocToggle.className = "toc-toggle-button";
+      tocToggle.setAttribute("aria-label", "Toggle table of contents");
+      tocToggle.innerHTML = `<i class="fa-solid fa-list-ul"></i> Contents`;
+      tocToggle.addEventListener("click", () => {
+        toc.classList.toggle("toc-open");
+      });
+      topBar.appendChild(tocToggle);
+    };
+    attachTocToggle();
+  }
 }
 ```

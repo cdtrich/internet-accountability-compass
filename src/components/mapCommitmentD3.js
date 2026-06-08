@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import colorScales from "./scales.js";
 import { basePath } from "./basePath.js";
+import { legendGridSize, renderSwatchLegend } from "./mapLegend.js";
 
 /**
  * D3 Map for Commitment-level data
@@ -20,7 +21,18 @@ export function mapCommitmentD3(
   selectedCommitment,
   options = {},
 ) {
-  const { width = 975, height = 610, mode = "latest" } = options;
+  const { width = 975, mode = "latest" } = options;
+
+  // Derive height from the world geo's natural aspect ratio at this width so
+  // fitSize() fills the box exactly — a fixed height causes letterboxing
+  // (empty bands above/below the map) whenever the box's aspect ratio
+  // doesn't match the geo's
+  const worldGeo = { type: "FeatureCollection", features: world };
+  const probeProjection = d3.geoEqualEarth().fitWidth(width, worldGeo);
+  const [[, probeY0], [, probeY1]] = d3
+    .geoPath(probeProjection)
+    .bounds(worldGeo);
+  const height = probeY1 - probeY0;
 
   const fillScale = colorScales();
   const pillarColor = fillScale.getColor(selectedPillar);
@@ -164,6 +176,9 @@ export function mapCommitmentD3(
   };
 
   let worldWithData;
+  // Historical mode uses a discrete swatch legend (set below); latest mode
+  // uses a gradient bar legend instead, so legendData stays undefined for it
+  let legendData;
 
   if (mode === "historical") {
     // Historical mode: show year-over-year change
@@ -204,6 +219,17 @@ export function mapCommitmentD3(
         ? { ...feature, properties: { ...feature.properties, ...matchingData } }
         : feature;
     });
+
+    legendData = [
+      { label: "Decrease", color: changeColors.negative },
+      { label: "No change", color: "#55555520", strokeWidth: 1 },
+      { label: "Increase", color: changeColors.positive },
+      {
+        label: "Not enough data",
+        color: "#ddd",
+        pattern: "url(#white-diagonal-lines-commitment)",
+      },
+    ];
   } else {
     // Latest mode: show current scores
     const filteredData = data.filter(
@@ -213,14 +239,14 @@ export function mapCommitmentD3(
         d.year === latestYear,
     );
 
-    console.log(
-      "India",
-      data.filter((d) => d.ISO3_CODE === "IND"),
-    );
-    console.log(
-      "Cuba",
-      data.filter((d) => d.ISO3_CODE === "CUB"),
-    );
+    // console.log(
+    //   "India",
+    //   data.filter((d) => d.ISO3_CODE === "IND"),
+    // );
+    // console.log(
+    //   "Cuba",
+    //   data.filter((d) => d.ISO3_CODE === "CUB"),
+    // );
 
     const dataMap = new Map(filteredData.map((item) => [item.ISO3_CODE, item]));
     worldWithData = world.map((feature) => {
@@ -231,12 +257,21 @@ export function mapCommitmentD3(
     });
   }
 
+  // Reserve space below the map for the legend — sized to whichever legend
+  // layout this mode uses (historical: swatch grid; latest: gradient bar) so
+  // it always has room regardless of mode or the map's aspect ratio
+  const legendGrid = mode === "historical" ? legendGridSize(legendData.length) : null;
+  const legendContentHeight =
+    mode === "historical" ? legendGrid.height + 40 : 115;
+  const legendAreaHeight = legendContentHeight + 40;
+  const totalHeight = height + legendAreaHeight;
+
   // Create SVG
   const svg = d3
     .create("svg")
     .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
+    .attr("height", totalHeight)
+    .attr("viewBox", [0, 0, width, totalHeight])
     .attr("style", "max-width: 100%; height: auto;");
 
   // Pattern for "not enough data" countries
@@ -375,7 +410,7 @@ export function mapCommitmentD3(
   // Hover behavior - snap to centroid
   // Hover behavior - snap to centroid
   countries
-    .on("mouseenter", function (event, d) {
+    .on("mouseenter touchstart", function (event, d) {
       // Only raise countries with data — no-data countries have an overlay path
       // that would be hidden if the country path is raised above it
       const isNoData =
@@ -467,7 +502,7 @@ export function mapCommitmentD3(
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
     })
-    .on("mouseleave", function () {
+    .on("mouseleave touchend", function () {
       // Reset stroke
       d3.select(this)
         .transition()
@@ -482,12 +517,12 @@ export function mapCommitmentD3(
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr("transform", `translate(${width - 50}, ${height - 200})`);
+    .attr("transform", `translate(50, ${height - 130})`);
 
   // Zoom in button
   const zoomInButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-in")
     .style("cursor", "pointer")
     .on("click", () => {
       svg.transition().duration(300).call(zoom.scaleBy, 1.5);
@@ -512,7 +547,7 @@ export function mapCommitmentD3(
   // Zoom out button
   const zoomOutButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-out")
     .attr("transform", "translate(0, 50)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -538,7 +573,7 @@ export function mapCommitmentD3(
   // Reset zoom button
   const resetButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-reset")
     .attr("transform", "translate(0, 100)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -564,74 +599,32 @@ export function mapCommitmentD3(
   const legendWidth = 200;
   const legendHeight = 15;
 
+  // Legend — centered in the reserved area below the map (20px gap above);
+  // each mode's legend block has a different width, so the group's x-position
+  // is computed per-mode to keep the block centered under the map
+  const legendBlockWidth =
+    mode === "historical" ? legendGrid.width + 40 : legendWidth + 40;
   const legend = svg
     .append("g")
     .attr("class", "map-legend")
-    .attr("transform", `translate(100, ${height / 2})`);
+    .attr(
+      "transform",
+      `translate(${(width - legendBlockWidth) / 2 + 20}, ${height + 40})`,
+    );
 
   if (mode === "historical") {
-    // Historical mode: 3-category legend
-    const legendData = [
-      { label: "Decrease", color: changeColors.negative },
-      { label: "No change", color: "#55555520", strokeWidth: 1 },
-      { label: "Increase", color: changeColors.positive },
-    ];
-
+    // Historical mode: swatch grid legend (centered, wraps to two columns)
     const legendBg = legend
       .append("rect")
       .attr("class", "legend-background")
       .attr("x", -20)
       .attr("y", -20)
-      .attr("width", 240)
-      .attr("height", legendData.length * 25 + 10 + 25 + 40)
+      .attr("width", legendGrid.width + 40)
+      .attr("height", legendGrid.height + 40)
       .attr("fill", "#ffffff80")
       .attr("rx", 4);
 
-    const legendItems = legend
-      .selectAll(".legend-item")
-      .data(legendData)
-      .join("g")
-      .attr("class", "legend-item")
-      .style("pointer-events", "none")
-      .style("user-select", "none")
-      .attr("transform", (d, i) => `translate(0, ${i * 25})`);
-
-    legendItems
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", (d) => d.color)
-      .attr("stroke", (d) => d.stroke || "none")
-      .attr("stroke-width", (d) => d.strokeWidth || 0);
-
-    legendItems
-      .append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dominant-baseline", "middle")
-      .attr("font-size", 12)
-      .text((d) => d.label);
-
-    const nedLegend = legend
-      .append("g")
-      .attr("transform", `translate(0, ${legendData.length * 25 + 10})`);
-    nedLegend
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", "#ddd");
-    nedLegend
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", "url(#white-diagonal-lines-commitment)");
-    nedLegend
-      .append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dominant-baseline", "middle")
-      .attr("font-size", 12)
-      .text("Not enough data");
+    renderSwatchLegend(legend, legendData);
   } else {
     // Latest mode: gradient legend
     const legendBg = legend

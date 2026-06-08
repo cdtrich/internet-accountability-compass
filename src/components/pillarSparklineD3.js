@@ -77,6 +77,15 @@ export function pillarSparklineD3(data, pillar, { width = 190 } = {}) {
     .attr("stroke-width", 1)
     .attr("fill", "#ffffff80");
 
+  // Area generator (fills from the line down to the axis) — shares the
+  // line's x/curve so the fill traces the same path as the stroke
+  const area = d3
+    .area()
+    .x((d) => xScale(d.year))
+    .y0(yScale(0))
+    .y1((d) => yScale(d.value))
+    .curve(d3.curveMonotoneX);
+
   // Line generator
   const line = d3
     .line()
@@ -85,6 +94,13 @@ export function pillarSparklineD3(data, pillar, { width = 190 } = {}) {
     .curve(d3.curveCatmullRom);
 
   // Draw line
+  svg
+    .append("path")
+    .datum(pillarData)
+    .attr("fill", pillarColor)
+    .attr("opacity", 1)
+    .attr("d", area);
+
   svg
     .append("path")
     .datum(pillarData)
@@ -122,6 +138,7 @@ export function pillarSparklineD3(data, pillar, { width = 190 } = {}) {
       .attr("stroke", "#fff")
       .attr("stroke-width", 4)
       .attr("paint-order", "stroke")
+      .attr("font-weight", "bold")
       .text(Math.round(d.value))
       .each(function () {
         this.style.setProperty("font-size", "12px", "important");

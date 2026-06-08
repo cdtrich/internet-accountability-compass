@@ -17,7 +17,7 @@ export function heatmap(data, isMobile, options = {}) {
   // Dimensions
   const height = data.length * 5;
   const finalHeight = height < 3000 ? 3000 : height;
-  const marginLeft = isMobile ? width / 2.5 : width / 4;
+  const marginLeft = isMobile ? width / 5 : width / 4;
   const marginRight = isMobile ? 0 : width / 4;
   const marginTop = isMobile ? width / 2 : width / 10;
   const marginBottom = 40;
@@ -289,9 +289,11 @@ export function heatmap(data, isMobile, options = {}) {
       // Apply rotation for mobile
       if (isMobile) {
         text
-          .attr("transform", "rotate(-90)")
-          .attr("text-anchor", "end")
-          .attr("dx", -8);
+          .attr("transform", "rotate(-90) translate(10,5)")
+          .attr("text-anchor", "start");
+        // .attr("justify-content", "center")
+        // .attr("align-items", "center")
+        // .attr("dy", -12);
       } else {
         text.attr("text-anchor", "middle");
       }

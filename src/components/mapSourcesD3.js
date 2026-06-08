@@ -191,7 +191,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
 
   // Hover behavior - snap to centroid
   countries
-    .on("mouseenter", function (event, d) {
+    .on("mouseenter touchstart", function (event, d) {
       // Only show tooltip for countries with resources
       if (!countriesWithResources.includes(d.properties.ISO3_CODE)) {
         return;
@@ -235,7 +235,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
           svgRect.left + zoomedCentroid[0] + window.scrollX + 10 + "px",
         );
     })
-    .on("mouseleave", function (event, d) {
+    .on("mouseleave touchend", function (event, d) {
       // Reset stroke if not selected
       if (d.properties.NAME_ENGL !== selectedCountry) {
         d3.select(this)
@@ -259,7 +259,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
   // Zoom in button
   const zoomInButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-in")
     .style("cursor", "pointer")
     .on("click", () => {
       svg.transition().duration(300).call(zoom.scaleBy, 1.5);
@@ -284,7 +284,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
   // Zoom out button
   const zoomOutButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-out")
     .attr("transform", "translate(0, 50)")
     .style("cursor", "pointer")
     .on("click", () => {
@@ -310,7 +310,7 @@ export function mapSourcesD3(world, coast, sourcesData, options = {}) {
   // Reset zoom button
   const resetButton = controlsGroup
     .append("g")
-    .attr("class", "zoom-button")
+    .attr("class", "zoom-button zoom-button-reset")
     .attr("transform", "translate(0, 100)")
     .style("cursor", "pointer")
     .on("click", () => {

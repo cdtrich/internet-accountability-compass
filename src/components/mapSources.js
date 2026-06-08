@@ -85,7 +85,7 @@ export function mapSources(world, coast, data, { width, height }) {
     });
 
     const name = clicked?.properties?.NAME_ENGL ?? null;
-    console.log("ðŸ–±ï¸ Clicked country:", name);
+    // console.log("Clicked country:", name);
 
     window.dispatchEvent(
       new CustomEvent("map-country-selected", { detail: name })

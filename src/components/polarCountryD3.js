@@ -29,8 +29,8 @@ export function polarCountryD3(data, country, isMobile, options = {}) {
     return div;
   }
 
-  // Chart dimensions (matching polarD3)
-  const radius = width * 0.35;
+  // Chart dimensions (matching polarD3, with half the empty margin above/below)
+  const radius = width * 0.425;
   const centerX = width / 2;
   const centerY = height / 2;
 

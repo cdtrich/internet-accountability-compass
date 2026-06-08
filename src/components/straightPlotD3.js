@@ -9,10 +9,18 @@ import { basePath } from "./basePath.js";
  * @param {Array} data - Full data
  * @param {string} country - Country to highlight
  * @param {string} pillar - Selected pillar
- * @param {Object} options - width, height
+ * @param {Object} options - width, height, isMobile
  */
 export function straightPlotD3(data, country, pillar, options = {}) {
-  const { width = 975 } = options;
+  const { width: containerWidth = 975, isMobile = false } = options;
+
+  // Shorten a label to fit within maxWidth at the given font size, appending
+  // an ellipsis; full text remains available via a <title> tooltip
+  function truncateLabel(text, fontSize, maxWidth) {
+    const maxChars = Math.max(6, Math.floor(maxWidth / (fontSize * 0.55)));
+    if (text.length <= maxChars) return text;
+    return `${text.slice(0, maxChars - 1).trimEnd()}…`;
+  }
 
   const fillScale = colorScales();
   const pillarColor = fillScale.getColor(pillar);
@@ -75,9 +83,33 @@ export function straightPlotD3(data, country, pillar, options = {}) {
     });
   });
 
-  // Dimensions
-  const margin = { top: 80, right: 40, bottom: 60, left: 40 };
-  const rowHeight = 150;
+  // Largest possible bubble radius (must match the rScale range below) —
+  // left/right margins reserve at least this much space (plus a small
+  // buffer) so beeswarm dots at the extremes of the scale (x = 0 or 100)
+  // aren't clipped by the SVG edge
+  const maxBubbleRadius = 25;
+  const horizontalGutter = maxBubbleRadius;
+
+  // On mobile the chart breaks out of .body-text to span the full viewport
+  // (.chart-breakout); trim a sliver off so the chart doesn't sit flush
+  // against the literal screen edges
+  const width = isMobile ? containerWidth - maxBubbleRadius : containerWidth;
+
+  // Dimensions — tighter margins on narrow/mobile screens
+  const margin = isMobile
+    ? {
+        top: 30,
+        right: horizontalGutter,
+        bottom: 25,
+        left: horizontalGutter,
+      }
+    : {
+        top: 40,
+        right: Math.max(40, horizontalGutter),
+        bottom: 30,
+        left: Math.max(40, horizontalGutter),
+      };
+  const rowHeight = isMobile ? 200 : 150;
   const height = commitments.length * rowHeight + margin.top + margin.bottom;
 
   // Scales
@@ -95,7 +127,7 @@ export function straightPlotD3(data, country, pillar, options = {}) {
   const rScale = d3
     .scaleSqrt()
     .domain([1, d3.max(plotData, (d) => d.count)])
-    .range([3, 25]);
+    .range([3, maxBubbleRadius]);
 
   // Create SVG
   const svg = d3
@@ -147,15 +179,6 @@ export function straightPlotD3(data, country, pillar, options = {}) {
       (d) => d.commitment_txt_cardinal === commitment,
     );
     const meanValue = meanByCommitment.get(commitment);
-
-    // Commitment label
-    svg
-      .append("text")
-      .attr("x", margin.left)
-      .attr("y", yPos - 50)
-      .attr("fill", pillarColor)
-      .attr("font-size", 18)
-      .text(commitment);
 
     // Collision detection for dots
     const simulation = d3
@@ -227,14 +250,40 @@ export function straightPlotD3(data, country, pillar, options = {}) {
         }
       });
 
+    // Commitment label — truncated to fit the available width, with the
+    // full text exposed via a <title> tooltip
+    const commitmentFontSize = isMobile ? 13 : 18;
+    const commitmentLabel = svg
+      .append("text")
+      .attr("x", margin.left)
+      .attr("y", isMobile ? yPos - 70 : yPos - 50)
+      .attr("fill", pillarColor)
+      .attr("stroke", "white")
+      .attr("stroke-width", 2)
+      .attr("paint-order", "stroke")
+      .attr("font-size", commitmentFontSize)
+      .attr("font-weight", 500)
+      .text(
+        truncateLabel(
+          commitment,
+          commitmentFontSize,
+          width - margin.left - margin.right,
+        ),
+      );
+    commitmentLabel.append("title").text(commitment);
+
     // Country highlight
     if (countryValue && !isNaN(countryValue.value)) {
       const diff = countryValue.value - meanValue;
       const comparison =
         diff > 0
-          ? `${Math.abs(diff).toFixed(1)} points above average`
+          ? isMobile
+            ? `${Math.abs(diff).toFixed(1)} pts > avg`
+            : `${Math.abs(diff).toFixed(1)} points above average`
           : diff < 0
-            ? `${Math.abs(diff).toFixed(1)} points below average`
+            ? isMobile
+              ? `${Math.abs(diff).toFixed(1)} pts < average`
+              : `${Math.abs(diff).toFixed(1)} points below average`
             : "equal to average";
 
       // Arrow from country to mean
@@ -289,18 +338,27 @@ export function straightPlotD3(data, country, pillar, options = {}) {
         .duration(300)
         .attr("opacity", 1);
 
-      // Country label
-      svg
+      // Country label — ISO3 code on mobile (saves space), full name on
+      // desktop (truncated if needed); full name always available via <title>
+      const countryFontSize = isMobile ? 12 : 14;
+      const countryLabelMaxWidth = 140;
+      const countryLabelText = isMobile
+        ? countryValue.ISO3_CODE
+        : truncateLabel(country, countryFontSize, countryLabelMaxWidth);
+      const countryLabel = svg
         .append("text")
         .attr("class", "label-whitestroke")
         .attr("x", margin.left + xScale(countryValue.value))
         .attr("y", yPos + 45)
-        .attr("text-anchor", "middle")
+        // .attr("text-anchor", "middle")
         .attr("fill", pillarColor)
-        .attr("font-size", 14)
+        .attr("font-size", countryFontSize)
         .attr("font-weight", "bold")
+        .attr("text-anchor", "middle")
         .attr("opacity", 0)
-        .text(country)
+        .text(countryLabelText);
+      countryLabel.append("title").text(country);
+      countryLabel
         .transition()
         .delay(idx * 100 + 500)
         .duration(300)
@@ -318,7 +376,7 @@ export function straightPlotD3(data, country, pillar, options = {}) {
           .attr("class", "label-whitestroke")
           .attr("text-anchor", "middle")
           .attr("fill", "#333")
-          .attr("font-size", 12)
+          .attr("font-size", isMobile ? 10 : 12)
           .attr("opacity", 0)
           .text(comparison)
           .transition()

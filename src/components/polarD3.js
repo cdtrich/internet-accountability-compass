@@ -12,14 +12,14 @@ import { basePath } from "./basePath.js";
  * @param {boolean} isMobile - Mobile flag
  * @param {Object} options - Chart options (width)
  */
-export function polar(data, isMobile, options = {}) {
+export function polarD3(data, isMobile, options = {}) {
   const { width = 640 } = options;
 
-  console.log("polar called");
-  console.log("data length:", data.length);
-  console.log("countries:", [...new Set(data.map((d) => d.NAME_ENGL))].length);
-  console.log("isMobile:", isMobile);
-  console.log("width:", width);
+  // console.log("polar called");
+  // console.log("data length:", data.length);
+  // console.log("countries:", [...new Set(data.map((d) => d.NAME_ENGL))].length);
+  // console.log("isMobile:", isMobile);
+  // console.log("width:", width);
 
   // Get color scale
   const fillScale = colorScales();
@@ -31,11 +31,9 @@ export function polar(data, isMobile, options = {}) {
   const commitments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const pillars = [...new Set(data.map((d) => d.pillar_txt))];
 
-  // Grid layout
-  const cols = isMobile ? 1 : 5;
-  const countryRows = isMobile
-    ? countries.length
-    : Math.ceil(countries.length / cols);
+  // Grid layout — two countries per row on mobile, five on desktop
+  const cols = isMobile ? 2 : 5;
+  const countryRows = Math.ceil(countries.length / cols);
   const rows = countryRows + 1; // +1 for legend row at top
 
   // Cell dimensions - DEFINE THESE BEFORE USING THEM
@@ -44,12 +42,12 @@ export function polar(data, isMobile, options = {}) {
   const radius = cellWidth * 0.35; // Polar chart radius
 
   const totalWidth = width * 0.9;
-  const totalHeight = isMobile ? width * 80 : rows * cellHeight;
+  const totalHeight = rows * cellHeight;
 
-  console.log("cols:", cols);
-  console.log("countryRows:", countryRows);
-  console.log("rows:", rows);
-  console.log("totalHeight:", totalHeight);
+  // console.log("cols:", cols);
+  // console.log("countryRows:", countryRows);
+  // console.log("rows:", rows);
+  // console.log("totalHeight:", totalHeight);
 
   // CREATE SVG - THIS IS MISSING!
   const svg = d3
@@ -71,10 +69,14 @@ export function polar(data, isMobile, options = {}) {
   // Create grid cells
   const cells = [];
 
-  // Legend at CENTER of first row (position 2 = middle)
+  // Legend centered horizontally in the SVG regardless of column count —
+  // pinning it to a grid column (e.g. column 0 on mobile) pushed its labels
+  // off the left edge of the page; centering the cell's midpoint on
+  // totalWidth/2 gives equal breathing room on both sides (and is a no-op
+  // on desktop, where it already worked out to column 2 of 5)
   cells.push({
     type: "legend",
-    x: isMobile ? 0 : 2 * cellWidth,
+    x: totalWidth / 2 - cellWidth / 2,
     y: 0,
     col: isMobile ? 0 : 2,
     row: 0,
@@ -82,8 +84,8 @@ export function polar(data, isMobile, options = {}) {
 
   // Countries start at row 1 (second row)
   countries.forEach((country, i) => {
-    const col = isMobile ? 0 : i % cols;
-    const row = isMobile ? i + 1 : Math.floor(i / cols) + 1;
+    const col = i % cols;
+    const row = Math.floor(i / cols) + 1;
 
     cells.push({
       type: "country",
@@ -117,8 +119,9 @@ export function polar(data, isMobile, options = {}) {
       );
 
     if (cell.type === "legend") {
-      // LEGEND CELL
-      drawLegend(g, radius);
+      // LEGEND CELL — half the size of the country charts so its labels
+      // stay within the cell instead of running off the page
+      drawLegend(g, radius / 2);
     } else {
       // COUNTRY CELL
       drawCountryChart(g, cell, radius);
@@ -127,6 +130,10 @@ export function polar(data, isMobile, options = {}) {
 
   // Draw legend
   function drawLegend(g, r) {
+    // Scaled to the legend's own (smaller) radius so proportions match the
+    // country charts despite being drawn at half size
+    const legendRadialScale = d3.scaleLinear().domain([0, 100]).range([0, r]);
+
     // Define pillar ranges (commitment numbers)
     const pillarRanges = [
       {
@@ -168,7 +175,7 @@ export function polar(data, isMobile, options = {}) {
       // total circle
       const totalCircle = g
         .append("circle")
-        .attr("r", radialScale(65))
+        .attr("r", legendRadialScale(65))
         .attr("fill", "#000")
         .attr("fill-opacity", 0.025)
         .attr("stroke", "#aaa")
@@ -177,7 +184,7 @@ export function polar(data, isMobile, options = {}) {
       const arc = d3
         .arc()
         .innerRadius(0)
-        .outerRadius(radialScale(100))
+        .outerRadius(legendRadialScale(100))
         .startAngle(startAngleArc) // ← arc angles
         .endAngle(endAngleArc);
 
@@ -189,8 +196,8 @@ export function polar(data, isMobile, options = {}) {
       // Lines use line angles
       [startAngleLine, endAngleLine].forEach((angle) => {
         const pos = {
-          x: radialScale(100) * Math.cos(angle),
-          y: radialScale(100) * Math.sin(angle),
+          x: legendRadialScale(100) * Math.cos(angle),
+          y: legendRadialScale(100) * Math.sin(angle),
         };
 
         g.append("line")
@@ -234,7 +241,7 @@ export function polar(data, isMobile, options = {}) {
     // Reference circles
     [100, 80, 60, 40, 20].forEach((val) => {
       g.append("circle")
-        .attr("r", radialScale(val))
+        .attr("r", legendRadialScale(val))
         .attr("fill", "#ffffff00")
         .attr("stroke", "#000")
         .attr("stroke-width", 0.5)
@@ -242,7 +249,7 @@ export function polar(data, isMobile, options = {}) {
     });
 
     // White center dot
-    g.append("circle").attr("r", radialScale(3)).attr("fill", "#fff");
+    g.append("circle").attr("r", legendRadialScale(3)).attr("fill", "#fff");
 
     // "Total" label
     g.append("text")
@@ -255,9 +262,10 @@ export function polar(data, isMobile, options = {}) {
       .attr("fill", "currentColor")
       .text("Total");
 
-    // Tick labels (0, 20, 40, 60, 80, 100)
-    [0, 20, 40, 60, 80, 100].forEach((val) => {
-      const yPos = -radialScale(val);
+    // Tick labels (0, 100 on mobile; 0, 20, 40, 60, 80, 100 otherwise)
+    const tickValues = isMobile ? [0, 100] : [0, 20, 40, 60, 80, 100];
+    tickValues.forEach((val) => {
+      const yPos = -legendRadialScale(val);
 
       g.append("text")
         // .attr("class", "label-whitestroke")
@@ -289,19 +297,22 @@ export function polar(data, isMobile, options = {}) {
     const totalScore = countryData[0]?.total || 0;
     const totalCircle = g
       .append("circle")
-      .attr("r", 0)
+      .attr("r", isMobile ? radialScale(totalScore) : 0)
       .attr("fill", "#000")
       .attr("fill-opacity", 0.1)
       .attr("stroke", "#aaa")
       .attr("stroke-width", 1);
 
-    // Animate total circle
-    totalCircle
-      .transition()
-      .delay(cell.row * 200 + 300)
-      .duration(1000)
-      .ease(d3.easeQuadOut)
-      .attr("r", radialScale(totalScore));
+    // Animate total circle — skipped on mobile, where the sheer number of
+    // small-multiple cells makes simultaneous transitions a performance drag
+    if (!isMobile) {
+      totalCircle
+        .transition()
+        .delay(cell.row * 200 + 300)
+        .duration(1000)
+        .ease(d3.easeQuadOut)
+        .attr("r", radialScale(totalScore));
+    }
 
     // White center dot
     g.append("circle").attr("r", radialScale(3)).attr("fill", "#fff");
@@ -319,7 +330,8 @@ export function polar(data, isMobile, options = {}) {
       const r = radialScale(d.value);
       const pos = polarToCartesian(angle, r);
 
-      // wider cardinal line (from center to value)
+      // wider cardinal line (from center to value) — drawn at its final
+      // position immediately on mobile (see isMobile branches below)
       const lineBg = interactiveGroup
         .append("line")
         .attr(
@@ -328,8 +340,8 @@ export function polar(data, isMobile, options = {}) {
         )
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", 0)
-        .attr("y2", 0)
+        .attr("x2", isMobile ? pos.x : 0)
+        .attr("y2", isMobile ? pos.y : 0)
         .attr("stroke", fillScale.getColor(d.pillar_txt))
         // .attr("stroke-width", isMobile ? 12 : 10)
         .attr("opacity", 0.1)
@@ -344,52 +356,57 @@ export function polar(data, isMobile, options = {}) {
         )
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", 0)
-        .attr("y2", 0)
+        .attr("x2", isMobile ? pos.x : 0)
+        .attr("y2", isMobile ? pos.y : 0)
         .attr("stroke", fillScale.getColor(d.pillar_txt))
         .attr("stroke-width", isMobile ? 3 : 2)
         .style("transition", "opacity 150ms");
 
-      // Animate line drawing
-      lineBg
-        .transition()
-        .delay(cell.row * 200 + 400 + i * 50)
-        .duration(600)
-        .ease(d3.easeQuadOut)
-        .attr("x2", pos.x)
-        .attr("y2", pos.y)
-        .attr("opacity", 0.1);
-      // Animate line drawing
-      line
-        .transition()
-        .delay(cell.row * 200 + 400 + i * 50)
-        .duration(600)
-        .ease(d3.easeQuadOut)
-        .attr("x2", pos.x)
-        .attr("y2", pos.y);
+      // Animate line drawing — skipped on mobile (lines already drawn at
+      // their final position above); too many simultaneous small-multiple
+      // transitions cause jank on weaker devices
+      if (!isMobile) {
+        lineBg
+          .transition()
+          .delay(cell.row * 200 + 400 + i * 50)
+          .duration(600)
+          .ease(d3.easeQuadOut)
+          .attr("x2", pos.x)
+          .attr("y2", pos.y)
+          .attr("opacity", 0.1);
+        line
+          .transition()
+          .delay(cell.row * 200 + 400 + i * 50)
+          .duration(600)
+          .ease(d3.easeQuadOut)
+          .attr("x2", pos.x)
+          .attr("y2", pos.y);
+      }
 
       // Dot at value
       const dot = interactiveGroup
         .append("circle")
         .attr("class", `commitment-dot commitment-${d.commitment_num_cardinal}`)
-        .attr("cx", 0)
-        .attr("cy", 0)
+        .attr("cx", isMobile ? pos.x : 0)
+        .attr("cy", isMobile ? pos.y : 0)
         .attr("r", isMobile ? 6 : 4)
         .attr("fill", fillScale.getColor(d.pillar_txt))
         .attr("stroke", "#fff")
         .attr("stroke-width", 2)
         .style("transition", "opacity 150ms")
-        .attr("opacity", 0)
+        .attr("opacity", isMobile ? 1 : 0)
         .datum(d);
 
-      // Animate dot appearing
-      dot
-        .transition()
-        .delay(cell.row * 200 + 1000 + i * 50)
-        .duration(300)
-        .attr("cx", pos.x)
-        .attr("cy", pos.y)
-        .attr("opacity", 1);
+      // Animate dot appearing — skipped on mobile (already placed above)
+      if (!isMobile) {
+        dot
+          .transition()
+          .delay(cell.row * 200 + 1000 + i * 50)
+          .duration(300)
+          .attr("cx", pos.x)
+          .attr("cy", pos.y)
+          .attr("opacity", 1);
+      }
 
       // INVISIBLE LARGER HOVER TARGET
       interactiveGroup
@@ -415,7 +432,7 @@ export function polar(data, isMobile, options = {}) {
       .attr("font-weight", 700)
       .attr("fill", "#000")
       .style("cursor", "pointer")
-      .attr("opacity", 0)
+      .attr("opacity", isMobile ? 1 : 0)
       .text(cell.country)
       .on("click", (event, d) => {
         const iso3 = countryData[0]?.ISO3_CODE;
@@ -424,27 +441,35 @@ export function polar(data, isMobile, options = {}) {
         }
       });
 
-    // Animate country name
-    countryName
-      .transition()
-      .delay(cell.row * 200 + 1400)
-      .duration(400)
-      .attr("opacity", 1);
+    // Animate country name + total score label — skipped on mobile, where
+    // they're rendered at full opacity immediately above/below
+    if (!isMobile) {
+      countryName
+        .transition()
+        .delay(cell.row * 200 + 1400)
+        .duration(400)
+        .attr("opacity", 1);
+    }
 
     // Total score label underneath
     const group = countryData[0]?.group || "";
-    g.append("text")
+    const totalLabel = g
+      .append("text")
       .attr("y", -r - 5)
       .attr("text-anchor", "middle")
       .attr("font-size", 14)
-      .attr("opacity", 0)
+      .attr("opacity", isMobile ? 1 : 0)
       .text(
         `${isNaN(totalScore) ? "Not enough data" : Math.floor(totalScore)} ${isNaN(totalScore) ? "" : `(${group})`}`,
-      )
-      .transition()
-      .delay(cell.row * 200 + 1500)
-      .duration(400)
-      .attr("opacity", 1);
+      );
+
+    if (!isMobile) {
+      totalLabel
+        .transition()
+        .delay(cell.row * 200 + 1500)
+        .duration(400)
+        .attr("opacity", 1);
+    }
   }
 
   // LINKED BRUSHING

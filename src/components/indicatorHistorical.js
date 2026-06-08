@@ -73,6 +73,15 @@ export function indicatorHistorical(
     .y((d) => yScale(d.value))
     .curve(d3.curveMonotoneX);
 
+  // Area generator (fills from the line down to the axis) — shares the
+  // line's x/curve so the fill traces the same path as the stroke
+  // const area = d3
+  //   .area()
+  //   .x((d) => xScale(d.year))
+  //   .y0(innerHeight)
+  //   .y1((d) => yScale(d.value))
+  //   .curve(d3.curveMonotoneX);
+
   // X-axis (every year, no line)
   g.append("g")
     .attr("transform", `translate(0, ${innerHeight + 10})`)
