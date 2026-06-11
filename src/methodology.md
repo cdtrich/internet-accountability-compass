@@ -61,7 +61,7 @@ import { sidebar } from "./components/sidebar.js";
 </li>
 </ol>
   <p>These dimensions reflect widely recognised principles and commitments articulated in international political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
-Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.eu/en/library/declaration-future-internet" target="_blank">Declaration on the Future of the Internet</a>. For a full mapping of commitments and their relevance to the Compass framework, see <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/b76f824bb5009098599dd71e1cd206d73f9d61fa/src/data/sources/Methodological%20Note%201.pdf" target="_blank"> Methodological Note 1</a>.
+Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.eu/en/library/declaration-future-internet" target="_blank">Declaration on the Future of the Internet</a>. For a full mapping of commitments and their relevance to the Compass framework, see <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/e81b97ed32a055ae7a709ca7daf6f8adbcb39094/src/data/sources/Methodological%20Note%201.pdf" target="_blank"> Methodological Note 1</a>.
 
 </p>
   <p>Given the methodological complexity and time constraints involved in producing original data, each dimension is informed by established external sources that capture legal, institutional, and practical conditions across countries.
@@ -90,13 +90,13 @@ Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.e
 </p>
 
 <ol>
-  <li><b>Leading</b> (Score 100â€“80): Demonstrating strong leadership, innovation, or exemplary practices.
+  <li><b>Leading</b> (Score 100-80): Demonstrating strong leadership, innovation, or exemplary practices.
   </li>
-  <li><b>On Track</b> (79â€“65): Policies aligned with global objectives and showing steady implementation.
+  <li><b>On Track</b> (79-65): Policies aligned with global objectives and showing steady implementation.
   </li>
-  <li><b>Catching Up</b> (64â€“50): Early efforts visible, though progress remains limited or uneven.
+  <li><b>Catching Up</b> (64-50): Early efforts visible, though progress remains limited or uneven.
   </li>
-  <li><b>Off Course</b> (49â€“0): Divergence from international norms or significant implementation gaps, reliable data might be missing.
+  <li><b>Off Course</b> (49-0): Divergence from international norms or significant implementation gaps, reliable data might be missing.
   </li>
 </ol>
   <p>These categories are derived through comparative analysis and qualitative interpretation of underlying data across multiple indicators.
@@ -114,11 +114,11 @@ Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.e
 </ol>
   <p>As the Compass relies on secondary data, results may be influenced by variations in methodology, data quality, or temporal gaps between sources. While directional assessments offer comparative insights, they do not capture the full nuance of local implementation or informal practices.
 </p>
-  <p>All indicator sources, any modifications made to original datasets, and detailed scoring methodology are documented in <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/41c7c50f91bc510847fe7199428d0361fb0bd7db/src/data/sources/Methodological Note 2.pdf" target="_blank"> Methodological Note 2</a>. The approach used to construct historical scores for the period 2020–2024, including source selection, gap-filling, and cross-year comparability, is documented in <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/41c7c50f91bc510847fe7199428d0361fb0bd7db/src/data/sources/Methodological Note 2.pdf" target="_blank"> Methodological Note 4</a>. The Compass is updated periodically, subject to the availability of new data, methodological refinements and resources.
+  <p>All indicator sources, any modifications made to original datasets, and detailed scoring methodology are documented in <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/e81b97ed32a055ae7a709ca7daf6f8adbcb39094/src/data/sources/Methodological Note 2.pdf" target="_blank"> Methodological Note 2</a>. The approach used to construct historical scores for the period 2020–2024, including source selection, gap-filling, and cross-year comparability, is documented in <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/e81b97ed32a055ae7a709ca7daf6f8adbcb39094/src/data/sources/Methodology%20note%204%20(historical).pdf" target="_blank"> Methodological Note 4</a>. The Compass is updated periodically, subject to the availability of new data, methodological refinements and resources.
 </p>
-  <p>Although indicators are weighted equally in score calculations, we acknowledge that overlapping variables across indices may result in implicit weighting effects. <a href="https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/9aaeaffcd8f029cae294672ed765eae247e7a894/src/data/sources/Methodological%20Note%203.xlsx" target="_blank">Methodological Note 3</a> explains these overlaps and potential biases.
+  <p>Although indicators are weighted equally in score calculations, we acknowledge that overlapping variables across indices may result in implicit weighting effects. <a href="https://raw.githubusercontent.com/cdtrich/internet-accountability-compass/e81b97ed32a055ae7a709ca7daf6f8adbcb39094/src/data/sources/Methodological%20Note%203.xlsx" target="_blank">Methodological Note 3</a> explains these overlaps and potential biases.
 </p>
-<p><a href="https://github.com/cdtrich/dfi/raw/963c0d80a3b2bc5394532dc295b3c1cede1ad64e/src/data/Internet%20Accountability%20Index-V6.xlsx" target="_blank">Download the dataset</a>.</p>
+<p><a href="https://github.com/cdtrich/internet-accountability-compass/raw/e81b97ed32a055ae7a709ca7daf6f8adbcb39094/src/data/Internet_Accountability_IndexV6.xlsx" target="_blank">Download the dataset</a>.</p>
 <h2>Feedback</h2>
 <p>The authors welcome feedback and suggestions to improve the Compass. To contribute, please contact: <a href="mailto:gifi@eui.eu">gifi@eui.eu</a></p>
 <h2>Disclaimer</h2>
