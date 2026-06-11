@@ -42,7 +42,7 @@ The Compass is not a definitive answer to the challenge of accountability. Rathe
 </p>
 
 <p style="font-size: 1.1em !important">
-!!! ADDITIONAL PARAGRAPH INTRODUCING THE TOGGLE BETWEEN LATEST AND HISTORICAL !!! </p>
+The toggle between latest and historical data switches between the current state of play and how each country's overall performance has changed since the previous year's data.</p>
 
 <div class="desktop-notice" id="notice">
   Desktop recommended for full interactivity
@@ -171,7 +171,9 @@ if (mapMode === "latest") {
 
 ```html
 <div class="body-text">
-  <div class="grid keystats-grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}">
+  <div
+    class="grid keystats-grid ${mapMode === 'latest' ? 'grid-cols-4' : 'grid-cols-3'}"
+  >
     ${statsData.map((stat) => html`
     <div class="card key">
       <span class="very-big" style="color: ${stat.color};">${stat.count}</span
@@ -207,7 +209,7 @@ if (mapMode === "latest") {
 <h2>Why the Compass?</h2>
 <p>
 The Internet is a cornerstone of modern life—shaping how states govern, businesses operate, organisations function, and individuals connect. Recognising its transformative power, the international community has rallied around shared principles to foster a global, open, free, secure, and trustworthy Internet. These principles are enshrined in key political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
-Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.eu/en/library/declaration-future-internet" target="_blank">Declaration on the Future of the Internet</a>.
+Global Digital Compact</a>, the <a href="https://publicadministration.desa.un.org/intergovernmental-support/wsis" target="_blank">World Summit on the Information Society</a> and the <a href="https://digital-strategy.ec.europa.eu/en/library/declaration-future-internet" target="_blank">Declaration on the Future of the Internet</a>.
 </p>
 
 <p>
@@ -232,6 +234,13 @@ The Internet Accountability Compass is not an audit mechanism or compliance chec
 <p>
 By charting national performance across <a href="./directions">four cardinal dimensions</a>—Connectivity and infrastructure, Rights and
 freedoms, Responsibility and sustainability, and Trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
+</p>
+<p>
+The Compass now incorporates available historical data spanning 2020 to 2025,
+extending its utility beyond a single-year snapshot of national performance. This
+longitudinal coverage allows governments, researchers, and civil society to track
+how countries have progressed or regressed across the four cardinal dimensions
+over time. Historical context also provides a more grounded basis for interpreting current scores, situating each country's present standing within its own trajectory of change.
 </p>
   
 <!-- funding reference -->
