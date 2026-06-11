@@ -39,7 +39,7 @@ import { sidebar } from "./components/sidebar.js";
   <!-- <div id="hero-image"></div> -->
   </div>
 <div class="body-text">
-  <p>The Internet Accountability Compass provides <b>a structured, comparative view of how countries are implementing key digital policy commitments</b> that shape the governance and experience of the Internet. It draws on selected, publicly available datasets and indices to promote transparency, support self-assessment, and enable peer learningâ€”rather than ranking or naming and shaming.
+  <p>The Internet Accountability Compass provides <b>a structured, comparative view of how countries are implementing key digital policy commitments</b> that shape the governance and experience of the Internet. It draws on selected, publicly available datasets and indices to promote transparency, support self-assessment, and enable peer learning—rather than ranking or naming and shaming.
   </p>
   <p>The authors recognise that the Compass reflects <b>only one of several valid approaches</b> to combining and interpreting available data. It is not intended as a categorical assessment of national performance, but rather as a tool to initiate reflection and dialogue on how Internet accountability can be assessed, understood, and strengthened over time.
 </p>
@@ -76,7 +76,7 @@ Global Digital Compact</a> and the <a href="https://digital-strategy.ec.europa.e
 </li>
 <li>Global Index on Responsible AI, Digital Trade and Integration Index, and Global E-Waste Monitor for <b>responsibility and sustainability</b>;
 </li>
-<li>Global Cybersecurity Index, Internet Societyâ€™s Resilience Index, and Accountability Index for <b>trust and resilience</b>.
+<li>Global Cybersecurity Index, Internet Society's Resilience Index, and Accountability Index for <b>trust and resilience</b>.
 </li>
 </ol>
 <p>Each source provides a distinct perspective, capturing dimensions such as legal guarantees, digital inclusion, environmental sustainability, and institutional trust.</p>
