@@ -19,7 +19,7 @@
 import colorScales from "./components/scales.js";
 import { mapTotalD3 } from "./components/mapTotalD3.js";
 import { sidebar } from "./components/sidebar.js";
-import { blogPreview } from "./components/blogPreview.js";
+import { featuredPreview } from "./components/featuredPreview.js";
 // import { toggleSwitch } from "./components/toggleSwitch.js";
 import { modeToggle } from "./components/modeToggle.js";
 ```
@@ -203,8 +203,8 @@ if (mapMode === "latest") {
 <p> </p>
 <p> </p>
 
-<h2>Latest posts</h2>
-  ${blogPreview()}
+<h2>Featured posts and analysis</h2>
+  ${featuredPreview()}
 
 <h2>Why the Compass?</h2>
 <p>

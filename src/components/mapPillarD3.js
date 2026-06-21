@@ -501,8 +501,9 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
             ${changeSign}${Math.round(change)}
           </strong><br>
           <strong>${d.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
-          <strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear})</span>`;
+          <span style="font-size: 11px; color: #000;">${d.properties.pillar_txt} Score</span><br>
+          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear}) → <strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
+          </span>`;
         } else {
           tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
         }

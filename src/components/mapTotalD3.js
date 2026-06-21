@@ -577,8 +577,8 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
             ${changeSign}${Math.round(change)}
           </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
-          <strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear})</span>
+          <span style="font-size: 11px; color: #000;">Total Internet Accountability Score</span><br>
+          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear}) → <strong>${Math.round(d.properties.value)}</strong> (${latestYear})</span>
         `;
       } else {
         const categoryDisplay =
@@ -692,10 +692,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr(
-      "transform",
-      `translate(50, ${height - 130})`,
-    );
+    .attr("transform", `translate(50, ${height - 130})`);
 
   const zoomInButton = controlsGroup
     .append("g")
