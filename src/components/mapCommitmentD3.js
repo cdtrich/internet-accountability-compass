@@ -23,6 +23,9 @@ export function mapCommitmentD3(
 ) {
   const { width = 975, mode = "latest" } = options;
 
+  // Drop Antarctica — its extreme southern extent distorts the aspect ratio
+  world = world.filter((f) => f.properties.ISO3_CODE !== "ATA");
+
   // Derive height from the world geo's natural aspect ratio at this width so
   // fitSize() fills the box exactly — a fixed height causes letterboxing
   // (empty bands above/below the map) whenever the box's aspect ratio
@@ -260,7 +263,8 @@ export function mapCommitmentD3(
   // Reserve space below the map for the legend — sized to whichever legend
   // layout this mode uses (historical: swatch grid; latest: gradient bar) so
   // it always has room regardless of mode or the map's aspect ratio
-  const legendGrid = mode === "historical" ? legendGridSize(legendData.length) : null;
+  const legendGrid =
+    mode === "historical" ? legendGridSize(legendData.length) : null;
   const legendContentHeight =
     mode === "historical" ? legendGrid.height + 40 : 115;
   const legendAreaHeight = legendContentHeight + 40;
@@ -300,6 +304,12 @@ export function mapCommitmentD3(
   const projection = d3
     .geoEqualEarth()
     .fitSize([width, height], { type: "FeatureCollection", features: world });
+
+  const ySouth = projection([0, -60])[1];
+  projection.clipExtent([
+    [0, 0],
+    [width, ySouth],
+  ]);
 
   const path = d3.geoPath(projection);
 
@@ -377,7 +387,7 @@ export function mapCommitmentD3(
       .attr("class", "coast")
       .attr("d", path)
       .attr("fill", "none")
-      .attr("stroke", "#333")
+      .attr("stroke", "#ccc")
       .attr("stroke-width", 0.3);
   }
 
@@ -517,7 +527,7 @@ export function mapCommitmentD3(
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr("transform", `translate(50, ${height - 130})`);
+    .attr("transform", `translate(${width / 8}, ${height - 130})`);
 
   // Zoom in button
   const zoomInButton = controlsGroup
@@ -719,7 +729,7 @@ export function mapCommitmentD3(
   overlayDiv.style.cssText = `
   position: absolute;
   left: 50%;
-  bottom: 20px;
+  bottom: 200px;
   transform: translateX(-50%);
   display: none;
   pointer-events: none;

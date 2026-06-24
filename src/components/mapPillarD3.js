@@ -15,6 +15,9 @@ import { legendGridSize, renderSwatchLegend } from "./mapLegend.js";
 export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   const { width = 975, mode = "latest" } = options;
 
+  // Drop Antarctica — its extreme southern extent distorts the aspect ratio
+  world = world.filter((f) => f.properties.ISO3_CODE !== "ATA");
+
   // Derive height from the world geo's natural aspect ratio at this width so
   // fitSize() fills the box exactly — a fixed height causes letterboxing
   // (empty bands above/below the map) whenever the box's aspect ratio
@@ -320,6 +323,12 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
     .geoEqualEarth()
     .fitSize([width, height], { type: "FeatureCollection", features: world });
 
+  const ySouth = projection([0, -60])[1];
+  projection.clipExtent([
+    [0, 0],
+    [width, ySouth],
+  ]);
+
   const path = d3.geoPath(projection);
 
   // Map group (for zoom transforms)
@@ -545,7 +554,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   const controlsGroup = svg
     .append("g")
     .attr("class", "zoom-controls")
-    .attr("transform", `translate(50, ${height - 130})`);
+    .attr("transform", `translate(${width / 8}, ${height - 130})`);
 
   // Zoom in button
   const zoomInButton = controlsGroup
@@ -657,7 +666,7 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
   overlayDiv.style.cssText = `
   position: absolute;
   left: 50%;
-  bottom: 20px;
+  bottom: 200px;
   transform: translateX(-50%);
   display: none;
   pointer-events: none;
