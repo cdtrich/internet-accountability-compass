@@ -126,8 +126,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         .attr("y", yScale(d.value) - 8)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
-        .style("font-weight", "bold")
-        .attr("fill", dotColor)
+        // .style("font-weight", "bold")
+        .attr("fill", "#000")
+        // .attr("fill", dotColor)
         // .attr("fill", "#000")
         .text(`${Math.round(d.value)}`);
 
@@ -395,7 +396,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
   const ySouth = projection([0, -60])[1];
   projection.clipExtent([
-    [0, marginTop],
+    [0, 0],
     [width, ySouth],
   ]);
 
@@ -586,8 +587,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
             ${changeSign}${Math.round(change)}
           </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #000;">Total Internet Accountability Score</span><br>
-          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear}) → <strong>${Math.round(d.properties.value)}</strong> (${latestYear})</span>
+          Change in total Internet <br>Accountability Score
+          
+          ${sparklineHTML}
         `;
       } else {
         const categoryDisplay =
@@ -608,7 +610,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
             ${Math.round(totalScore)}
           </strong>
           <strong>${fullData.properties.NAME_ENGL}</strong> (${categoryDisplay})<br>
-          ${sparklineHTML}
           ${pillarScores}
         `;
       }
@@ -671,7 +672,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
 
       const tooltipHTML = `
         <strong>${d.properties.NAME_ENGL}</strong><br>
-        <span style="font-size: 11px; color: #666;">Not enough data</span>
+        <span class="tooltip-small">Not enough data</span>
       `;
 
       tooltip.style("visibility", "visible").html(tooltipHTML);

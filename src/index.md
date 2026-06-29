@@ -203,7 +203,7 @@ if (mapMode === "latest") {
 <p> </p>
 <p> </p>
 
-<h2>Featured posts and analysis</h2>
+<h2>Featured posts and perspectives</h2>
   ${featuredPreview()}
 
 <h2>Why the Compass?</h2>

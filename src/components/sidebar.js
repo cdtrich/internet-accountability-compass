@@ -36,9 +36,9 @@ export function sidebar() {
             </a>
           </li>
           <li>
-            <a href="${basePath}/blog">
+            <a href="${basePath}/perspectives">
               <i class="fas fa-comments"></i>
-              <span>Blog</span>
+              <span>Perspectives</span>
             </a>
           </li>
           <li>
@@ -79,7 +79,9 @@ export function sidebar() {
 
   if (isMobile) {
     // Remove stale instances from previous renders before creating new ones
-    document.querySelectorAll(".mobile-top-bar, .sidebar-backdrop, #sidebar").forEach(el => el.remove());
+    document
+      .querySelectorAll(".mobile-top-bar, .sidebar-backdrop, #sidebar")
+      .forEach((el) => el.remove());
 
     const topBar = document.createElement("div");
     topBar.className = "mobile-top-bar";

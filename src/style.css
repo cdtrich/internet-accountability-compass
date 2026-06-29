@@ -567,6 +567,13 @@ a:hover {
   z-index: 1000;
 }
 
+/* map tooltips with sparkline */
+.tooltip-small {
+  font-size: 11px;
+  color: #666;
+  line-height: 0.5;
+}
+
 /* CHART STYLING */
 
 .chart-axistext {

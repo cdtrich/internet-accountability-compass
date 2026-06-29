@@ -18,8 +18,8 @@ import { sidebar } from "./components/sidebar.js";
 
 <!-- hero -->
 <div class="hero">
-  <h1>Blog</h1>
-  <h2 class="subheader">Analysis, commentary, and updates from the team.</h2>
+  <h1>Perspectives</h1>
+  <h2 class="subheader">Analysis and commentary from the project.</h2>
 </div>
 
 <div class="body-text">
