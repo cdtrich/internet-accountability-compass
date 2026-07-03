@@ -19,7 +19,7 @@ import { sidebar } from "./components/sidebar.js";
 <!-- hero -->
 <div class="hero">
   <h1>Perspectives</h1>
-  <h2 class="subheader">Analysis and commentary from the project.</h2>
+  <h2 class="subheader">Analysis, commentaries and opinions.</h2>
 </div>
 
 <div class="body-text">
@@ -47,6 +47,9 @@ Over the past decade, governments around the world have endorsed a growing numbe
 Accountability has emerged as a central challenge of contemporary digital governance. Governments frequently articulate ambitious principles, such as protecting human rights online, ensuring security and resilience, promoting openness and accessibility, but the institutional structures required to monitor, evaluate, and enforce these commitments are often fragmented or incomplete. Reliable indicators are missing in key policy areas, data availability varies significantly across regions and sectors, and enforcement mechanisms tend to rely more on political pressure than on structured oversight.
 
 The Internet Accountability Compass partly addresses these challenges by providing a structured, comparative view of how countries are implementing key digital policy commitments that shape the governance and experience of the Internet. It draws on selected, publicly available datasets and indices to promote transparency, support self-assessment, and enable peer learning, rather than ranking or naming and shaming. But the Compass has also revealed how the persisting structural gaps complicate efforts to determine whether digital governance commitments translate into concrete outcomes. They also unmask deeper questions about the maturity of accountability mechanisms in the Internet ecosystem. Understanding where monitoring is possible, where evidence remains scarce, and where governance capacities are limited is essential for strengthening accountability in practice. In that sense, the Compass allows for several important observations that may guide future policymaking in the digital domain.
+
+<details class="blog-read-more">
+<summary>Read more</summary>
 
 ## Mismatch between commitments and implementation persists
 
@@ -108,6 +111,8 @@ Ultimately, accountability is not merely about identifying non-compliance; it is
 
 _You can find the full piece [here](https://cadmus.eui.eu/entities/publication/46f93875-d1df-4d1c-b698-39514f03c691)._
 
+</details>
+
 <!-- ─── ENTRY 2 ──────────────────────────────────────────────────── -->
 
 <a class="blog-img-link" href="#from-promises-to-practice-the-real-test-of-global-digital-cooperation">
@@ -125,6 +130,9 @@ _In this joint EUI interview, Patryk Pawlak and Nils Berglund discuss the gap be
 In December 2025, governments concluded a significant review of global digital cooperation, known as the WSIS+20 review, at the UN General Assembly. It was a test of whether the World Summit on the Information Society (WSIS) – a process launched by the United Nations in 2003, where states came together to develop a shared framework for governing the digital transformation – still works in a world where the Internet has become a critical enabler of economic growth, as well as a source of risks to the safety and security of its users. At stake were questions about the future of the Internet Governance Forum (IGF), how WSIS relates to newer initiatives such as the Global Digital Compact (GDC), and whether governments would reaffirm a multistakeholder approach amid rising digital authoritarianism and ideological differences over how to regulate the Internet.
 
 As the Internet and digital technologies continue to reshape economies, societies, and geopolitics, we talked with Part-time Professor Patryk Pawlak and Project Lead Nils Berglund, who deliver the Global Initiative on the Future of the Internet project at the Robert Schuman Centre for Advanced Studies, about the outcomes of the review and the most pressing concern: have states delivered on their commitment to use the Internet as a transformative force working for the benefit of all people?
+
+<details class="blog-read-more">
+<summary>Read more</summary>
 
 ## What is your assessment of WSIS+20?
 
@@ -164,6 +172,8 @@ The strength of these conversations lies not in everyone agreeing, but in having
 
 You can read the full piece [here](https://www.eui.eu/news-hub?id=from-promises-to-practice-the-real-test-of-global-digital-cooperation).
 
+</details>
+
 <!-- ─── ENTRY 1 ──────────────────────────────────────────────────── -->
 
 <a class="blog-img-link" href="#regional-contributions-to-global-internet-accountability-debates">
@@ -183,6 +193,9 @@ _As digital governance moves from principle-setting to implementation, global be
 The gap between the language of commitment—where states pledge to uphold an open, free, and secure internet in line with human rights obligations—and the reality of policy practice has made accountability a central theme in digital governance debates. The WSIS+20 Review outcome has made monitoring and measurement a formal priority, with new indicator review processes underway and a systematic assessment of existing ICT measurement methodologies due by 2027.
 
 Yet the data infrastructure, the interpretive expertise, and the institutional mechanisms underlying such indicators and methodologies are often disproportionately shaped by global-level assumptions and lack regional context and nuance. Bridging this gap requires treating regional approaches not as secondary inputs, but as foundational building blocks of any credible accountability architecture.
+
+<details class="blog-read-more">
+<summary>Read more</summary>
 
 ## When global benchmarks obscure local realities
 
@@ -217,6 +230,8 @@ Multistakeholder governance platforms provide another important layer of account
 Ultimately, closing the regional gap in internet accountability requires a structural shift in how accountability is designed, who participates in producing the evidence, and how regional knowledge is weighted. In practice, this would mean maintaining global benchmarks and baselines while being transparent about their limitations, incorporating regionally sourced indicators, frameworks, and instruments alongside global ones, and embedding qualitative analysis where data is thin or where context is decisive for interpretation. It also means investing in the infrastructure that enables regional data production, including funding, translation capacity, local research partnerships, and feedback loops that connect regional debates to global measurement cycles.
 
 _You can read the full piece [here](https://cadmus.eui.eu/entities/publication/46f93875-d1df-4d1c-b698-39514f03c691)._
+
+</details>
 
 </div>
 

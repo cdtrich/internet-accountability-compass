@@ -2213,6 +2213,18 @@ a.blog-preview-tile:hover .blog-img-wrap img {
 .blog-img-wrap--tile {
   margin: 0 0 0.25rem;
 }
+.blog-read-more {
+  margin: 1rem 0;
+}
+.blog-read-more > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--theme-foreground-focus, #007162);
+  margin: 1rem 0;
+}
+.blog-read-more > h2:first-of-type {
+  margin-top: 0;
+}
 
 /* scroll down arrow */
 .down-arrow {

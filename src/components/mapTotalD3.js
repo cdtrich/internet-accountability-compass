@@ -584,8 +584,11 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         else changeColor = changeColors.zero;
 
         tooltipHTML = `
+          <strong style="font-size: 14px; font-weight: regular; color: ${changeColor}; margin-bottom: 8px;">
+          Internet Accountability Score (IAS)
+          </strong><br>
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
-            ${changeSign}${Math.round(change)}
+          ${changeSign}${Math.round(change)}
           </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
           Change in total Internet <br>Accountability Score
           

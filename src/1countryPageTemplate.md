@@ -109,7 +109,12 @@ const sourcesData = sourcesParse
   .filter((d) => d.NAME_ENGL === country)
   .filter(
     (d, index, self) =>
-      index === self.findIndex((item) => (item.url || `${item.title}|${item.publisher}`) === (d.url || `${d.title}|${d.publisher}`)),
+      index ===
+      self.findIndex(
+        (item) =>
+          (item.url || `${item.title}|${item.publisher}`) ===
+          (d.url || `${d.title}|${d.publisher}`),
+      ),
   );
 ```
 
@@ -483,11 +488,12 @@ const selectSourceType = view(viewofSourcesLegend(null));
 ```
 
 ```js
-const sourcesFiltered = selectSourceType === null
-  ? sourcesData
-  : sourcesData.filter(
-      (d) => d.type.replace(/^[⌕¶⚑]\s*/, "") === selectSourceType,
-    );
+const sourcesFiltered =
+  selectSourceType === null
+    ? sourcesData
+    : sourcesData.filter(
+        (d) => d.type.replace(/^[⌕¶⚑]\s*/, "") === selectSourceType,
+      );
 sources(sourcesFiltered);
 ```
 

@@ -206,6 +206,25 @@ if (mapMode === "latest") {
 <h2>Featured posts and perspectives</h2>
   ${featuredPreview()}
 
+<h2>What does the compass show?</h2>
+
+<p>The Compass translates broad commitments into <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/dfi/b76f824bb5009098599dd71e1cd206d73f9d61fa/src/data/sources/Methodological%20Note%201.pdf" target="_blank"> measurable national and regional performance</a>, showing not only where practices align with promises, but also how the commitments themselves give shape to the digital landscape.</p>
+
+<p>
+The Internet Accountability Compass is not an audit mechanism or compliance checklist. It serves as a reference tool for governments, researchers, and civil society to assess national progress, identify trends, and learn from comparative practice. It is intended to bridge the gap between high-level digital commitments and their implementation—contributing to a more inclusive, rights-based, and accountable digital future.
+</p>
+<p>
+By charting national performance across <a href="./directions">four cardinal dimensions</a> — Connectivity and infrastructure, Rights and
+freedoms, Responsibility and sustainability, and Trust and resilience — the Compass produces an Internet Accountability Score (IAS) for each country, aggregating performance across all four dimensions into a single comparable figure. For a full explanation of how the IAS is calculated, see our <a href="./methodology">methodology</a>.
+</p>
+<p>
+The Compass now incorporates available historical data spanning 2020 to 2025,
+extending its utility beyond a single-year snapshot of national performance. This
+longitudinal coverage allows governments, researchers, and civil society to track
+how countries have progressed or regressed across the four cardinal dimensions
+over time. Historical context also provides a more grounded basis for interpreting current scores, situating each country's present standing within its own trajectory of change.
+</p>
+
 <h2>Why the Compass?</h2>
 <p>
 The Internet is a cornerstone of modern life—shaping how states govern, businesses operate, organisations function, and individuals connect. Recognising its transformative power, the international community has rallied around shared principles to foster a global, open, free, secure, and trustworthy Internet. These principles are enshrined in key political declarations, including the <a href="https://www.un.org/digital-emerging-technologies/global-digital-compact" target="_blank">
@@ -222,25 +241,6 @@ The <b>Internet Accountability Compass</b> is designed to fill this gap. It serv
 
 <p>
 Through rigorous, country-specific data and comparative indicators, the Internet Accountability Compass promotes greater transparency, strengthens public accountability, and empowers policymakers, businesses, and civil society to align action with aspiration.
-</p>
-
-<h2>What does the compass show?</h2>
-
-<p>The Compass translates broad commitments into <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https://raw.githubusercontent.com/cdtrich/dfi/b76f824bb5009098599dd71e1cd206d73f9d61fa/src/data/sources/Methodological%20Note%201.pdf" target="_blank"> measurable national and regional performance</a>, showing not only where practices align with promises, but also how the commitments themselves give shape to the digital landscape.</p>
-
-<p>
-The Internet Accountability Compass is not an audit mechanism or compliance checklist. It serves as a reference tool for governments, researchers, and civil society to assess national progress, identify trends, and learn from comparative practice. It is intended to bridge the gap between high-level digital commitments and their implementation—contributing to a more inclusive, rights-based, and accountable digital future.
-</p>
-<p>
-By charting national performance across <a href="./directions">four cardinal dimensions</a>—Connectivity and infrastructure, Rights and
-freedoms, Responsibility and sustainability, and Trust and resilience—the Compass contributed to bringing clarity to the state of Internet governance worldwide.
-</p>
-<p>
-The Compass now incorporates available historical data spanning 2020 to 2025,
-extending its utility beyond a single-year snapshot of national performance. This
-longitudinal coverage allows governments, researchers, and civil society to track
-how countries have progressed or regressed across the four cardinal dimensions
-over time. Historical context also provides a more grounded basis for interpreting current scores, situating each country's present standing within its own trajectory of change.
 </p>
   
 <!-- funding reference -->

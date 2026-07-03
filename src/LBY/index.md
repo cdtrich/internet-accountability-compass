@@ -109,7 +109,12 @@ const sourcesData = sourcesParse
   .filter((d) => d.NAME_ENGL === country)
   .filter(
     (d, index, self) =>
-      index === self.findIndex((item) => (item.url || `${item.title}|${item.publisher}`) === (d.url || `${d.title}|${d.publisher}`)),
+      index ===
+      self.findIndex(
+        (item) =>
+          (item.url || `${item.title}|${item.publisher}`) ===
+          (d.url || `${d.title}|${d.publisher}`),
+      ),
   );
 ```
 
@@ -249,7 +254,7 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar0Content}</div>
+<div class="chart-breakout">${pillar0Content}</div>
 
 ```js
 const pillar1Header = html`<div
@@ -322,7 +327,7 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar1Content}</div>
+<div class="chart-breakout">${pillar1Content}</div>
 
 ```js
 const pillar2Header = html`<div
@@ -395,7 +400,7 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar2Content}</div>
+<div class="chart-breakout">${pillar2Content}</div>
 
 ```js
 const pillar3Header = html`<div
@@ -468,7 +473,7 @@ if (viewMode === "latest") {
 }
 ```
 
-<div>${pillar3Content}</div>
+<div class="chart-breakout">${pillar3Content}</div>
 
 <!-- sources -->
 
@@ -483,11 +488,12 @@ const selectSourceType = view(viewofSourcesLegend(null));
 ```
 
 ```js
-const sourcesFiltered = selectSourceType === null
-  ? sourcesData
-  : sourcesData.filter(
-      (d) => d.type.replace(/^[⌕¶⚑]\s*/, "") === selectSourceType,
-    );
+const sourcesFiltered =
+  selectSourceType === null
+    ? sourcesData
+    : sourcesData.filter(
+        (d) => d.type.replace(/^[⌕¶⚑]\s*/, "") === selectSourceType,
+      );
 sources(sourcesFiltered);
 ```
 
