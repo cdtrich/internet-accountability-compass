@@ -606,10 +606,10 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           fullData.properties["Total score"] || fullData.properties.total || 0;
 
         tooltipHTML = `
-          <strong style="font-size: 12px; font-weight: regular; color: ${categoryColor}; margin-bottom: 8px;">
+          <strong style="font-size: 12px; font-weight: regular; color: ${categoryColor}; margin-bottom: 0px;">
           Internet Accountability Score (IAS)
           </strong><br>
-          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-bottom: 8px;">
+          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
             ${Math.round(totalScore)}
           </strong>
           <strong>${fullData.properties.NAME_ENGL}</strong> (${categoryDisplay})<br>
