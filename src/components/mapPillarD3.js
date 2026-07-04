@@ -489,17 +489,16 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
           : "#ccc";
       }
 
-      // Generate sparkline (only for latest mode)
-      const sparklineHTML =
-        mode === "latest" && hasData
-          ? createTooltipSparkline(
-              data,
-              d.properties.ISO3_CODE,
-              selectedPillar,
-              categoryColor,
-              globalYearDomain,
-            )
-          : "";
+      // Generate sparkline (both modes)
+      const sparklineHTML = hasData
+        ? createTooltipSparkline(
+            data,
+            d.properties.ISO3_CODE,
+            selectedPillar,
+            categoryColor,
+            globalYearDomain,
+          )
+        : "";
 
       let tooltipContent;
       if (mode === "historical") {
@@ -517,10 +516,8 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
         }
       } else {
         tooltipContent = hasData
-          ? `
-          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
-          ${Math.round(d.properties.value)}</strong>
-          <strong>${d.properties.NAME_ENGL}</strong> (${d.properties.group_value})<br>
+          ? `<strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
+          ${Math.round(d.properties.value)}</strong> <strong>${d.properties.NAME_ENGL}</strong> (${d.properties.group_value})<br>
           ${partialNote}`
           : `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
       }
