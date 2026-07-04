@@ -486,15 +486,18 @@ export function mapCommitmentD3(
             ${changeSign}${Math.round(change)}
           </strong><br>
           <strong>${d.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #666;">${previousYear} → ${latestYear}</span>`;
+          ${sparklineHTML}`;
         } else {
           tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
         }
       } else {
         tooltipContent = hasData
-          ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
-          Score: ${Math.round(d.properties.value)}${partialNote}
-          ${sparklineHTML}`
+          ? `
+          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
+          ${Math.round(d.properties.value)}</strong>
+          <strong>${d.properties.NAME_ENGL}</strong> (${d.properties.group_value})<br>
+          ${partialNote}
+          `
           : `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
       }
 

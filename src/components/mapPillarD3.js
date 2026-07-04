@@ -511,16 +511,17 @@ export function mapPillarD3(world, coast, data, selectedPillar, options = {}) {
           </strong><br>
           <strong>${d.properties.NAME_ENGL}</strong><br>
           <span style="font-size: 11px; color: #000;">${d.properties.pillar_txt} Score</span><br>
-          <span style="font-size: 11px; color: #666;"><strong>${Math.round(d.properties.previousValue)}</strong> (${previousYear}) → <strong>${Math.round(d.properties.value)}</strong> (${latestYear})<br>
-          </span>`;
+          ${sparklineHTML}`;
         } else {
           tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
         }
       } else {
         tooltipContent = hasData
-          ? `<strong>${d.properties.NAME_ENGL}</strong> - ${d.properties.group_value}<br>
-          Score: ${Math.round(d.properties.value)}${partialNote}
-          ${sparklineHTML}`
+          ? `
+          <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
+          ${Math.round(d.properties.value)}</strong>
+          <strong>${d.properties.NAME_ENGL}</strong> (${d.properties.group_value})<br>
+          ${partialNote}`
           : `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
       }
 
