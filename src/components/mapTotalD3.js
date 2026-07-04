@@ -612,7 +612,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
             ${Math.round(totalScore)}
           </strong>
           <strong>${fullData.properties.NAME_ENGL}</strong> (${categoryDisplay})<br>
-          ${pillarScores}
+          <span style="font-size: 11px; color: #000;">${pillarScores}</span>
         `;
       }
 

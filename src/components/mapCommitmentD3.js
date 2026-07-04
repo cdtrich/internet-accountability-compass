@@ -492,7 +492,7 @@ export function mapCommitmentD3(
         }
       } else {
         tooltipContent = hasData
-          ? `<strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-top: 0px; margin-bottom: 8px;">
+          ? `<strong style="font-size: 42px; font-weight: bold; color: ${colorScale(d.properties.value)}; margin-top: 0px; margin-bottom: 8px;">
           ${Math.round(d.properties.value)}</strong> <strong>${d.properties.NAME_ENGL}</strong> (${d.properties.group_value})<br>
           ${partialNote}
           `
