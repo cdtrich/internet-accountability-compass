@@ -606,7 +606,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           fullData.properties["Total score"] || fullData.properties.total || 0;
 
         tooltipHTML = `
-          <strong style="font-size: 14px; font-weight: regular; color: ${changeColor}; margin-bottom: 8px;">
+          <strong style="font-size: 12px; font-weight: regular; color: ${categoryColor}; margin-bottom: 8px;">
           Internet Accountability Score (IAS)
           </strong><br>
           <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-bottom: 8px;">
