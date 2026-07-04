@@ -587,8 +587,7 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
           ${changeSign}${Math.round(change)}
           </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
-          Change in total Internet <br>Accountability Score
-          
+          <span style="font-size: 11px; color: #000;">Change in total Internet <br>Accountability Score (2024→2025)</span><br>          
           ${sparklineHTML}
         `;
       } else {
