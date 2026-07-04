@@ -485,7 +485,7 @@ export function mapCommitmentD3(
             ${changeSign}${Math.round(change)}
           </strong><br>
           <strong>${d.properties.NAME_ENGL}</strong><br>
-          <span style="font-size: 11px; color: #000;">Change in ${d.properties.commitment_txt_cardinal} score (2024→2025)</span><br>
+          <span style="font-size: 11px; color: #000;">Change in <br>${d.properties.commitment_txt_cardinal} score <br>(2024→2025)</span><br>
           ${sparklineHTML}`;
         } else {
           tooltipContent = `<strong>${d.properties.NAME_ENGL}</strong><br><span style="font-size: 11px; color: #666;">Not enough data</span>`;
