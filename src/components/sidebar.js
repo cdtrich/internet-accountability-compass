@@ -65,7 +65,7 @@ export function sidebar() {
         (href === "/countries" && currentPath.startsWith("/countries")) ||
         (href === "/directions" && currentPath.startsWith("/directions")) ||
         (href === "/resources" && currentPath.startsWith("/resources")) ||
-        (href === "/blog" && currentPath.startsWith("/blog")) ||
+        (href === "/perspectives" && currentPath.startsWith("/perspectives")) ||
         (href === "/methodology" && currentPath.startsWith("/methodology"))
       ) {
         link.classList.add("active");

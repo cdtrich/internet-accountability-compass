@@ -584,9 +584,6 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
         else changeColor = changeColors.zero;
 
         tooltipHTML = `
-          <strong style="font-size: 14px; font-weight: regular; color: ${changeColor}; margin-bottom: 8px;">
-          Internet Accountability Score (IAS)
-          </strong><br>
           <strong style="font-size: 28px; font-weight: bold; color: ${changeColor}; margin-bottom: 8px;">
           ${changeSign}${Math.round(change)}
           </strong><strong>${fullData.properties.NAME_ENGL}</strong><br>
@@ -609,6 +606,9 @@ export function mapTotalD3(world, coast, dataCardinal, options = {}) {
           fullData.properties["Total score"] || fullData.properties.total || 0;
 
         tooltipHTML = `
+          <strong style="font-size: 14px; font-weight: regular; color: ${changeColor}; margin-bottom: 8px;">
+          Internet Accountability Score (IAS)
+          </strong><br>
           <strong style="font-size: 42px; font-weight: bold; color: ${categoryColor}; margin-bottom: 8px;">
             ${Math.round(totalScore)}
           </strong>
