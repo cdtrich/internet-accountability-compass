@@ -36,7 +36,7 @@ export function blogPreview() {
       ${posts
         .map(
           (post) => `
-        <a href="${basePath}/blog#${post.slug}" class="blog-preview-tile">
+        <a href="${basePath}/perspectives#${post.slug}" class="blog-preview-tile">
           <div class="blog-img-wrap blog-img-wrap--tile">
             <img src="${post.image}" alt="${post.title}" loading="lazy">
           </div>

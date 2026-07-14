@@ -36,7 +36,7 @@ export function featuredPreview() {
     <div class="grid grid-cols-3">
       ${posts
         .map((post) => {
-          const href = post.url ?? `${basePath}/blog#${post.slug}`;
+          const href = post.url ?? `${basePath}/perspectives#${post.slug}`;
           const external = !!post.url;
           return `
         <a href="${href}"${external ? ' target="_blank" rel="noopener"' : ""} class="blog-preview-tile">
